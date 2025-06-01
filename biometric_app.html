@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Biometric Attendance</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+   
+    body {
+      background: #222D32;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    .login-box {
+      margin-top: 75px;
+      height: auto;
+      background: #1A2226;
+      text-align: center;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+    }
+
+    .login-key {
+      height: 100px;
+      font-size: 80px;
+      line-height: 100px;
+      background: -webkit-linear-gradient(#27EF9F, #0DB8DE);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .login-title {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 30px;
+      letter-spacing: 2px;
+      font-weight: bold;
+      color: #ECF0F5;
+    }
+
+    .login-form {
+      margin-top: 25px;
+      text-align: left;
+    }
+
+    input[type=text], input[type=password] {
+      background-color: #1A2226;
+      border: none;
+      border-bottom: 2px solid #0DB8DE;
+      border-radius: 0px;
+      font-weight: bold;
+      outline: 0;
+      margin-bottom: 20px;
+      padding-left: 0px;
+      color: #ECF0F5;
+      width: 100%;
+    }
+
+    .form-group {
+      margin-bottom: 40px;
+    }
+
+    .form-control:focus {
+      border-color: inherit;
+      box-shadow: none;
+      border-bottom: 2px solid #0DB8DE;
+      background-color: #1A2226;
+      color: #ECF0F5;
+    }
+
+    label {
+      margin-bottom: 0px;
+    }
+
+    .form-control-label {
+      font-size: 10px;
+      color: #6C6C6C;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    .btn-outline-primary {
+      border-color: #0DB8DE;
+      color: #0DB8DE;
+      border-radius: 0px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    .btn-outline-primary:hover {
+      background-color: #0DB8DE;
+    }
+
+    .login-btm {
+      float: left;
+    }
+
+    .login-button {
+      text-align: right;
+      margin-bottom: 25px;
+    }
+
+    .login-text {
+      text-align: left;
+      padding-left: 0px;
+      color: #A2A4A4;
+    }
+
+    .loginbttm {
+      padding: 0px;
+    }
+
+    #userBar {
+      position: absolute; top: 10px; left: 10px;
+      background: white; padding: 10px 15px; border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-size: 14px;
+      display: none;
+    }
+
+    .container-main {
+      background: linear-gradient(145deg, #ffffff, #e6e9f0);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 800px;
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid #ccc; padding: 10px; font-size: 14px; }
+    thead { background-color: #2575fc; color: white; }
+  </style>
+</head>
+<body>
+
+<!-- Custom Login Page -->
+<div class="container" id="loginPage">
+  <div class="row justify-content-center">
+    <div class="col-lg-6 col-md-8 login-box">
+      <div class="col-lg-12 login-key">
+        <i class="fa fa-key" aria-hidden="true"></i>
+      </div>
+      <div class="col-lg-12 login-title">ADMIN PANEL</div>
+      <div class="col-lg-12 login-form">
+        <form onsubmit="login(event)">
+          <div class="form-group">
+            <label class="form-control-label">USERNAME</label>
+            <input type="text" id="staffId" class="form-control">
+          </div>
+          <div class="form-group">
+            <label class="form-control-label">PASSWORD</label>
+            <input type="password" id="staffPassword" class="form-control">
+          </div>
+          <div class="col-lg-12 loginbttm">
+            <div class="col-lg-6 login-btm login-text" id="message"></div>
+            <div class="col-lg-6 login-btm login-button">
+              <button type="submit" class="btn btn-outline-primary">LOGIN</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Welcome User Bar -->
+<div id="userBar">
+  <span id="userNameDisplay"></span>
+  <button onclick="signOut()" style="margin-left: 10px; background-color: #e74c3c;">Sign out</button>
+</div>
+
+<!-- Main App -->
+<div class="container container-main" id="mainApp" style="display:none;">
+  <h1>Biometric Attendance App</h1>
+  <input type="text" id="nameInput" placeholder="Enter your name" class="form-control mb-2" />
+  <input type="number" id="ageInput" placeholder="Enter your age" class="form-control mb-2" />
+  <input type="number" id="salaryInput" placeholder="Enter your salary" class="form-control mb-3" />
+  <div>
+    <button id="scanButton" class="btn btn-success m-1">Save</button>
+    <button id="downloadExcel" class="btn btn-primary m-1">Download Excel</button>
+    <button id="clearDataBtn" class="btn btn-danger m-1">Clear All</button>
+    <button id="newEntryBtn" class="btn btn-warning m-1">New</button>
+    <button id="showAllBtn" class="btn btn-info m-1">Show All</button>
+  </div>
+  <div id="attendanceDetails" class="mt-4"></div>
+  <div id="fingerprintContainer" style="display:none; margin-top:20px;">
+    <canvas id="fingerprintCanvas" width="317" height="270"></canvas>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+const staffMembers = [
+  { id: "170712@ab", password: "OWNER@00014243774", position: "OWNER", name: "Aditya Bhardwaj" },
+  { id: "310712@cb", password: "CO-OWNER@bhardwaj3107cb", position: "CO-OWNER", name: "Chandan Bhardwaj" },
+  { id: "310712@db", password: "CO-OWNER@bhardwaj3107db", position: "CO-OWNER", name: "Deepak Bhardwaj" }
+];
+
+let allEntries = [];
+
+function login(e) {
+  e.preventDefault();
+  const id = document.getElementById("staffId").value.trim();
+  const password = document.getElementById("staffPassword").value.trim();
+  const found = staffMembers.find(s => s.id === id && s.password === password);
+  if (found) {
+    localStorage.setItem("loggedInUser", JSON.stringify(found));
+    showApp();
+  } else {
+    document.getElementById("message").textContent = "Invalid ID or Password.";
+  }
+}
+
+function showApp() {
+  const user = JSON.parse(localStorage.getItem("loggedInUser"));
+  if (user) {
+    document.getElementById("loginPage").style.display = "none";
+    document.getElementById("mainApp").style.display = "block";
+    document.getElementById("userBar").style.display = "block";
+    document.getElementById("userNameDisplay").textContent = `Welcome, ${user.name}`;
+  }
+}
+
+function signOut() {
+  localStorage.removeItem("loggedInUser");
+  window.location.href = "index.html";
+}
+window.onload = () => {
+  const user = JSON.parse(localStorage.getItem("loggedInUser"));
+  if (user) showApp();
+  else document.getElementById("loginPage").style.display = "block";
+};
+
+document.getElementById("scanButton").addEventListener("click", async () => {
+  const name = document.getElementById("nameInput").value.trim();
+  const age = document.getElementById("ageInput").value.trim();
+  const salary = document.getElementById("salaryInput").value.trim();
+  if (!name || !age || !salary) return alert("Fill all fields.");
+  const date = new Date().toLocaleString();
+  let ip = "Unknown", coords = "Unknown";
+  try {
+    const ipRes = await fetch("https://api.ipify.org?format=json");
+    const ipData = await ipRes.json(); ip = ipData.ip;
+    const locRes = await fetch(`https://ipapi.co/${ip}/json/`);
+    const locData = await locRes.json();
+    coords = `${locData.latitude}, ${locData.longitude}`;
+  } catch {}
+  const entry = { date, name, age, salary, ip, coords };
+  allEntries.push(entry);
+  document.getElementById("attendanceDetails").innerHTML = `
+    <p><strong>Recorded at:</strong> ${date}</p>
+    <p><strong>Name:</strong> ${name}</p>
+    <p><strong>Age:</strong> ${age}</p>
+    <p><strong>Salary:</strong> ₹${parseFloat(salary).toFixed(2)}</p>
+    <p><strong>IP:</strong> ${ip}</p>
+    <p><strong>Coordinates:</strong> ${coords}</p>
+  `;
+  document.getElementById("fingerprintContainer").style.display = "block";
+  const canvas = document.getElementById('fingerprintCanvas');
+  const ctx = canvas.getContext('2d');
+  const img = new Image();
+  img.src = 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Fingerprint_icon.svg/1200px-Fingerprint_icon.svg.png';
+  img.onload = () => ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+});
+
+document.getElementById("downloadExcel").addEventListener("click", () => {
+  if (allEntries.length === 0) return alert("No data.");
+  const wsData = [["S.No", "Timestamp", "Name", "Age", "Salary", "IP", "Coordinates"]];
+  allEntries.forEach((e, i) => wsData.push([i+1, e.date, e.name, e.age, e.salary, e.ip, e.coords]));
+  const ws = XLSX.utils.aoa_to_sheet(wsData);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Attendance");
+  XLSX.writeFile(wb, "attendance_data.xlsx");
+});
+
+document.getElementById("clearDataBtn").addEventListener("click", () => {
+  if (confirm("Clear all data?")) {
+    allEntries = [];
+    document.getElementById("nameInput").value = "";
+    document.getElementById("ageInput").value = "";
+    document.getElementById("salaryInput").value = "";
+    document.getElementById("attendanceDetails").innerHTML = "";
+    document.getElementById("fingerprintContainer").style.display = "none";
+  }
+});
+
+document.getElementById("newEntryBtn").addEventListener("click", () => {
+  document.getElementById("nameInput").value = "";
+  document.getElementById("ageInput").value = "";
+  document.getElementById("salaryInput").value = "";
+  document.getElementById("attendanceDetails").innerHTML = "";
+  document.getElementById("fingerprintContainer").style.display = "none";
+});
+
+document.getElementById("showAllBtn").addEventListener("click", () => {
+  if (allEntries.length === 0) return alert("No entries.");
+  let html = `<h3>All Attendance Entries</h3><div style="overflow-x:auto;"><table><thead><tr>
+    <th>#</th><th>Date</th><th>Name</th><th>Age</th><th>Salary</th><th>IP</th><th>Coordinates</th><th>Action</th>
+  </tr></thead><tbody>`;
+  allEntries.forEach((e, i) => {
+    html += `<tr>
+      <td>${i + 1}</td><td>${e.date}</td>
+      <td>${e.name}</td><td>${e.age}</td><td>₹${parseFloat(e.salary).toFixed(2)}</td>
+      <td>${e.ip}</td><td>${e.coords}</td>
+      <td>
+        <button onclick="editEntry(${i})">Edit</button>
+        <button onclick="duplicateEntry(${i})">Duplicate</button>
+        <button onclick="deleteEntry(${i})">Delete</button>
+      </td>
+    </tr>`;
+  });
+  html += "</tbody></table></div>";
+  document.getElementById("attendanceDetails").innerHTML = html;
+});
+
+window.editEntry = function(i) {
+  const e = allEntries[i];
+  const row = document.querySelectorAll("#attendanceDetails tbody tr")[i];
+  row.innerHTML = `<td>${i+1}</td><td>${e.date}</td>
+    <td><input id="editName${i}" value="${e.name}"></td>
+    <td><input id="editAge${i}" value="${e.age}"></td>
+    <td><input id="editSalary${i}" value="${e.salary}"></td>
+    <td>${e.ip}</td><td>${e.coords}</td>
+    <td><button onclick="saveEdit(${i})">Save</button></td>`;
+};
+
+window.saveEdit = function(i) {
+  const name = document.getElementById(`editName${i}`).value;
+  const age = document.getElementById(`editAge${i}`).value;
+  const salary = document.getElementById(`editSalary${i}`).value;
+  if (!name || !age || !salary) return alert("All fields required.");
+  allEntries[i].name = name; allEntries[i].age = age; allEntries[i].salary = salary;
+  document.getElementById("showAllBtn").click();
+};
+
+window.deleteEntry = function(i) {
+  if (confirm("Delete this entry?")) {
+    allEntries.splice(i, 1);
+    document.getElementById("showAllBtn").click();
+  }
+};
+
+window.duplicateEntry = function(i) {
+  const dup = { ...allEntries[i], date: new Date().toLocaleString() };
+  allEntries.push(dup);
+  document.getElementById("showAllBtn").click();
+};
+</script>
+<script>
+  if (sessionStorage.getItem("isLoggedIn") !== "true") {
+    sessionStorage.setItem("redirectAfterLogin", window.location.pathname);
+    window.location.href = "login.html";
+  }
+</script>
+
+</body>
+</html>
