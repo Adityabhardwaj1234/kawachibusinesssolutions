@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Employee Data Viewer</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+    }
+    h2 {
+      margin-bottom: 10px;
+    }
+    #dataTable {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+    #dataTable th, #dataTable td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: left;
+    }
+    #dataTable th {
+      background-color: #007bff;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Attendance Data (Loaded Automatically)</h2>
+
+  <table id="dataTable">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Age</th>
+        <th>Position</th>
+        <th>Join Date</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    fetch('attendance_data.xlsx')
+      .then(response => {
+        if (!response.ok) throw new Error('Network response was not ok');
+        return response.arrayBuffer();
+      })
+      .then(buffer => {
+        const workbook = XLSX.read(buffer, { type: 'array' });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+        const tbody = document.querySelector('#dataTable tbody');
+        tbody.innerHTML = '';
+
+        rows.forEach((row, index) => {
+          if (index === 0) return; // Skip header
+          const [name, age, position, joinDate] = row;
+          if (!name || !age || !position || !joinDate) return;
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${name}</td>
+            <td>${age}</td>
+            <td>${position}</td>
+            <td>${joinDate}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      })
+      .catch(error => {
+        document.body.insertAdjacentHTML('beforeend', `<p style="color:red;">Error loading file: ${error.message}</p>`);
+      });
+  </script>
+  <script>
+  if (sessionStorage.getItem("isLoggedIn") !== "true") {
+    sessionStorage.setItem("redirectAfterLogin", window.location.pathname);
+    window.location.href = "login.html";
+  }
+</script>
+</body>
+</html>
