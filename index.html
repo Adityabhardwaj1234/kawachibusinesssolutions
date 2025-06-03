@@ -316,29 +316,49 @@
         }
       }
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script>
-      // Helper function to convert Excel serial date to DD-MM-YYYY format
-      function excelDateToDmy(serial) {
-        const utc_days = Math.floor(serial - 25569);
-        const utc_value = utc_days * 86400;
-        const date_info = new Date(utc_value * 1000);
-        const day = String(date_info.getDate()).padStart(2, "0");
-        const month = String(date_info.getMonth() + 1).padStart(2, "0");
-        const year = date_info.getFullYear();
-        return `${day}-${month}-${year}`;
-      }
+    <!-- Firebase SDK -->
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+      import {
+        getAnalytics,
+        logEvent,
+      } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+      import {
+        getDatabase,
+        ref,
+        get,
+        onValue,
+      } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-      // Load and display Excel employee data in the dashboard "Employees" section
-      fetch("attendance_data.xlsx")
-        .then((response) => {
-          if (!response.ok) throw new Error("Failed to load file.");
-          return response.arrayBuffer();
-        })
-        .then((buffer) => {
-          const workbook = XLSX.read(buffer, { type: "array" });
-          const sheet = workbook.Sheets[workbook.SheetNames[0]];
-          const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyB1wIsDf1qSLaIGyQvbri26z9e4ypxF-lw",
+        authDomain: "apikawachi.firebaseapp.com",
+        databaseURL:
+          "https://apikawachi-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "apikawachi",
+        storageBucket: "apikawachi.appspot.com",
+        messagingSenderId: "7573902945",
+        appId: "1:7573902945:web:be2c051ef0d0ceed787c20",
+        measurementId: "G-GT0F7K4NLP",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+      const database = getDatabase(app);
+
+      // Make Firebase available globally
+      window.firebaseApp = app;
+      window.firebaseDatabase = database;
+      window.firebaseAnalytics = analytics;
+
+      // Load and display employee data from Firebase in the dashboard
+      async function loadEmployeesFromFirebase() {
+        try {
+          const employeesRef = ref(database, "employees");
+          const snapshot = await get(employeesRef);
 
           const tableBody = document.querySelector(
             ".table-data .order table tbody",
@@ -347,37 +367,102 @@
             .querySelector("li i.bxs-group")
             .parentElement.querySelector("h3");
 
+          if (!tableBody || !workerCountEl) {
+            console.warn("Dashboard elements not found");
+            return;
+          }
+
           tableBody.innerHTML = ""; // Clear existing rows
 
-          let workerCount = 0;
-          rows.forEach((row, index) => {
-            if (index === 0) return; // Skip header
-            const [name, , position, rawJoinDate] = row;
-            if (!name || !position || !rawJoinDate) return;
+          if (snapshot.exists()) {
+            const employees = [];
+            snapshot.forEach((childSnapshot) => {
+              employees.push({
+                id: childSnapshot.key,
+                ...childSnapshot.val(),
+              });
+            });
 
-            // Convert serial date to DD-MM-YYYY or use original if already string
-            const joinDate =
-              typeof rawJoinDate === "number"
-                ? excelDateToDmy(rawJoinDate)
-                : rawJoinDate;
+            // Display employees in table
+            employees.forEach((emp) => {
+              const tr = document.createElement("tr");
+              tr.innerHTML = `
+						<td><img src="https://placehold.co/40x40" alt="user"><p>${emp.name}</p></td>
+						<td>${formatDate(emp.joinDate)}</td>
+						<td><span class="status completed">${emp.position}</span></td>
+					`;
+              tableBody.appendChild(tr);
+            });
 
-            workerCount++; // Count valid employees
+            // Update worker count in dashboard
+            workerCountEl.textContent = employees.length;
 
-            const tr = document.createElement("tr");
-            tr.innerHTML = `
-					<td><img src="https://placehold.co/40x40" alt="user"><p>${name}</p></td>
-					<td>${joinDate}</td>
-					<td><span class="status completed">${position}</span></td>
-				`;
-            tableBody.appendChild(tr);
-          });
+            // Log analytics
+            logEvent(analytics, "dashboard_loaded", {
+              employee_count: employees.length,
+            });
+          } else {
+            // No employees found
+            workerCountEl.textContent = "0";
+            tableBody.innerHTML =
+              '<tr><td colspan="3" style="text-align: center; color: #aaa;">No employees found. <a href="employee_data.html">Add employees</a></td></tr>';
+          }
+        } catch (error) {
+          console.error("Error loading employee data from Firebase:", error);
+          const tableBody = document.querySelector(
+            ".table-data .order table tbody",
+          );
+          const workerCountEl = document
+            .querySelector("li i.bxs-group")
+            .parentElement.querySelector("h3");
 
-          // Update worker count in dashboard
-          workerCountEl.textContent = workerCount;
-        })
-        .catch((error) => {
-          console.error("Error loading employee data:", error);
+          if (tableBody) {
+            tableBody.innerHTML =
+              '<tr><td colspan="3" style="text-align: center; color: #ff4757;">Error loading employee data</td></tr>';
+          }
+          if (workerCountEl) {
+            workerCountEl.textContent = "Error";
+          }
+        }
+      }
+
+      // Set up real-time listener for employee data
+      function setupEmployeeListener() {
+        const employeesRef = ref(database, "employees");
+        onValue(employeesRef, (snapshot) => {
+          loadEmployeesFromFirebase();
         });
+      }
+
+      // Utility function to format dates
+      function formatDate(dateString) {
+        try {
+          const date = new Date(dateString);
+          return date
+            .toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+            })
+            .replace(/\//g, "-");
+        } catch (error) {
+          return dateString || "N/A";
+        }
+      }
+
+      // Initialize when DOM is loaded
+      document.addEventListener("DOMContentLoaded", () => {
+        loadEmployeesFromFirebase();
+        setupEmployeeListener();
+      });
+
+      // Load immediately if DOM already loaded
+      if (document.readyState === "loading") {
+        // Wait for DOMContentLoaded
+      } else {
+        loadEmployeesFromFirebase();
+        setupEmployeeListener();
+      }
     </script>
 
     <script src="script.js"></script>

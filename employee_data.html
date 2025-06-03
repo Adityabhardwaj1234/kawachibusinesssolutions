@@ -1,188 +1,834 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Team - Employee Profiles</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to bottom right, #1e1e2f, #2b2b3f);
-      color: #fff;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      padding: 40px 20px;
-      gap: 30px;
-      min-height: 100vh;
-    }
-
-    .profile-card {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
-      padding: 30px;
-      width: 300px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-      backdrop-filter: blur(10px);
-      animation: fadeIn 1.2s ease-in-out;
-      text-align: center;
-    }
-
-    .avatar {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      margin: 0 auto 20px;
-      background-size: cover;
-      background-position: center;
-      animation: popIn 1.4s ease;
-    }
-
-    h1 {
-      font-size: 1.8em;
-      margin-bottom: 8px;
-      animation: slideUp 1s ease;
-    }
-
-    p.role {
-      color: #aaa;
-      font-size: 1.1em;
-      margin-bottom: 15px;
-      animation: slideUp 1.2s ease;
-    }
-
-    ul.roles {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      animation: fadeInUp 1.5s ease;
-    }
-
-    ul.roles li {
-      background: rgba(255, 255, 255, 0.05);
-      padding: 8px 12px;
-      border-radius: 12px;
-      margin: 6px 0;
-      font-size: 0.95em;
-      transition: background 0.3s ease;
-    }
-
-    ul.roles li:hover {
-      background: rgba(255, 255, 255, 0.15);
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
-    }
-
-    @keyframes popIn {
-      from { transform: scale(0); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
-
-    @keyframes slideUp {
-      from { transform: translateY(20px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
-</head>
-<body>
-
-  <div id="teamContainer">
-    <!-- Employee cards will be inserted here -->
-  </div>
-
-  <script>
-    // Sample employee data - you can replace this with fetch() to load from JSON or API
-    const employees = [
-      {
-        name: "Aditya Bhardwaj",
-        role: "Developer",
-        avatar: "https://placehold.co/120x120/png?text=AB",
-        details: [
-          "📅 Joined: 18-10-2021",
-          "✅ Leads the project team",
-          "💡 Coordinates schedules"
-        ]
-      },
-      {
-        name: "Chandan Bhardwaj",
-        role: "Owner",
-        avatar: "https://placehold.co/120x120/png?text=CB",
-        details: [
-          "📅 Joined: 01-06-2022",
-          "🖥 Develops front-end",
-          "🔧 Maintains systems"
-        ]
-      },
-      {
-        name: "Neeraj Bhardwaj",
-        role: "Co-Owner",
-        avatar: "https://placehold.co/120x120/png?text=NB",
-        details: [
-          "📅 Joined: 14-10-2021",
-          "🎨 Designs user interfaces",
-          "🔍 Conducts user research"
-        ]
-      },
-      {
-        name: "Deepak Bhardwaj",
-        role: "Tester",
-        avatar: "https://placehold.co/120x120/png?text=DB",
-        details: [
-          "📅 Joined: 01-02-2023",
-          "🔎 Tests product quality",
-          "🐞 Reports bugs"
-        ]
-      },
-      {
-        name: "Rajiv Ranjan Bhardwaj",
-        role: "Manager",
-        avatar: "https://placehold.co/120x120/png?text=RRJ",
-        details: [
-          "📅 Joined: 31-10-2021",
-          "⚙ Manages deployment",
-          "📊 Monitors systems"
-        ]
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Employee Data - AdminHub</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        margin: 0;
+        font-family: "Segoe UI", sans-serif;
+        background: linear-gradient(to bottom right, #1e1e2f, #2b2b3f);
+        color: #fff;
+        padding: 40px 20px;
+        min-height: 100vh;
       }
-    ];
 
-    const container = document.getElementById('teamContainer');
-fetch('attendance_data.xlsx')
-  .then(res => res.arrayBuffer())
-  .then(data => {
-    const workbook = XLSX.read(data, {type:'array'});
-    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-    const jsonData = XLSX.utils.sheet_to_json(worksheet);
-    // process jsonData and render...
-  });
-    
-    employees.forEach(emp => {
-      const card = document.createElement('div');
-      card.classList.add('profile-card');
-      card.innerHTML = `
-        <div class="avatar" style="background-image: url('${emp.avatar}')"></div>
-        <h1>${emp.name}</h1>
-        <p class="role">${emp.role}</p>
-        <ul class="roles">
-          ${emp.details.map(detail => `<li>${detail}</li>`).join('')}
-        </ul>
-      `;
-      container.appendChild(card);
-    });
-  </script>
-  <script>
-  if (sessionStorage.getItem("isLoggedIn") !== "true") {
-    sessionStorage.setItem("redirectAfterLogin", window.location.pathname);
-    window.location.href = "login.html";
-  }
-</script>
-</body>
+      .header-section {
+        text-align: center;
+        margin-bottom: 40px;
+      }
+
+      .header-section h1 {
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        background: linear-gradient(to right, #00c6ff, #0072ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .add-employee-btn {
+        background: linear-gradient(to right, #0072ff, #00c6ff);
+        border: none;
+        border-radius: 12px;
+        color: white;
+        font-size: 16px;
+        font-weight: 600;
+        padding: 12px 24px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-bottom: 30px;
+      }
+
+      .add-employee-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0, 114, 255, 0.3);
+      }
+
+      /* Modal Styles */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(10px);
+        z-index: 10000;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .add-employee-modal {
+        font-family: "Segoe UI", sans-serif;
+        font-size: 16px;
+        font-weight: 400;
+        line-height: normal;
+        color: rgb(255, 255, 255);
+        background-color: rgba(0, 0, 0, 0);
+        animation: fadeIn 1s ease-in-out;
+      }
+
+      .modal-content {
+        backdrop-filter: blur(10px);
+        background-color: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        border-style: solid;
+        border-width: 0.8px;
+        box-shadow: rgba(0, 0, 0, 0.3) 0px 20px 40px 0px;
+        font-weight: 400;
+        padding: 40px;
+        width: 420px;
+        max-width: 90vw;
+        position: relative;
+      }
+
+      .modal-close {
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        background: none;
+        border: none;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 24px;
+        cursor: pointer;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal-close:hover {
+        color: rgb(255, 255, 255);
+      }
+
+      .modal-title {
+        font-size: 28.8px;
+        font-weight: 700;
+        margin-bottom: 20px;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        font-size: 14.4px;
+        font-weight: 400;
+        margin-bottom: 8px;
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .form-group input {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        padding: 12px 16px;
+        color: white;
+        font-family: Arial;
+        font-weight: 400;
+        transition: all 0.3s ease;
+      }
+
+      .form-group input:focus {
+        outline: none;
+        border-color: rgba(0, 198, 255, 0.5);
+        box-shadow: 0 0 0 2px rgba(0, 198, 255, 0.2);
+        background: rgba(255, 255, 255, 0.15);
+      }
+
+      .form-group input[type="date"] {
+        font-family: monospace;
+        font-size: 13px;
+      }
+
+      .btn-submit {
+        display: inline-block;
+        background: linear-gradient(
+          to right,
+          rgb(0, 114, 255),
+          rgb(0, 198, 255)
+        );
+        border-radius: 12px;
+        border: none;
+        font-family: Arial;
+        font-weight: 400;
+        margin-top: 20px;
+        padding: 12px;
+        transition: all 0.3s ease;
+        width: 100%;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0, 114, 255, 0.3);
+      }
+
+      .success-message {
+        display: none;
+        color: rgb(0, 255, 174);
+        font-weight: 700;
+        margin-top: 15px;
+        text-align: center;
+      }
+
+      .employee-grid {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 30px;
+      }
+
+      .profile-card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 30px;
+        width: 300px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+        animation: fadeIn 1.2s ease-in-out;
+        text-align: center;
+        position: relative;
+      }
+
+      .profile-card:hover {
+        transform: translateY(-5px);
+        transition: all 0.3s ease;
+      }
+
+      .avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        margin: 0 auto 20px;
+        background-size: cover;
+        background-position: center;
+        animation: popIn 1.4s ease;
+      }
+
+      .profile-card h1 {
+        font-size: 1.8em;
+        margin-bottom: 8px;
+        animation: slideUp 1s ease;
+      }
+
+      .profile-card p.role {
+        color: #aaa;
+        font-size: 1.1em;
+        margin-bottom: 15px;
+        animation: slideUp 1.2s ease;
+      }
+
+      .profile-card ul.roles {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        animation: fadeInUp 1.5s ease;
+      }
+
+      .profile-card ul.roles li {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 8px 12px;
+        border-radius: 12px;
+        margin: 6px 0;
+        font-size: 0.95em;
+        transition: background 0.3s ease;
+      }
+
+      .profile-card ul.roles li:hover {
+        background: rgba(255, 255, 255, 0.15);
+      }
+
+      .employee-actions {
+        margin-top: 15px;
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+      }
+
+      .btn-edit,
+      .btn-delete {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .btn-edit {
+        background: linear-gradient(to right, #0072ff, #00c6ff);
+        color: white;
+      }
+
+      .btn-delete {
+        background: linear-gradient(to right, #ff4757, #ff3838);
+        color: white;
+      }
+
+      .btn-edit:hover,
+      .btn-delete:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      }
+
+      .loading {
+        text-align: center;
+        color: #aaa;
+        font-size: 1.2em;
+        margin: 50px 0;
+      }
+
+      .export-section {
+        text-align: center;
+        margin: 30px 0;
+      }
+
+      .export-btn {
+        background: linear-gradient(to right, #2ecc71, #27ae60);
+        border: none;
+        border-radius: 12px;
+        color: white;
+        font-size: 16px;
+        font-weight: 600;
+        padding: 12px 24px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin: 0 10px;
+      }
+
+      .export-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(46, 204, 113, 0.3);
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      @keyframes popIn {
+        from {
+          transform: scale(0);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideUp {
+        from {
+          transform: translateY(20px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header-section">
+      <h1>Employee Management</h1>
+      <button class="add-employee-btn" onclick="showAddEmployeeModal()">
+        <i class="bx bx-plus"></i> Add New Employee
+      </button>
+    </div>
+
+    <div class="export-section">
+      <button class="export-btn" onclick="exportToExcel()">
+        <i class="bx bx-download"></i> Export to Excel
+      </button>
+      <button class="export-btn" onclick="syncWithFirebase()">
+        <i class="bx bx-refresh"></i> Sync with Firebase
+      </button>
+    </div>
+
+    <div id="loadingMessage" class="loading">
+      Loading employees from Firebase...
+    </div>
+    <div id="teamContainer" class="employee-grid"></div>
+
+    <!-- Add Employee Modal -->
+    <div id="addEmployeeModal" class="modal-overlay">
+      <div class="add-employee-modal">
+        <div class="modal-content">
+          <button class="modal-close" onclick="hideAddEmployeeModal()">
+            &times;
+          </button>
+          <h2 class="modal-title">Add New Employee</h2>
+          <form id="addEmployeeForm" onsubmit="handleAddEmployee(event)">
+            <div class="form-group">
+              <label for="empName">Full Name</label>
+              <input type="text" id="empName" name="empName" required />
+            </div>
+            <div class="form-group">
+              <label for="empAge">Age</label>
+              <input
+                type="number"
+                id="empAge"
+                name="empAge"
+                min="18"
+                max="100"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="empPosition">Position</label>
+              <input type="text" id="empPosition" name="empPosition" required />
+            </div>
+            <div class="form-group">
+              <label for="empJoinDate">Join Date</label>
+              <input type="date" id="empJoinDate" name="empJoinDate" required />
+            </div>
+            <button type="submit" class="btn-submit">Add Employee</button>
+            <div id="successMessage" class="success-message">
+              Employee added successfully!
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+      import {
+        getAnalytics,
+        logEvent,
+      } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+      import {
+        getDatabase,
+        ref,
+        push,
+        set,
+        get,
+        child,
+        remove,
+        update,
+        onValue,
+      } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyB1wIsDf1qSLaIGyQvbri26z9e4ypxF-lw",
+        authDomain: "apikawachi.firebaseapp.com",
+        databaseURL:
+          "https://apikawachi-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "apikawachi",
+        storageBucket: "apikawachi.appspot.com",
+        messagingSenderId: "7573902945",
+        appId: "1:7573902945:web:be2c051ef0d0ceed787c20",
+        measurementId: "G-GT0F7K4NLP",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+      const database = getDatabase(app);
+
+      // Global variables to make Firebase available to other scripts
+      window.firebaseApp = app;
+      window.firebaseDatabase = database;
+      window.firebaseAnalytics = analytics;
+      window.firebaseDatabase = database;
+      window.firebaseRef = ref;
+      window.firebasePush = push;
+      window.firebaseSet = set;
+      window.firebaseGet = get;
+      window.firebaseChild = child;
+      window.firebaseRemove = remove;
+      window.firebaseUpdate = update;
+      window.firebaseOnValue = onValue;
+      window.firebaseLogEvent = logEvent;
+
+      // Employee management functions
+      window.employeeAPI = {
+        async addEmployee(employeeData) {
+          try {
+            const employeesRef = ref(database, "employees");
+            const newEmployeeRef = push(employeesRef);
+            await set(newEmployeeRef, {
+              ...employeeData,
+              id: newEmployeeRef.key,
+              createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
+            });
+
+            // Log analytics
+            logEvent(analytics, "employee_added", {
+              position: employeeData.position,
+            });
+
+            return { success: true, id: newEmployeeRef.key };
+          } catch (error) {
+            console.error("Error adding employee:", error);
+            return { success: false, error: error.message };
+          }
+        },
+
+        async getAllEmployees() {
+          try {
+            const employeesRef = ref(database, "employees");
+            const snapshot = await get(employeesRef);
+            if (snapshot.exists()) {
+              const employees = [];
+              snapshot.forEach((childSnapshot) => {
+                employees.push({
+                  id: childSnapshot.key,
+                  ...childSnapshot.val(),
+                });
+              });
+              return { success: true, data: employees };
+            } else {
+              return { success: true, data: [] };
+            }
+          } catch (error) {
+            console.error("Error fetching employees:", error);
+            return { success: false, error: error.message };
+          }
+        },
+
+        async updateEmployee(employeeId, updateData) {
+          try {
+            const employeeRef = ref(database, `employees/${employeeId}`);
+            await update(employeeRef, {
+              ...updateData,
+              updatedAt: new Date().toISOString(),
+            });
+            return { success: true };
+          } catch (error) {
+            console.error("Error updating employee:", error);
+            return { success: false, error: error.message };
+          }
+        },
+
+        async deleteEmployee(employeeId) {
+          try {
+            const employeeRef = ref(database, `employees/${employeeId}`);
+            await remove(employeeRef);
+
+            // Log analytics
+            logEvent(analytics, "employee_deleted");
+
+            return { success: true };
+          } catch (error) {
+            console.error("Error deleting employee:", error);
+            return { success: false, error: error.message };
+          }
+        },
+      };
+
+      // Initialize the page
+      loadEmployees();
+    </script>
+
+    <!-- XLSX library for Excel export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <script>
+      let currentEmployees = [];
+
+      // Authentication check
+      if (sessionStorage.getItem("isLoggedIn") !== "true") {
+        sessionStorage.setItem("redirectAfterLogin", window.location.pathname);
+        window.location.href = "login.html";
+      }
+
+      // Load employees from Firebase
+      async function loadEmployees() {
+        try {
+          const result = await window.employeeAPI.getAllEmployees();
+          if (result.success) {
+            currentEmployees = result.data;
+            displayEmployees(currentEmployees);
+            document.getElementById("loadingMessage").style.display = "none";
+          } else {
+            console.error("Failed to load employees:", result.error);
+            document.getElementById("loadingMessage").textContent =
+              "Failed to load employees. Please try again.";
+          }
+        } catch (error) {
+          console.error("Error loading employees:", error);
+          document.getElementById("loadingMessage").textContent =
+            "Error loading employees. Please check your connection.";
+        }
+      }
+
+      // Display employees in the UI
+      function displayEmployees(employees) {
+        const container = document.getElementById("teamContainer");
+        container.innerHTML = "";
+
+        if (employees.length === 0) {
+          container.innerHTML =
+            '<div class="loading">No employees found. Add your first employee!</div>';
+          return;
+        }
+
+        employees.forEach((emp) => {
+          const card = document.createElement("div");
+          card.classList.add("profile-card");
+          card.innerHTML = `
+          <div class="avatar" style="background-image: url('https://placehold.co/120x120/0072ff/ffffff?text=${emp.name
+            .split(" ")
+            .map((n) => n[0])
+            .join("")}')"></div>
+          <h1>${emp.name}</h1>
+          <p class="role">${emp.position}</p>
+          <ul class="roles">
+            <li>📅 Joined: ${formatDate(emp.joinDate)}</li>
+            <li>👤 Age: ${emp.age}</li>
+            <li>🆔 ID: ${emp.id.slice(-6)}</li>
+          </ul>
+          <div class="employee-actions">
+            <button class="btn-edit" onclick="editEmployee('${emp.id}')">
+              <i class='bx bx-edit'></i> Edit
+            </button>
+            <button class="btn-delete" onclick="deleteEmployee('${emp.id}')">
+              <i class='bx bx-trash'></i> Delete
+            </button>
+          </div>
+        `;
+          container.appendChild(card);
+        });
+      }
+
+      // Modal functions
+      function showAddEmployeeModal() {
+        document.getElementById("addEmployeeModal").style.display = "flex";
+      }
+
+      function hideAddEmployeeModal() {
+        document.getElementById("addEmployeeModal").style.display = "none";
+        document.getElementById("addEmployeeForm").reset();
+        document.getElementById("successMessage").style.display = "none";
+      }
+
+      // Handle form submission
+      async function handleAddEmployee(event) {
+        event.preventDefault();
+
+        const formData = new FormData(event.target);
+        const employeeData = {
+          name: formData.get("empName"),
+          age: parseInt(formData.get("empAge")),
+          position: formData.get("empPosition"),
+          joinDate: formData.get("empJoinDate"),
+        };
+
+        try {
+          const result = await window.employeeAPI.addEmployee(employeeData);
+
+          if (result.success) {
+            // Show success message
+            document.getElementById("successMessage").style.display = "block";
+
+            // Reload employees
+            await loadEmployees();
+
+            // Reset form after a delay
+            setTimeout(() => {
+              hideAddEmployeeModal();
+            }, 2000);
+          } else {
+            alert(
+              "Error adding employee: " + (result.error || "Unknown error"),
+            );
+          }
+        } catch (error) {
+          console.error("Form submission error:", error);
+          alert("Error adding employee: " + error.message);
+        }
+      }
+
+      // Edit employee function
+      async function editEmployee(employeeId) {
+        const employee = currentEmployees.find((emp) => emp.id === employeeId);
+        if (!employee) return;
+
+        const name = prompt("Enter new name:", employee.name);
+        if (name === null) return;
+
+        const age = prompt("Enter new age:", employee.age);
+        if (age === null) return;
+
+        const position = prompt("Enter new position:", employee.position);
+        if (position === null) return;
+
+        const joinDate = prompt(
+          "Enter new join date (YYYY-MM-DD):",
+          employee.joinDate,
+        );
+        if (joinDate === null) return;
+
+        try {
+          const result = await window.employeeAPI.updateEmployee(employeeId, {
+            name: name,
+            age: parseInt(age),
+            position: position,
+            joinDate: joinDate,
+          });
+
+          if (result.success) {
+            await loadEmployees();
+            alert("Employee updated successfully!");
+          } else {
+            alert(
+              "Error updating employee: " + (result.error || "Unknown error"),
+            );
+          }
+        } catch (error) {
+          console.error("Error updating employee:", error);
+          alert("Error updating employee: " + error.message);
+        }
+      }
+
+      // Delete employee function
+      async function deleteEmployee(employeeId) {
+        if (!confirm("Are you sure you want to delete this employee?")) return;
+
+        try {
+          const result = await window.employeeAPI.deleteEmployee(employeeId);
+
+          if (result.success) {
+            await loadEmployees();
+            alert("Employee deleted successfully!");
+          } else {
+            alert(
+              "Error deleting employee: " + (result.error || "Unknown error"),
+            );
+          }
+        } catch (error) {
+          console.error("Error deleting employee:", error);
+          alert("Error deleting employee: " + error.message);
+        }
+      }
+
+      // Export to Excel function
+      function exportToExcel() {
+        try {
+          if (currentEmployees.length === 0) {
+            alert("No employee data to export.");
+            return;
+          }
+
+          const wsData = [
+            [
+              "Name",
+              "Age",
+              "Position",
+              "Join Date",
+              "Employee ID",
+              "Created At",
+            ],
+          ];
+          currentEmployees.forEach((emp) => {
+            wsData.push([
+              emp.name,
+              emp.age,
+              emp.position,
+              emp.joinDate,
+              emp.id,
+              emp.createdAt ? formatDate(emp.createdAt) : "N/A",
+            ]);
+          });
+
+          const ws = XLSX.utils.aoa_to_sheet(wsData);
+          const wb = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(wb, ws, "Employees");
+
+          const filename = `employees_${new Date().toISOString().split("T")[0]}.xlsx`;
+          XLSX.writeFile(wb, filename);
+
+          // Log analytics
+          if (window.firebaseLogEvent) {
+            window.firebaseLogEvent(
+              window.firebaseAnalytics,
+              "export_employees",
+              {
+                count: currentEmployees.length,
+              },
+            );
+          }
+
+          alert("Employee data exported successfully!");
+        } catch (error) {
+          console.error("Error exporting to Excel:", error);
+          alert("Error exporting to Excel: " + error.message);
+        }
+      }
+
+      // Sync with Firebase function
+      async function syncWithFirebase() {
+        await loadEmployees();
+        alert("Data synchronized with Firebase!");
+      }
+
+      // Utility function to format dates
+      function formatDate(dateString) {
+        try {
+          const date = new Date(dateString);
+          return date
+            .toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+            })
+            .replace(/\//g, "-");
+        } catch (error) {
+          return dateString;
+        }
+      }
+
+      // Make functions globally available
+      window.showAddEmployeeModal = showAddEmployeeModal;
+      window.hideAddEmployeeModal = hideAddEmployeeModal;
+      window.handleAddEmployee = handleAddEmployee;
+      window.editEmployee = editEmployee;
+      window.deleteEmployee = deleteEmployee;
+      window.exportToExcel = exportToExcel;
+      window.syncWithFirebase = syncWithFirebase;
+    </script>
+  </body>
 </html>
