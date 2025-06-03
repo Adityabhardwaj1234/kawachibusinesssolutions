@@ -598,17 +598,47 @@
         }
       });
 
-      document.getElementById("clearDataBtn").addEventListener("click", () => {
-        if (confirm("Clear all data?")) {
-          allEntries = [];
-          document.getElementById("nameInput").value = "";
-          document.getElementById("ageInput").value = "";
-          document.getElementById("salaryInput").value = "";
-          document.getElementById("attendanceDetails").innerHTML = "";
-          document.getElementById("fingerprintContainer").style.display =
-            "none";
-        }
-      });
+      document
+        .getElementById("clearDataBtn")
+        .addEventListener("click", async () => {
+          if (
+            confirm(
+              "Clear all data? This will remove data from Firebase and local storage.",
+            )
+          ) {
+            try {
+              // Clear from Firebase
+              if (window.firebaseDatabase) {
+                const attendanceRef = window.firebaseRef(
+                  window.firebaseDatabase,
+                  "attendance",
+                );
+                await window.firebaseRemove(attendanceRef);
+                console.log("Attendance data cleared from Firebase");
+              }
+
+              // Clear local data
+              allEntries = [];
+              employeesFromAPI = [];
+
+              // Clear form
+              document.getElementById("nameInput").value = "";
+              document.getElementById("ageInput").value = "";
+              document.getElementById("salaryInput").value = "";
+              document.getElementById("attendanceDetails").innerHTML = "";
+              document.getElementById("fingerprintContainer").style.display =
+                "none";
+
+              alert("All data cleared successfully!");
+
+              // Log analytics
+              window.firebaseLogEvent(window.firebaseAnalytics, "data_cleared");
+            } catch (error) {
+              console.error("Error clearing data:", error);
+              alert("Error clearing data: " + error.message);
+            }
+          }
+        });
 
       document.getElementById("newEntryBtn").addEventListener("click", () => {
         document.getElementById("nameInput").value = "";
@@ -619,19 +649,29 @@
       });
 
       document.getElementById("showAllBtn").addEventListener("click", () => {
-        if (allEntries.length === 0) return alert("No entries.");
-        let html = `<h3>All Attendance Entries</h3><div style="overflow-x:auto;"><table><thead><tr>
-    <th>#</th><th>Date</th><th>Name</th><th>Age</th><th>Salary</th><th>IP</th><th>Coordinates</th><th>Action</th>
+        if (allEntries.length === 0)
+          return alert(
+            "No entries. Use 'Fetch from API' to load data from Firebase.",
+          );
+
+        let html = `<h3>All Attendance Entries (${allEntries.length} records)</h3><div style="overflow-x:auto;"><table><thead><tr>
+    <th>#</th><th>Date</th><th>Name</th><th>Age</th><th>Salary</th><th>IP</th><th>Coordinates</th><th>Firebase ID</th><th>Action</th>
   </tr></thead><tbody>`;
+
         allEntries.forEach((e, i) => {
           html += `<tr>
-      <td>${i + 1}</td><td>${e.date}</td>
-      <td>${e.name}</td><td>${e.age}</td><td>₹${parseFloat(e.salary).toFixed(2)}</td>
-      <td>${e.ip}</td><td>${e.coords}</td>
+      <td>${i + 1}</td>
+      <td>${e.date || e.timestamp}</td>
+      <td>${e.name}</td>
+      <td>${e.age}</td>
+      <td>₹${parseFloat(e.salary).toFixed(2)}</td>
+      <td>${e.ip}</td>
+      <td>${e.coords}</td>
+      <td>${e.id || "Local"}</td>
       <td>
-        <button onclick="editEntry(${i})">Edit</button>
-        <button onclick="duplicateEntry(${i})">Duplicate</button>
-        <button onclick="deleteEntry(${i})">Delete</button>
+        <button onclick="editEntry(${i})" style="background: #0072ff; color: white; border: none; padding: 4px 8px; border-radius: 4px; margin: 2px;">Edit</button>
+        <button onclick="duplicateEntry(${i})" style="background: #27ae60; color: white; border: none; padding: 4px 8px; border-radius: 4px; margin: 2px;">Duplicate</button>
+        <button onclick="deleteEntry('${e.id}', ${i})" style="background: #e74c3c; color: white; border: none; padding: 4px 8px; border-radius: 4px; margin: 2px;">Delete</button>
       </td>
     </tr>`;
         });
@@ -642,36 +682,115 @@
       window.editEntry = function (i) {
         const e = allEntries[i];
         const row = document.querySelectorAll("#attendanceDetails tbody tr")[i];
-        row.innerHTML = `<td>${i + 1}</td><td>${e.date}</td>
-    <td><input id="editName${i}" value="${e.name}"></td>
-    <td><input id="editAge${i}" value="${e.age}"></td>
-    <td><input id="editSalary${i}" value="${e.salary}"></td>
-    <td>${e.ip}</td><td>${e.coords}</td>
-    <td><button onclick="saveEdit(${i})">Save</button></td>`;
+        row.innerHTML = `<td>${i + 1}</td><td>${e.date || e.timestamp}</td>
+    <td><input id="editName${i}" value="${e.name}" style="width: 100px;"></td>
+    <td><input id="editAge${i}" value="${e.age}" style="width: 60px;"></td>
+    <td><input id="editSalary${i}" value="${e.salary}" style="width: 80px;"></td>
+    <td>${e.ip}</td><td>${e.coords}</td><td>${e.id || "Local"}</td>
+    <td><button onclick="saveEdit(${i})" style="background: #27ae60; color: white; border: none; padding: 4px 8px; border-radius: 4px;">Save</button></td>`;
       };
 
-      window.saveEdit = function (i) {
+      window.saveEdit = async function (i) {
         const name = document.getElementById(`editName${i}`).value;
         const age = document.getElementById(`editAge${i}`).value;
         const salary = document.getElementById(`editSalary${i}`).value;
+
         if (!name || !age || !salary) return alert("All fields required.");
-        allEntries[i].name = name;
-        allEntries[i].age = age;
-        allEntries[i].salary = salary;
+
+        const entry = allEntries[i];
+        const updatedData = {
+          name: name,
+          age: parseInt(age),
+          salary: parseFloat(salary),
+        };
+
+        // Update in Firebase if it has an ID
+        if (entry.id && window.firebaseDatabase) {
+          try {
+            const entryRef = window.firebaseRef(
+              window.firebaseDatabase,
+              `attendance/${entry.id}`,
+            );
+            await window.firebaseSet(entryRef, {
+              ...entry,
+              ...updatedData,
+              updatedAt: new Date().toISOString(),
+            });
+            console.log("Entry updated in Firebase");
+          } catch (error) {
+            console.error("Error updating in Firebase:", error);
+          }
+        }
+
+        // Update local data
+        allEntries[i] = { ...allEntries[i], ...updatedData };
         document.getElementById("showAllBtn").click();
       };
 
-      window.deleteEntry = function (i) {
-        if (confirm("Delete this entry?")) {
-          allEntries.splice(i, 1);
+      window.deleteEntry = async function (entryId, localIndex) {
+        if (!confirm("Delete this entry?")) return;
+
+        try {
+          // Delete from Firebase if it has an ID
+          if (entryId && entryId !== "Local" && window.firebaseDatabase) {
+            const entryRef = window.firebaseRef(
+              window.firebaseDatabase,
+              `attendance/${entryId}`,
+            );
+            await window.firebaseRemove(entryRef);
+            console.log("Entry deleted from Firebase");
+          }
+
+          // Remove from local array
+          allEntries.splice(localIndex, 1);
           document.getElementById("showAllBtn").click();
+
+          alert("Entry deleted successfully!");
+        } catch (error) {
+          console.error("Error deleting entry:", error);
+          alert("Error deleting entry: " + error.message);
         }
       };
 
-      window.duplicateEntry = function (i) {
-        const dup = { ...allEntries[i], date: new Date().toLocaleString() };
-        allEntries.push(dup);
-        document.getElementById("showAllBtn").click();
+      window.duplicateEntry = async function (i) {
+        const original = allEntries[i];
+        const duplicate = {
+          ...original,
+          date: new Date().toLocaleString(),
+          timestamp: new Date().toISOString(),
+        };
+
+        // Remove the Firebase ID so it gets a new one
+        delete duplicate.id;
+
+        try {
+          // Save duplicate to Firebase
+          if (window.firebaseDatabase) {
+            const attendanceRef = window.firebaseRef(
+              window.firebaseDatabase,
+              "attendance",
+            );
+            const newAttendanceRef = window.firebasePush(attendanceRef);
+            await window.firebaseSet(newAttendanceRef, {
+              ...duplicate,
+              id: newAttendanceRef.key,
+            });
+            duplicate.id = newAttendanceRef.key;
+            console.log("Duplicate saved to Firebase");
+          }
+
+          // Add to local array
+          allEntries.push(duplicate);
+          document.getElementById("showAllBtn").click();
+
+          alert("Entry duplicated successfully!");
+        } catch (error) {
+          console.error("Error duplicating entry:", error);
+          // Still add to local array even if Firebase fails
+          allEntries.push(duplicate);
+          document.getElementById("showAllBtn").click();
+          alert("Entry duplicated locally (Firebase save failed)");
+        }
       };
     </script>
     <script>
