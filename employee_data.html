@@ -742,6 +742,8 @@
       // Modal functions
       function showAddEmployeeModal() {
         document.getElementById("addEmployeeModal").style.display = "flex";
+        // Check Firebase connection when modal opens
+        checkFirebaseConnection();
       }
 
       function hideAddEmployeeModal() {
