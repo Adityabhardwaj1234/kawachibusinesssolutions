@@ -396,6 +396,23 @@
             &times;
           </button>
           <h2 class="modal-title">Add New Employee</h2>
+          <div
+            id="firebaseStatus"
+            style="text-align: center; margin-bottom: 15px; font-size: 14px"
+          >
+            <span
+              id="firebaseIndicator"
+              style="
+                display: inline-block;
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                background: #ff4757;
+                margin-right: 8px;
+              "
+            ></span>
+            <span id="firebaseStatusText">Connecting to Firebase...</span>
+          </div>
           <form id="addEmployeeForm" onsubmit="handleAddEmployee(event)">
             <div class="form-group">
               <label for="empName">Full Name</label>
@@ -486,24 +503,77 @@
       window.employeeAPI = {
         async addEmployee(employeeData) {
           try {
-            const employeesRef = ref(database, "employees");
-            const newEmployeeRef = push(employeesRef);
-            await set(newEmployeeRef, {
-              ...employeeData,
-              id: newEmployeeRef.key,
+            // Validate data before saving to Firebase
+            if (
+              !employeeData.name ||
+              !employeeData.position ||
+              !employeeData.joinDate
+            ) {
+              throw new Error(
+                "Missing required fields: name, position, or joinDate",
+              );
+            }
+
+            if (
+              !employeeData.age ||
+              employeeData.age < 18 ||
+              employeeData.age > 100
+            ) {
+              throw new Error("Invalid age: must be between 18 and 100");
+            }
+
+            // Prepare data for Firebase
+            const firebaseEmployeeData = {
+              name: String(employeeData.name).trim(),
+              age: parseInt(employeeData.age),
+              position: String(employeeData.position).trim(),
+              joinDate: employeeData.joinDate,
               createdAt: new Date().toISOString(),
               updatedAt: new Date().toISOString(),
+              status: "active",
+            };
+
+            // Save to Firebase
+            const employeesRef = ref(database, "employees");
+            const newEmployeeRef = push(employeesRef);
+
+            // Add the Firebase-generated ID to the data
+            firebaseEmployeeData.id = newEmployeeRef.key;
+
+            await set(newEmployeeRef, firebaseEmployeeData);
+
+            console.log("✅ Employee successfully saved to Firebase:", {
+              id: newEmployeeRef.key,
+              name: firebaseEmployeeData.name,
+              position: firebaseEmployeeData.position,
             });
 
-            // Log analytics
+            // Log analytics with more details
             logEvent(analytics, "employee_added", {
-              position: employeeData.position,
+              position: firebaseEmployeeData.position,
+              firebase_id: newEmployeeRef.key,
+              timestamp: firebaseEmployeeData.createdAt,
             });
 
-            return { success: true, id: newEmployeeRef.key };
+            return {
+              success: true,
+              id: newEmployeeRef.key,
+              data: firebaseEmployeeData,
+            };
           } catch (error) {
-            console.error("Error adding employee:", error);
-            return { success: false, error: error.message };
+            console.error("❌ Error adding employee to Firebase:", error);
+
+            // Log error analytics
+            logEvent(analytics, "employee_add_error", {
+              error_message: error.message,
+              error_code: error.code || "unknown",
+            });
+
+            return {
+              success: false,
+              error: error.message,
+              code: error.code || "unknown_error",
+            };
           }
         },
 
@@ -559,8 +629,43 @@
         },
       };
 
+      // Monitor Firebase connection status
+      function updateFirebaseStatus(connected = false) {
+        const indicator = document.getElementById("firebaseIndicator");
+        const statusText = document.getElementById("firebaseStatusText");
+
+        if (connected) {
+          indicator.style.background = "#27ae60";
+          statusText.textContent = "🔥 Connected to Firebase";
+          statusText.style.color = "#27ae60";
+        } else {
+          indicator.style.background = "#ff4757";
+          statusText.textContent = "❌ Firebase Disconnected";
+          statusText.style.color = "#ff4757";
+        }
+      }
+
+      // Test Firebase connection
+      async function checkFirebaseConnection() {
+        try {
+          const testRef = ref(database, ".info/connected");
+          const snapshot = await get(testRef);
+          updateFirebaseStatus(true);
+          return true;
+        } catch (error) {
+          console.error("Firebase connection test failed:", error);
+          updateFirebaseStatus(false);
+          return false;
+        }
+      }
+
       // Initialize the page
       loadEmployees();
+
+      // Check Firebase connection when modal opens
+      window.addEventListener("load", () => {
+        setTimeout(checkFirebaseConnection, 1000);
+      });
     </script>
 
     <!-- XLSX library for Excel export -->
@@ -649,36 +754,121 @@
       async function handleAddEmployee(event) {
         event.preventDefault();
 
+        const submitButton = document.querySelector(".btn-submit");
+        const successMessage = document.getElementById("successMessage");
+        const originalButtonText = submitButton.innerHTML;
+
+        // Show loading state
+        submitButton.innerHTML = "⏳ Saving to Firebase...";
+        submitButton.disabled = true;
+
         const formData = new FormData(event.target);
         const employeeData = {
-          name: formData.get("empName"),
+          name: formData.get("empName").trim(),
           age: parseInt(formData.get("empAge")),
-          position: formData.get("empPosition"),
+          position: formData.get("empPosition").trim(),
           joinDate: formData.get("empJoinDate"),
         };
 
+        // Validate data
+        if (
+          !employeeData.name ||
+          !employeeData.age ||
+          !employeeData.position ||
+          !employeeData.joinDate
+        ) {
+          submitButton.innerHTML = originalButtonText;
+          submitButton.disabled = false;
+          alert("Please fill in all fields correctly");
+          return;
+        }
+
+        if (employeeData.age < 18 || employeeData.age > 100) {
+          submitButton.innerHTML = originalButtonText;
+          submitButton.disabled = false;
+          alert("Please enter a valid age between 18 and 100");
+          return;
+        }
+
         try {
+          // Add employee to Firebase
           const result = await window.employeeAPI.addEmployee(employeeData);
 
           if (result.success) {
-            // Show success message
-            document.getElementById("successMessage").style.display = "block";
+            // Show detailed success message
+            successMessage.innerHTML = `
+            ✅ Employee saved to Firebase successfully!<br>
+            <small>Firebase ID: ${result.id}</small>
+          `;
+            successMessage.style.display = "block";
+            successMessage.style.color = "#00ff00";
 
-            // Reload employees
+            // Update button to show success
+            submitButton.innerHTML = "✅ Saved to Firebase!";
+            submitButton.style.background =
+              "linear-gradient(to right, #27ae60, #2ecc71)";
+
+            // Reload employees to show the new one
             await loadEmployees();
 
             // Reset form after a delay
             setTimeout(() => {
               hideAddEmployeeModal();
-            }, 2000);
+              // Reset button state
+              submitButton.innerHTML = originalButtonText;
+              submitButton.style.background =
+                "linear-gradient(to right, rgb(0, 114, 255), rgb(0, 198, 255))";
+              submitButton.disabled = false;
+            }, 2500);
+
+            // Log success analytics
+            if (window.firebaseLogEvent && window.firebaseAnalytics) {
+              window.firebaseLogEvent(
+                window.firebaseAnalytics,
+                "employee_added_success",
+                {
+                  position: employeeData.position,
+                  firebase_id: result.id,
+                },
+              );
+            }
           } else {
-            alert(
-              "Error adding employee: " + (result.error || "Unknown error"),
-            );
+            // Handle Firebase error
+            submitButton.innerHTML = "❌ Firebase Error";
+            submitButton.style.background =
+              "linear-gradient(to right, #e74c3c, #c0392b)";
+
+            successMessage.innerHTML = `❌ Failed to save to Firebase: ${result.error || "Unknown error"}`;
+            successMessage.style.display = "block";
+            successMessage.style.color = "#ff4757";
+
+            // Reset button after delay
+            setTimeout(() => {
+              submitButton.innerHTML = originalButtonText;
+              submitButton.style.background =
+                "linear-gradient(to right, rgb(0, 114, 255), rgb(0, 198, 255))";
+              submitButton.disabled = false;
+            }, 3000);
           }
         } catch (error) {
           console.error("Form submission error:", error);
-          alert("Error adding employee: " + error.message);
+
+          // Handle network/connection errors
+          submitButton.innerHTML = "❌ Connection Error";
+          submitButton.style.background =
+            "linear-gradient(to right, #e74c3c, #c0392b)";
+
+          successMessage.innerHTML = `❌ Network error: ${error.message}`;
+          successMessage.style.display = "block";
+          successMessage.style.color = "#ff4757";
+
+          // Reset button after delay
+          setTimeout(() => {
+            submitButton.innerHTML = originalButtonText;
+            submitButton.style.background =
+              "linear-gradient(to right, rgb(0, 114, 255), rgb(0, 198, 255))";
+            submitButton.disabled = false;
+          }, 3000);
         }
       }
 
