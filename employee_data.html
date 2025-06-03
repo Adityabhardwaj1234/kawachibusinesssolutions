@@ -743,12 +743,22 @@
       window.updateFirebaseStatus = updateFirebaseStatus;
       window.checkFirebaseConnection = checkFirebaseConnection;
 
+      // Debug: Verify functions are accessible
+      console.log("🔧 Debug: Firebase functions registered:", {
+        updateFirebaseStatus: typeof window.updateFirebaseStatus,
+        checkFirebaseConnection: typeof window.checkFirebaseConnection,
+        showAddEmployeeModal: typeof window.showAddEmployeeModal,
+      });
+
       // Initialize Firebase connection check after page loads
       window.addEventListener("load", () => {
         // Wait a bit for Firebase to initialize, then check connection
         setTimeout(() => {
           if (window.firebaseReady) {
+            console.log("🔥 Firebase ready, checking connection...");
             checkFirebaseConnection();
+          } else {
+            console.log("⏳ Firebase not ready yet, waiting...");
           }
         }, 2000);
       });
