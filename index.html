@@ -318,42 +318,7 @@
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script>
-      // Load and display Excel employee data in the dashboard "Employees" section
-      fetch("attendance_data.xlsx")
-        .then((response) => {
-          if (!response.ok) throw new Error("Failed to load file.");
-          return response.arrayBuffer();
-        })
-        .then((buffer) => {
-          const workbook = XLSX.read(buffer, { type: "array" });
-          const sheet = workbook.Sheets[workbook.SheetNames[0]];
-          const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-
-          const tableBody = document.querySelector(
-            ".table-data .order table tbody",
-          );
-          tableBody.innerHTML = ""; // Clear existing rows
-
-          rows.forEach((row, index) => {
-            if (index === 0) return; // Skip header
-            const [name, , position, joinDate] = row; // Skip age
-            if (!name || !position || !joinDate) return;
-
-            const tr = document.createElement("tr");
-            tr.innerHTML = `
-          <td><img src="https://placehold.co/40x40" alt="user"><p>${name}</p></td>
-          <td>${joinDate}</td>
-          <td><span class="status completed">${position}</span></td>
-        `;
-            tableBody.appendChild(tr);
-          });
-        })
-        .catch((error) => {
-          console.error("Error loading employee data:", error);
-        });
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script>
+      // Helper function to convert Excel serial date to DD-MM-YYYY format
       function excelDateToDmy(serial) {
         const utc_days = Math.floor(serial - 25569);
         const utc_value = utc_days * 86400;
@@ -364,6 +329,7 @@
         return `${day}-${month}-${year}`;
       }
 
+      // Load and display Excel employee data in the dashboard "Employees" section
       fetch("attendance_data.xlsx")
         .then((response) => {
           if (!response.ok) throw new Error("Failed to load file.");
@@ -399,10 +365,10 @@
 
             const tr = document.createElement("tr");
             tr.innerHTML = `
-          <td><img src="https://placehold.co/40x40" alt="user"><p>${name}</p></td>
-          <td>${joinDate}</td>
-          <td><span class="status completed">${position}</span></td>
-        `;
+					<td><img src="https://placehold.co/40x40" alt="user"><p>${name}</p></td>
+					<td>${joinDate}</td>
+					<td><span class="status completed">${position}</span></td>
+				`;
             tableBody.appendChild(tr);
           });
 
