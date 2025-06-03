@@ -187,6 +187,35 @@
         font-weight: 700;
         margin-top: 15px;
         text-align: center;
+        padding: 10px;
+        border-radius: 8px;
+        background: rgba(39, 174, 96, 0.1);
+        border: 1px solid rgba(39, 174, 96, 0.3);
+      }
+
+      #firebaseStatus {
+        padding: 8px 12px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+      }
+
+      .btn-submit:disabled {
+        cursor: not-allowed;
+        opacity: 0.7;
+      }
+
+      .form-step-indicator {
+        display: none;
+        margin-top: 10px;
+        padding: 8px;
+        border-radius: 6px;
+        background: rgba(0, 114, 255, 0.1);
+        border: 1px solid rgba(0, 114, 255, 0.3);
+        color: #00c6ff;
+        font-size: 14px;
+        text-align: center;
       }
 
       .employee-grid {
@@ -438,6 +467,9 @@
               <input type="date" id="empJoinDate" name="empJoinDate" required />
             </div>
             <button type="submit" class="btn-submit">Add Employee</button>
+            <div id="stepIndicator" class="form-step-indicator">
+              Step 1: Validating data...
+            </div>
             <div id="successMessage" class="success-message">
               Employee added successfully!
             </div>
@@ -750,6 +782,20 @@
         document.getElementById("addEmployeeModal").style.display = "none";
         document.getElementById("addEmployeeForm").reset();
         document.getElementById("successMessage").style.display = "none";
+
+        // Reset step indicator
+        const stepIndicator = document.getElementById("stepIndicator");
+        stepIndicator.style.display = "none";
+        stepIndicator.style.background = "rgba(0, 114, 255, 0.1)";
+        stepIndicator.style.borderColor = "rgba(0, 114, 255, 0.3)";
+        stepIndicator.style.color = "#00c6ff";
+
+        // Reset submit button
+        const submitButton = document.querySelector(".btn-submit");
+        submitButton.innerHTML = "Add Employee";
+        submitButton.style.background =
+          "linear-gradient(to right, rgb(0, 114, 255), rgb(0, 198, 255))";
+        submitButton.disabled = false;
       }
 
       // Handle form submission
@@ -758,10 +804,12 @@
 
         const submitButton = document.querySelector(".btn-submit");
         const successMessage = document.getElementById("successMessage");
+        const stepIndicator = document.getElementById("stepIndicator");
         const originalButtonText = submitButton.innerHTML;
 
-        // Show loading state
-        submitButton.innerHTML = "⏳ Saving to Firebase...";
+        // Step 1: Show validation
+        stepIndicator.innerHTML = "🔍 Step 1: Validating employee data...";
+        stepIndicator.style.display = "block";
         submitButton.disabled = true;
 
         const formData = new FormData(event.target);
@@ -779,39 +827,83 @@
           !employeeData.position ||
           !employeeData.joinDate
         ) {
-          submitButton.innerHTML = originalButtonText;
+          stepIndicator.innerHTML =
+            "❌ Validation failed: Please fill in all fields";
+          stepIndicator.style.background = "rgba(231, 76, 60, 0.1)";
+          stepIndicator.style.borderColor = "rgba(231, 76, 60, 0.3)";
+          stepIndicator.style.color = "#ff4757";
           submitButton.disabled = false;
-          alert("Please fill in all fields correctly");
+          setTimeout(() => {
+            stepIndicator.style.display = "none";
+          }, 3000);
           return;
         }
 
         if (employeeData.age < 18 || employeeData.age > 100) {
-          submitButton.innerHTML = originalButtonText;
+          stepIndicator.innerHTML =
+            "❌ Validation failed: Age must be between 18 and 100";
+          stepIndicator.style.background = "rgba(231, 76, 60, 0.1)";
+          stepIndicator.style.borderColor = "rgba(231, 76, 60, 0.3)";
+          stepIndicator.style.color = "#ff4757";
           submitButton.disabled = false;
-          alert("Please enter a valid age between 18 and 100");
+          setTimeout(() => {
+            stepIndicator.style.display = "none";
+          }, 3000);
           return;
         }
 
+        // Step 2: Data validated, connecting to Firebase
+        stepIndicator.innerHTML =
+          "✅ Step 2: Data validated, connecting to Firebase...";
+        stepIndicator.style.background = "rgba(0, 114, 255, 0.1)";
+        stepIndicator.style.borderColor = "rgba(0, 114, 255, 0.3)";
+        stepIndicator.style.color = "#00c6ff";
+        submitButton.innerHTML = "🔗 Connecting to Firebase...";
+
+        await new Promise((resolve) => setTimeout(resolve, 500)); // Brief pause for UX
+
         try {
+          // Step 3: Saving to Firebase
+          stepIndicator.innerHTML =
+            "🔥 Step 3: Saving employee to Firebase database...";
+          submitButton.innerHTML = "💾 Saving to Firebase...";
+
           // Add employee to Firebase
           const result = await window.employeeAPI.addEmployee(employeeData);
 
           if (result.success) {
+            // Step 4: Success
+            stepIndicator.innerHTML =
+              "🎉 Step 4: Employee successfully saved to Firebase!";
+            stepIndicator.style.background = "rgba(39, 174, 96, 0.1)";
+            stepIndicator.style.borderColor = "rgba(39, 174, 96, 0.3)";
+            stepIndicator.style.color = "#27ae60";
+
             // Show detailed success message
             successMessage.innerHTML = `
             ✅ Employee saved to Firebase successfully!<br>
-            <small>Firebase ID: ${result.id}</small>
+            <small>Firebase ID: ${result.id}</small><br>
+            <small>Name: ${employeeData.name} | Position: ${employeeData.position}</small>
           `;
             successMessage.style.display = "block";
-            successMessage.style.color = "#00ff00";
+            successMessage.style.color = "#27ae60";
 
             // Update button to show success
             submitButton.innerHTML = "✅ Saved to Firebase!";
             submitButton.style.background =
               "linear-gradient(to right, #27ae60, #2ecc71)";
 
+            // Step 5: Refreshing data
+            stepIndicator.innerHTML = "🔄 Step 5: Refreshing employee list...";
+
             // Reload employees to show the new one
             await loadEmployees();
+
+            // Final step
+            stepIndicator.innerHTML =
+              "✨ Complete! Employee added successfully to Firebase!";
+            stepIndicator.style.background = "rgba(39, 174, 96, 0.2)";
+            stepIndicator.style.borderColor = "rgba(39, 174, 96, 0.5)";
 
             // Reset form after a delay
             setTimeout(() => {
@@ -836,6 +928,11 @@
             }
           } else {
             // Handle Firebase error
+            stepIndicator.innerHTML = `❌ Step 3 Failed: ${result.error || "Unknown Firebase error"}`;
+            stepIndicator.style.background = "rgba(231, 76, 60, 0.1)";
+            stepIndicator.style.borderColor = "rgba(231, 76, 60, 0.3)";
+            stepIndicator.style.color = "#ff4757";
+
             submitButton.innerHTML = "❌ Firebase Error";
             submitButton.style.background =
               "linear-gradient(to right, #e74c3c, #c0392b)";
@@ -856,6 +953,11 @@
           console.error("Form submission error:", error);
 
           // Handle network/connection errors
+          stepIndicator.innerHTML = `❌ Connection Error: ${error.message}`;
+          stepIndicator.style.background = "rgba(231, 76, 60, 0.1)";
+          stepIndicator.style.borderColor = "rgba(231, 76, 60, 0.3)";
+          stepIndicator.style.color = "#ff4757";
+
           submitButton.innerHTML = "❌ Connection Error";
           submitButton.style.background =
             "linear-gradient(to right, #e74c3c, #c0392b)";
