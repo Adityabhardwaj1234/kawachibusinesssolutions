@@ -661,43 +661,8 @@
         },
       };
 
-      // Monitor Firebase connection status
-      function updateFirebaseStatus(connected = false) {
-        const indicator = document.getElementById("firebaseIndicator");
-        const statusText = document.getElementById("firebaseStatusText");
-
-        if (connected) {
-          indicator.style.background = "#27ae60";
-          statusText.textContent = "🔥 Connected to Firebase";
-          statusText.style.color = "#27ae60";
-        } else {
-          indicator.style.background = "#ff4757";
-          statusText.textContent = "❌ Firebase Disconnected";
-          statusText.style.color = "#ff4757";
-        }
-      }
-
-      // Test Firebase connection
-      async function checkFirebaseConnection() {
-        try {
-          const testRef = ref(database, ".info/connected");
-          const snapshot = await get(testRef);
-          updateFirebaseStatus(true);
-          return true;
-        } catch (error) {
-          console.error("Firebase connection test failed:", error);
-          updateFirebaseStatus(false);
-          return false;
-        }
-      }
-
       // Initialize the page
       loadEmployees();
-
-      // Check Firebase connection when modal opens
-      window.addEventListener("load", () => {
-        setTimeout(checkFirebaseConnection, 1000);
-      });
     </script>
 
     <!-- XLSX library for Excel export -->
@@ -711,6 +676,65 @@
         sessionStorage.setItem("redirectAfterLogin", window.location.pathname);
         window.location.href = "login.html";
       }
+
+      // Global Firebase connection functions
+      function updateFirebaseStatus(connected = false) {
+        const indicator = document.getElementById("firebaseIndicator");
+        const statusText = document.getElementById("firebaseStatusText");
+
+        if (indicator && statusText) {
+          if (connected) {
+            indicator.style.background = "#27ae60";
+            statusText.textContent = "🔥 Connected to Firebase";
+            statusText.style.color = "#27ae60";
+          } else {
+            indicator.style.background = "#ff4757";
+            statusText.textContent = "❌ Firebase Disconnected";
+            statusText.style.color = "#ff4757";
+          }
+        }
+      }
+
+      // Test Firebase connection
+      async function checkFirebaseConnection() {
+        try {
+          // Wait for Firebase to be available
+          if (!window.firebaseDatabase) {
+            console.log("Firebase not yet available, waiting...");
+            updateFirebaseStatus(false);
+            return false;
+          }
+
+          // Test Firebase connection using a simple read operation
+          const employeesRef = window.firebaseRef(
+            window.firebaseDatabase,
+            "employees",
+          );
+          const snapshot = await window.firebaseGet(employeesRef);
+
+          console.log("✅ Firebase connection test successful");
+          updateFirebaseStatus(true);
+          return true;
+        } catch (error) {
+          console.error("❌ Firebase connection test failed:", error);
+          updateFirebaseStatus(false);
+          return false;
+        }
+      }
+
+      // Make functions globally accessible
+      window.updateFirebaseStatus = updateFirebaseStatus;
+      window.checkFirebaseConnection = checkFirebaseConnection;
+
+      // Initialize Firebase connection check after page loads
+      window.addEventListener("load", () => {
+        // Wait a bit for Firebase to initialize, then check connection
+        setTimeout(() => {
+          if (window.firebaseReady) {
+            checkFirebaseConnection();
+          }
+        }, 2000);
+      });
 
       // Load employees from Firebase
       async function loadEmployees() {
@@ -774,8 +798,15 @@
       // Modal functions
       function showAddEmployeeModal() {
         document.getElementById("addEmployeeModal").style.display = "flex";
+
         // Check Firebase connection when modal opens
-        checkFirebaseConnection();
+        if (typeof checkFirebaseConnection === "function") {
+          checkFirebaseConnection();
+        } else {
+          console.warn("checkFirebaseConnection function not available yet");
+          // Set a default disconnected state
+          updateFirebaseStatus(false);
+        }
       }
 
       function hideAddEmployeeModal() {
