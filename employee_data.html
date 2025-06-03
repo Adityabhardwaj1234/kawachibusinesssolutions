@@ -708,7 +708,11 @@
       async function checkFirebaseConnection() {
         try {
           // Wait for Firebase to be available
-          if (!window.firebaseDatabase) {
+          if (
+            !window.firebaseDatabase ||
+            !window.firebaseRef ||
+            !window.firebaseGet
+          ) {
             console.log("Firebase not yet available, waiting...");
             updateFirebaseStatus(false);
             return false;
@@ -812,13 +816,40 @@
       function showAddEmployeeModal() {
         document.getElementById("addEmployeeModal").style.display = "flex";
 
-        // Check Firebase connection when modal opens
-        if (typeof checkFirebaseConnection === "function") {
-          checkFirebaseConnection();
-        } else {
-          console.warn("checkFirebaseConnection function not available yet");
-          // Set a default disconnected state
-          updateFirebaseStatus(false);
+        // Check Firebase connection when modal opens (with multiple safety checks)
+        try {
+          if (typeof window.checkFirebaseConnection === "function") {
+            window.checkFirebaseConnection();
+          } else if (typeof checkFirebaseConnection === "function") {
+            checkFirebaseConnection();
+          } else {
+            console.warn(
+              "checkFirebaseConnection function not available yet, will retry...",
+            );
+            // Set a default disconnected state
+            if (typeof updateFirebaseStatus === "function") {
+              updateFirebaseStatus(false);
+            } else if (typeof window.updateFirebaseStatus === "function") {
+              window.updateFirebaseStatus(false);
+            }
+
+            // Retry after a short delay
+            setTimeout(() => {
+              if (typeof window.checkFirebaseConnection === "function") {
+                window.checkFirebaseConnection();
+              }
+            }, 1000);
+          }
+        } catch (error) {
+          console.error("Error checking Firebase connection:", error);
+          // Fallback: set disconnected status
+          const indicator = document.getElementById("firebaseIndicator");
+          const statusText = document.getElementById("firebaseStatusText");
+          if (indicator && statusText) {
+            indicator.style.background = "#ff4757";
+            statusText.textContent = "❌ Firebase Check Failed";
+            statusText.style.color = "#ff4757";
+          }
         }
       }
 
