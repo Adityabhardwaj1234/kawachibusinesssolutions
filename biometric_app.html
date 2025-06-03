@@ -1,368 +1,803 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Biometric Attendance</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <style>
-   
-    body {
-      background: #222D32;
-      font-family: 'Roboto', sans-serif;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Biometric Attendance</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <style>
+      body {
+        background: #222d32;
+        font-family: "Roboto", sans-serif;
+      }
 
-    .login-box {
-      margin-top: 75px;
-      height: auto;
-      background: #1A2226;
-      text-align: center;
-      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
-    }
+      .login-box {
+        margin-top: 75px;
+        height: auto;
+        background: #1a2226;
+        text-align: center;
+        box-shadow:
+          0 3px 6px rgba(0, 0, 0, 0.16),
+          0 3px 6px rgba(0, 0, 0, 0.23);
+      }
 
-    .login-key {
-      height: 100px;
-      font-size: 80px;
-      line-height: 100px;
-      background: -webkit-linear-gradient(#27EF9F, #0DB8DE);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
+      .login-key {
+        height: 100px;
+        font-size: 80px;
+        line-height: 100px;
+        background: -webkit-linear-gradient(#27ef9f, #0db8de);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
 
-    .login-title {
-      margin-top: 15px;
-      text-align: center;
-      font-size: 30px;
-      letter-spacing: 2px;
-      font-weight: bold;
-      color: #ECF0F5;
-    }
+      .login-title {
+        margin-top: 15px;
+        text-align: center;
+        font-size: 30px;
+        letter-spacing: 2px;
+        font-weight: bold;
+        color: #ecf0f5;
+      }
 
-    .login-form {
-      margin-top: 25px;
-      text-align: left;
-    }
+      .login-form {
+        margin-top: 25px;
+        text-align: left;
+      }
 
-    input[type=text], input[type=password] {
-      background-color: #1A2226;
-      border: none;
-      border-bottom: 2px solid #0DB8DE;
-      border-radius: 0px;
-      font-weight: bold;
-      outline: 0;
-      margin-bottom: 20px;
-      padding-left: 0px;
-      color: #ECF0F5;
-      width: 100%;
-    }
+      input[type="text"],
+      input[type="password"] {
+        background-color: #1a2226;
+        border: none;
+        border-bottom: 2px solid #0db8de;
+        border-radius: 0px;
+        font-weight: bold;
+        outline: 0;
+        margin-bottom: 20px;
+        padding-left: 0px;
+        color: #ecf0f5;
+        width: 100%;
+      }
 
-    .form-group {
-      margin-bottom: 40px;
-    }
+      .form-group {
+        margin-bottom: 40px;
+      }
 
-    .form-control:focus {
-      border-color: inherit;
-      box-shadow: none;
-      border-bottom: 2px solid #0DB8DE;
-      background-color: #1A2226;
-      color: #ECF0F5;
-    }
+      .form-control:focus {
+        border-color: inherit;
+        box-shadow: none;
+        border-bottom: 2px solid #0db8de;
+        background-color: #1a2226;
+        color: #ecf0f5;
+      }
 
-    label {
-      margin-bottom: 0px;
-    }
+      label {
+        margin-bottom: 0px;
+      }
 
-    .form-control-label {
-      font-size: 10px;
-      color: #6C6C6C;
-      font-weight: bold;
-      letter-spacing: 1px;
-    }
+      .form-control-label {
+        font-size: 10px;
+        color: #6c6c6c;
+        font-weight: bold;
+        letter-spacing: 1px;
+      }
 
-    .btn-outline-primary {
-      border-color: #0DB8DE;
-      color: #0DB8DE;
-      border-radius: 0px;
-      font-weight: bold;
-      letter-spacing: 1px;
-    }
+      .btn-outline-primary {
+        border-color: #0db8de;
+        color: #0db8de;
+        border-radius: 0px;
+        font-weight: bold;
+        letter-spacing: 1px;
+      }
 
-    .btn-outline-primary:hover {
-      background-color: #0DB8DE;
-    }
+      .btn-outline-primary:hover {
+        background-color: #0db8de;
+      }
 
-    .login-btm {
-      float: left;
-    }
+      .login-btm {
+        float: left;
+      }
 
-    .login-button {
-      text-align: right;
-      margin-bottom: 25px;
-    }
+      .login-button {
+        text-align: right;
+        margin-bottom: 25px;
+      }
 
-    .login-text {
-      text-align: left;
-      padding-left: 0px;
-      color: #A2A4A4;
-    }
+      .login-text {
+        text-align: left;
+        padding-left: 0px;
+        color: #a2a4a4;
+      }
 
-    .loginbttm {
-      padding: 0px;
-    }
+      .loginbttm {
+        padding: 0px;
+      }
 
-    #userBar {
-      position: absolute; top: 10px; left: 10px;
-      background: white; padding: 10px 15px; border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-size: 14px;
-      display: none;
-    }
+      #userBar {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: white;
+        padding: 10px 15px;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        font-size: 14px;
+        display: none;
+      }
 
-    .container-main {
-      background: linear-gradient(145deg, #ffffff, #e6e9f0);
-      padding: 30px;
-      border-radius: 20px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-      width: 100%;
-      max-width: 800px;
-      text-align: center;
-      margin-top: 40px;
-    }
+      .container-main {
+        background: linear-gradient(145deg, #ffffff, #e6e9f0);
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        width: 100%;
+        max-width: 800px;
+        text-align: center;
+        margin-top: 40px;
+      }
 
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    th, td { border: 1px solid #ccc; padding: 10px; font-size: 14px; }
-    thead { background-color: #2575fc; color: white; }
-  </style>
-</head>
-<body>
-
-<!-- Custom Login Page -->
-<div class="container" id="loginPage">
-  <div class="row justify-content-center">
-    <div class="col-lg-6 col-md-8 login-box">
-      <div class="col-lg-12 login-key">
-        <i class="fa fa-key" aria-hidden="true"></i>
-      </div>
-      <div class="col-lg-12 login-title">ADMIN PANEL</div>
-      <div class="col-lg-12 login-form">
-        <form onsubmit="login(event)">
-          <div class="form-group">
-            <label class="form-control-label">USERNAME</label>
-            <input type="text" id="staffId" class="form-control">
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
+      th,
+      td {
+        border: 1px solid #ccc;
+        padding: 10px;
+        font-size: 14px;
+      }
+      thead {
+        background-color: #2575fc;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Custom Login Page -->
+    <div class="container" id="loginPage">
+      <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8 login-box">
+          <div class="col-lg-12 login-key">
+            <i class="fa fa-key" aria-hidden="true"></i>
           </div>
-          <div class="form-group">
-            <label class="form-control-label">PASSWORD</label>
-            <input type="password" id="staffPassword" class="form-control">
+          <div class="col-lg-12 login-title">ADMIN PANEL</div>
+          <div class="col-lg-12 login-form">
+            <form onsubmit="login(event)">
+              <div class="form-group">
+                <label class="form-control-label">USERNAME</label>
+                <input type="text" id="staffId" class="form-control" />
+              </div>
+              <div class="form-group">
+                <label class="form-control-label">PASSWORD</label>
+                <input
+                  type="password"
+                  id="staffPassword"
+                  class="form-control"
+                />
+              </div>
+              <div class="col-lg-12 loginbttm">
+                <div class="col-lg-6 login-btm login-text" id="message"></div>
+                <div class="col-lg-6 login-btm login-button">
+                  <button type="submit" class="btn btn-outline-primary">
+                    LOGIN
+                  </button>
+                </div>
+              </div>
+            </form>
           </div>
-          <div class="col-lg-12 loginbttm">
-            <div class="col-lg-6 login-btm login-text" id="message"></div>
-            <div class="col-lg-6 login-btm login-button">
-              <button type="submit" class="btn btn-outline-primary">LOGIN</button>
-            </div>
-          </div>
-        </form>
+        </div>
       </div>
     </div>
-  </div>
-</div>
 
-<!-- Welcome User Bar -->
-<div id="userBar">
-  <span id="userNameDisplay"></span>
-  <button onclick="signOut()" style="margin-left: 10px; background-color: #e74c3c;">Close</button>
-</div>
+    <!-- Welcome User Bar -->
+    <div id="userBar">
+      <span id="userNameDisplay"></span>
+      <button
+        onclick="signOut()"
+        style="margin-left: 10px; background-color: #e74c3c"
+      >
+        Close
+      </button>
+    </div>
 
-<!-- Main App -->
-<div class="container container-main" id="mainApp" style="display:none;">
-  <h1>Biometric Attendance App</h1>
-  <input type="text" id="nameInput" placeholder="Enter your name" class="form-control mb-2" />
-  <input type="number" id="ageInput" placeholder="Enter your age" class="form-control mb-2" />
-  <input type="number" id="salaryInput" placeholder="Enter your salary" class="form-control mb-3" />
-  <div>
-    <button id="scanButton" class="btn btn-success m-1">Save</button>
-    <button id="downloadExcel" class="btn btn-primary m-1">Download Excel</button>
-    <button id="clearDataBtn" class="btn btn-danger m-1">Clear All</button>
-    <button id="newEntryBtn" class="btn btn-warning m-1">New</button>
-    <button id="showAllBtn" class="btn btn-info m-1">Show All</button>
-  </div>
-  <div id="attendanceDetails" class="mt-4"></div>
-  <div id="fingerprintContainer" style="display:none; margin-top:20px;">
-    <canvas id="fingerprintCanvas" width="317" height="270"></canvas>
-  </div>
-</div>
+    <!-- Main App -->
+    <div class="container container-main" id="mainApp" style="display: none">
+      <h1>Biometric Attendance App</h1>
+      <input
+        type="text"
+        id="nameInput"
+        placeholder="Enter your name"
+        class="form-control mb-2"
+      />
+      <input
+        type="number"
+        id="ageInput"
+        placeholder="Enter your age"
+        class="form-control mb-2"
+      />
+      <input
+        type="number"
+        id="salaryInput"
+        placeholder="Enter your salary"
+        class="form-control mb-3"
+      />
+      <div>
+        <button id="scanButton" class="btn btn-success m-1">Save</button>
+        <button id="downloadExcel" class="btn btn-primary m-1">
+          Download Excel
+        </button>
+        <button id="fetchFromAPI" class="btn btn-secondary m-1">
+          Fetch from API
+        </button>
+        <button id="clearDataBtn" class="btn btn-danger m-1">Clear All</button>
+        <button id="newEntryBtn" class="btn btn-warning m-1">New</button>
+        <button id="showAllBtn" class="btn btn-info m-1">Show All</button>
+      </div>
+      <div id="attendanceDetails" class="mt-4"></div>
+      <div id="fingerprintContainer" style="display: none; margin-top: 20px">
+        <canvas id="fingerprintCanvas" width="317" height="270"></canvas>
+      </div>
+    </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script>
-const staffMembers = [
-  { id: "170712@ab", password: "OWNER@00014243774", position: "OWNER", name: "Aditya Bhardwaj" },
-  { id: "310712@cb", password: "CO-OWNER@bhardwaj3107cb", position: "CO-OWNER", name: "Chandan Bhardwaj" },
-  { id: "310712@db", password: "CO-OWNER@bhardwaj3107db", position: "CO-OWNER", name: "Deepak Bhardwaj" }
-];
+    <!-- Firebase SDK -->
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+      import {
+        getAnalytics,
+        logEvent,
+      } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+      import {
+        getDatabase,
+        ref,
+        push,
+        set,
+        get,
+        remove,
+      } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-let allEntries = [];
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyB1wIsDf1qSLaIGyQvbri26z9e4ypxF-lw",
+        authDomain: "apikawachi.firebaseapp.com",
+        databaseURL:
+          "https://apikawachi-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "apikawachi",
+        storageBucket: "apikawachi.appspot.com",
+        messagingSenderId: "7573902945",
+        appId: "1:7573902945:web:be2c051ef0d0ceed787c20",
+        measurementId: "G-GT0F7K4NLP",
+      };
 
-function login(e) {
-  e.preventDefault();
-  const id = document.getElementById("staffId").value.trim();
-  const password = document.getElementById("staffPassword").value.trim();
-  const found = staffMembers.find(s => s.id === id && s.password === password);
-  if (found) {
-    localStorage.setItem("loggedInUser", JSON.stringify(found));
-    showApp();
-  } else {
-    document.getElementById("message").textContent = "Invalid ID or Password.";
-  }
-}
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+      const database = getDatabase(app);
 
-function showApp() {
-  const user = JSON.parse(localStorage.getItem("loggedInUser"));
-  if (user) {
-    document.getElementById("loginPage").style.display = "none";
-    document.getElementById("mainApp").style.display = "block";
-    document.getElementById("userBar").style.display = "block";
-    document.getElementById("userNameDisplay").textContent = `Welcome, ${user.name}`;
-  }
-}
-function signOut() {
-  localStorage.removeItem("loggedInUser");
+      // Make Firebase available globally
+      window.firebaseApp = app;
+      window.firebaseDatabase = database;
+      window.firebaseAnalytics = analytics;
+      window.firebaseRef = ref;
+      window.firebasePush = push;
+      window.firebaseSet = set;
+      window.firebaseGet = get;
+      window.firebaseRemove = remove;
+      window.firebaseLogEvent = logEvent;
+    </script>
 
-  // Only hide the iframe without navigating
-  if (window.top && typeof window.top.hideIframe === "function") {
-    window.top.hideIframe();
-  }
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script>
+      const staffMembers = [
+        {
+          id: "170712@ab",
+          password: "OWNER@00014243774",
+          position: "OWNER",
+          name: "Aditya Bhardwaj",
+        },
+        {
+          id: "310712@cb",
+          password: "CO-OWNER@bhardwaj3107cb",
+          position: "CO-OWNER",
+          name: "Chandan Bhardwaj",
+        },
+        {
+          id: "310712@db",
+          password: "CO-OWNER@bhardwaj3107db",
+          position: "CO-OWNER",
+          name: "Deepak Bhardwaj",
+        },
+      ];
 
-  // Reset UI inside iframe to login form
-  document.getElementById("mainApp").style.display = "none";
-  document.getElementById("userBar").style.display = "none";
-  document.getElementById("loginPage").style.display = "block";
-}
+      let allEntries = [];
+      let employeesFromAPI = [];
 
-window.onload = () => {
-  const user = JSON.parse(localStorage.getItem("loggedInUser"));
-  if (user) showApp();
-  else document.getElementById("loginPage").style.display = "block";
-};
+      function login(e) {
+        e.preventDefault();
+        const id = document.getElementById("staffId").value.trim();
+        const password = document.getElementById("staffPassword").value.trim();
+        const found = staffMembers.find(
+          (s) => s.id === id && s.password === password,
+        );
+        if (found) {
+          localStorage.setItem("loggedInUser", JSON.stringify(found));
+          showApp();
+        } else {
+          document.getElementById("message").textContent =
+            "Invalid ID or Password.";
+        }
+      }
 
-document.getElementById("scanButton").addEventListener("click", async () => {
-  const name = document.getElementById("nameInput").value.trim();
-  const age = document.getElementById("ageInput").value.trim();
-  const salary = document.getElementById("salaryInput").value.trim();
-  if (!name || !age || !salary) return alert("Fill all fields.");
-  const date = new Date().toLocaleString();
-  let ip = "Unknown", coords = "Unknown";
-  try {
-    const ipRes = await fetch("https://api.ipify.org?format=json");
-    const ipData = await ipRes.json(); ip = ipData.ip;
-    const locRes = await fetch(`https://ipapi.co/${ip}/json/`);
-    const locData = await locRes.json();
-    coords = `${locData.latitude}, ${locData.longitude}`;
-  } catch {}
-  const entry = { date, name, age, salary, ip, coords };
-  allEntries.push(entry);
-  document.getElementById("attendanceDetails").innerHTML = `
+      function showApp() {
+        const user = JSON.parse(localStorage.getItem("loggedInUser"));
+        if (user) {
+          document.getElementById("loginPage").style.display = "none";
+          document.getElementById("mainApp").style.display = "block";
+          document.getElementById("userBar").style.display = "block";
+          document.getElementById("userNameDisplay").textContent =
+            `Welcome, ${user.name}`;
+        }
+      }
+      function signOut() {
+        localStorage.removeItem("loggedInUser");
+
+        // Only hide the iframe without navigating
+        if (window.top && typeof window.top.hideIframe === "function") {
+          window.top.hideIframe();
+        }
+
+        // Reset UI inside iframe to login form
+        document.getElementById("mainApp").style.display = "none";
+        document.getElementById("userBar").style.display = "none";
+        document.getElementById("loginPage").style.display = "block";
+      }
+
+      window.onload = () => {
+        const user = JSON.parse(localStorage.getItem("loggedInUser"));
+        if (user) showApp();
+        else document.getElementById("loginPage").style.display = "block";
+      };
+
+      document
+        .getElementById("scanButton")
+        .addEventListener("click", async () => {
+          const name = document.getElementById("nameInput").value.trim();
+          const age = document.getElementById("ageInput").value.trim();
+          const salary = document.getElementById("salaryInput").value.trim();
+          if (!name || !age || !salary) return alert("Fill all fields.");
+
+          const date = new Date().toLocaleString();
+          let ip = "Unknown",
+            coords = "Unknown";
+
+          try {
+            const ipRes = await fetch("https://api.ipify.org?format=json");
+            const ipData = await ipRes.json();
+            ip = ipData.ip;
+            const locRes = await fetch(`https://ipapi.co/${ip}/json/`);
+            const locData = await locRes.json();
+            coords = `${locData.latitude}, ${locData.longitude}`;
+          } catch (error) {
+            console.log("Location services not available");
+          }
+
+          const entry = {
+            date,
+            name,
+            age: parseInt(age),
+            salary: parseFloat(salary),
+            ip,
+            coords,
+            timestamp: new Date().toISOString(),
+          };
+
+          // Save to Firebase
+          try {
+            if (window.firebaseDatabase) {
+              const attendanceRef = window.firebaseRef(
+                window.firebaseDatabase,
+                "attendance",
+              );
+              const newAttendanceRef = window.firebasePush(attendanceRef);
+              await window.firebaseSet(newAttendanceRef, {
+                ...entry,
+                id: newAttendanceRef.key,
+              });
+
+              // Log analytics
+              window.firebaseLogEvent(
+                window.firebaseAnalytics,
+                "attendance_recorded",
+                {
+                  employee_name: name,
+                },
+              );
+
+              console.log("Attendance saved to Firebase successfully");
+            }
+          } catch (error) {
+            console.error("Error saving to Firebase:", error);
+          }
+
+          // Also keep in local array for immediate display
+          allEntries.push(entry);
+
+          document.getElementById("attendanceDetails").innerHTML = `
     <p><strong>Recorded at:</strong> ${date}</p>
     <p><strong>Name:</strong> ${name}</p>
     <p><strong>Age:</strong> ${age}</p>
     <p><strong>Salary:</strong> ₹${parseFloat(salary).toFixed(2)}</p>
     <p><strong>IP:</strong> ${ip}</p>
     <p><strong>Coordinates:</strong> ${coords}</p>
+    <p style="color: #00ff00;"><strong>✓ Saved to Firebase</strong></p>
   `;
-  document.getElementById("fingerprintContainer").style.display = "block";
-  const canvas = document.getElementById('fingerprintCanvas');
-  const ctx = canvas.getContext('2d');
-  const img = new Image();
-  img.src = 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Fingerprint_icon.svg/1200px-Fingerprint_icon.svg.png';
-  img.onload = () => ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-});
 
-document.getElementById("downloadExcel").addEventListener("click", () => {
-  if (allEntries.length === 0) return alert("No data.");
-  const wsData = [["S.No", "Timestamp", "Name", "Age", "Salary", "IP", "Coordinates"]];
-  allEntries.forEach((e, i) => wsData.push([i+1, e.date, e.name, e.age, e.salary, e.ip, e.coords]));
-  const ws = XLSX.utils.aoa_to_sheet(wsData);
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "Attendance");
-  XLSX.writeFile(wb, "attendance_data.xlsx");
-});
+          document.getElementById("fingerprintContainer").style.display =
+            "block";
+          const canvas = document.getElementById("fingerprintCanvas");
+          const ctx = canvas.getContext("2d");
+          const img = new Image();
+          img.src =
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Fingerprint_icon.svg/1200px-Fingerprint_icon.svg.png";
+          img.onload = () =>
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        });
 
-document.getElementById("clearDataBtn").addEventListener("click", () => {
-  if (confirm("Clear all data?")) {
-    allEntries = [];
-    document.getElementById("nameInput").value = "";
-    document.getElementById("ageInput").value = "";
-    document.getElementById("salaryInput").value = "";
-    document.getElementById("attendanceDetails").innerHTML = "";
-    document.getElementById("fingerprintContainer").style.display = "none";
-  }
-});
+      // Fetch data from Firebase API
+      document
+        .getElementById("fetchFromAPI")
+        .addEventListener("click", async () => {
+          try {
+            if (!window.firebaseDatabase) {
+              return alert("Firebase not initialized");
+            }
 
-document.getElementById("newEntryBtn").addEventListener("click", () => {
-  document.getElementById("nameInput").value = "";
-  document.getElementById("ageInput").value = "";
-  document.getElementById("salaryInput").value = "";
-  document.getElementById("attendanceDetails").innerHTML = "";
-  document.getElementById("fingerprintContainer").style.display = "none";
-});
+            // Fetch attendance data
+            const attendanceRef = window.firebaseRef(
+              window.firebaseDatabase,
+              "attendance",
+            );
+            const attendanceSnapshot = await window.firebaseGet(attendanceRef);
 
-document.getElementById("showAllBtn").addEventListener("click", () => {
-  if (allEntries.length === 0) return alert("No entries.");
-  let html = `<h3>All Attendance Entries</h3><div style="overflow-x:auto;"><table><thead><tr>
-    <th>#</th><th>Date</th><th>Name</th><th>Age</th><th>Salary</th><th>IP</th><th>Coordinates</th><th>Action</th>
+            // Fetch employee data
+            const employeesRef = window.firebaseRef(
+              window.firebaseDatabase,
+              "employees",
+            );
+            const employeesSnapshot = await window.firebaseGet(employeesRef);
+
+            let message = "Data fetched from Firebase:\n\n";
+
+            if (attendanceSnapshot.exists()) {
+              const attendanceData = [];
+              attendanceSnapshot.forEach((childSnapshot) => {
+                attendanceData.push({
+                  id: childSnapshot.key,
+                  ...childSnapshot.val(),
+                });
+              });
+              allEntries = attendanceData;
+              message += `📊 Attendance Records: ${attendanceData.length}\n`;
+            } else {
+              message += "📊 Attendance Records: 0\n";
+            }
+
+            if (employeesSnapshot.exists()) {
+              employeesFromAPI = [];
+              employeesSnapshot.forEach((childSnapshot) => {
+                employeesFromAPI.push({
+                  id: childSnapshot.key,
+                  ...childSnapshot.val(),
+                });
+              });
+              message += `👥 Employee Records: ${employeesFromAPI.length}\n`;
+            } else {
+              message += "👥 Employee Records: 0\n";
+            }
+
+            alert(message + "\nData is now available for Excel export!");
+
+            // Log analytics
+            window.firebaseLogEvent(
+              window.firebaseAnalytics,
+              "data_fetched_from_api",
+            );
+          } catch (error) {
+            console.error("Error fetching from Firebase:", error);
+            alert("Error fetching data from Firebase: " + error.message);
+          }
+        });
+
+      document.getElementById("downloadExcel").addEventListener("click", () => {
+        try {
+          // Create workbook with multiple sheets
+          const wb = XLSX.utils.book_new();
+
+          // Attendance data sheet
+          if (allEntries.length > 0) {
+            const attendanceData = [
+              [
+                "S.No",
+                "Timestamp",
+                "Name",
+                "Age",
+                "Salary",
+                "IP",
+                "Coordinates",
+                "Firebase ID",
+              ],
+            ];
+            allEntries.forEach((e, i) =>
+              attendanceData.push([
+                i + 1,
+                e.date || e.timestamp,
+                e.name,
+                e.age,
+                e.salary,
+                e.ip,
+                e.coords,
+                e.id || "Local",
+              ]),
+            );
+            const attendanceWs = XLSX.utils.aoa_to_sheet(attendanceData);
+            XLSX.utils.book_append_sheet(wb, attendanceWs, "Attendance");
+          }
+
+          // Employee data sheet (from API)
+          if (employeesFromAPI.length > 0) {
+            const employeeData = [
+              [
+                "S.No",
+                "Name",
+                "Age",
+                "Position",
+                "Join Date",
+                "Firebase ID",
+                "Created At",
+              ],
+            ];
+            employeesFromAPI.forEach((e, i) =>
+              employeeData.push([
+                i + 1,
+                e.name,
+                e.age,
+                e.position,
+                e.joinDate,
+                e.id,
+                e.createdAt ? new Date(e.createdAt).toLocaleString() : "N/A",
+              ]),
+            );
+            const employeeWs = XLSX.utils.aoa_to_sheet(employeeData);
+            XLSX.utils.book_append_sheet(wb, employeeWs, "Employees");
+          }
+
+          if (wb.SheetNames.length === 0) {
+            return alert(
+              "No data available. Use 'Fetch from API' to load data from Firebase first.",
+            );
+          }
+
+          const filename = `kawachi_data_${new Date().toISOString().split("T")[0]}.xlsx`;
+          XLSX.writeFile(wb, filename);
+
+          // Log analytics
+          window.firebaseLogEvent(window.firebaseAnalytics, "excel_exported", {
+            attendance_count: allEntries.length,
+            employee_count: employeesFromAPI.length,
+          });
+
+          alert(
+            `Excel file "${filename}" downloaded successfully!\n\nContains:\n- ${allEntries.length} attendance records\n- ${employeesFromAPI.length} employee records`,
+          );
+        } catch (error) {
+          console.error("Error creating Excel file:", error);
+          alert("Error creating Excel file: " + error.message);
+        }
+      });
+
+      document
+        .getElementById("clearDataBtn")
+        .addEventListener("click", async () => {
+          if (
+            confirm(
+              "Clear all data? This will remove data from Firebase and local storage.",
+            )
+          ) {
+            try {
+              // Clear from Firebase
+              if (window.firebaseDatabase) {
+                const attendanceRef = window.firebaseRef(
+                  window.firebaseDatabase,
+                  "attendance",
+                );
+                await window.firebaseRemove(attendanceRef);
+                console.log("Attendance data cleared from Firebase");
+              }
+
+              // Clear local data
+              allEntries = [];
+              employeesFromAPI = [];
+
+              // Clear form
+              document.getElementById("nameInput").value = "";
+              document.getElementById("ageInput").value = "";
+              document.getElementById("salaryInput").value = "";
+              document.getElementById("attendanceDetails").innerHTML = "";
+              document.getElementById("fingerprintContainer").style.display =
+                "none";
+
+              alert("All data cleared successfully!");
+
+              // Log analytics
+              window.firebaseLogEvent(window.firebaseAnalytics, "data_cleared");
+            } catch (error) {
+              console.error("Error clearing data:", error);
+              alert("Error clearing data: " + error.message);
+            }
+          }
+        });
+
+      document.getElementById("newEntryBtn").addEventListener("click", () => {
+        document.getElementById("nameInput").value = "";
+        document.getElementById("ageInput").value = "";
+        document.getElementById("salaryInput").value = "";
+        document.getElementById("attendanceDetails").innerHTML = "";
+        document.getElementById("fingerprintContainer").style.display = "none";
+      });
+
+      document.getElementById("showAllBtn").addEventListener("click", () => {
+        if (allEntries.length === 0)
+          return alert(
+            "No entries. Use 'Fetch from API' to load data from Firebase.",
+          );
+
+        let html = `<h3>All Attendance Entries (${allEntries.length} records)</h3><div style="overflow-x:auto;"><table><thead><tr>
+    <th>#</th><th>Date</th><th>Name</th><th>Age</th><th>Salary</th><th>IP</th><th>Coordinates</th><th>Firebase ID</th><th>Action</th>
   </tr></thead><tbody>`;
-  allEntries.forEach((e, i) => {
-    html += `<tr>
-      <td>${i + 1}</td><td>${e.date}</td>
-      <td>${e.name}</td><td>${e.age}</td><td>₹${parseFloat(e.salary).toFixed(2)}</td>
-      <td>${e.ip}</td><td>${e.coords}</td>
+
+        allEntries.forEach((e, i) => {
+          html += `<tr>
+      <td>${i + 1}</td>
+      <td>${e.date || e.timestamp}</td>
+      <td>${e.name}</td>
+      <td>${e.age}</td>
+      <td>₹${parseFloat(e.salary).toFixed(2)}</td>
+      <td>${e.ip}</td>
+      <td>${e.coords}</td>
+      <td>${e.id || "Local"}</td>
       <td>
-        <button onclick="editEntry(${i})">Edit</button>
-        <button onclick="duplicateEntry(${i})">Duplicate</button>
-        <button onclick="deleteEntry(${i})">Delete</button>
+        <button onclick="editEntry(${i})" style="background: #0072ff; color: white; border: none; padding: 4px 8px; border-radius: 4px; margin: 2px;">Edit</button>
+        <button onclick="duplicateEntry(${i})" style="background: #27ae60; color: white; border: none; padding: 4px 8px; border-radius: 4px; margin: 2px;">Duplicate</button>
+        <button onclick="deleteEntry('${e.id}', ${i})" style="background: #e74c3c; color: white; border: none; padding: 4px 8px; border-radius: 4px; margin: 2px;">Delete</button>
       </td>
     </tr>`;
-  });
-  html += "</tbody></table></div>";
-  document.getElementById("attendanceDetails").innerHTML = html;
-});
+        });
+        html += "</tbody></table></div>";
+        document.getElementById("attendanceDetails").innerHTML = html;
+      });
 
-window.editEntry = function(i) {
-  const e = allEntries[i];
-  const row = document.querySelectorAll("#attendanceDetails tbody tr")[i];
-  row.innerHTML = `<td>${i+1}</td><td>${e.date}</td>
-    <td><input id="editName${i}" value="${e.name}"></td>
-    <td><input id="editAge${i}" value="${e.age}"></td>
-    <td><input id="editSalary${i}" value="${e.salary}"></td>
-    <td>${e.ip}</td><td>${e.coords}</td>
-    <td><button onclick="saveEdit(${i})">Save</button></td>`;
-};
+      window.editEntry = function (i) {
+        const e = allEntries[i];
+        const row = document.querySelectorAll("#attendanceDetails tbody tr")[i];
+        row.innerHTML = `<td>${i + 1}</td><td>${e.date || e.timestamp}</td>
+    <td><input id="editName${i}" value="${e.name}" style="width: 100px;"></td>
+    <td><input id="editAge${i}" value="${e.age}" style="width: 60px;"></td>
+    <td><input id="editSalary${i}" value="${e.salary}" style="width: 80px;"></td>
+    <td>${e.ip}</td><td>${e.coords}</td><td>${e.id || "Local"}</td>
+    <td><button onclick="saveEdit(${i})" style="background: #27ae60; color: white; border: none; padding: 4px 8px; border-radius: 4px;">Save</button></td>`;
+      };
 
-window.saveEdit = function(i) {
-  const name = document.getElementById(`editName${i}`).value;
-  const age = document.getElementById(`editAge${i}`).value;
-  const salary = document.getElementById(`editSalary${i}`).value;
-  if (!name || !age || !salary) return alert("All fields required.");
-  allEntries[i].name = name; allEntries[i].age = age; allEntries[i].salary = salary;
-  document.getElementById("showAllBtn").click();
-};
+      window.saveEdit = async function (i) {
+        const name = document.getElementById(`editName${i}`).value;
+        const age = document.getElementById(`editAge${i}`).value;
+        const salary = document.getElementById(`editSalary${i}`).value;
 
-window.deleteEntry = function(i) {
-  if (confirm("Delete this entry?")) {
-    allEntries.splice(i, 1);
-    document.getElementById("showAllBtn").click();
-  }
-};
+        if (!name || !age || !salary) return alert("All fields required.");
 
-window.duplicateEntry = function(i) {
-  const dup = { ...allEntries[i], date: new Date().toLocaleString() };
-  allEntries.push(dup);
-  document.getElementById("showAllBtn").click();
-};
-</script>
-<script>
-  if (sessionStorage.getItem("isLoggedIn") !== "true") {
-    sessionStorage.setItem("redirectAfterLogin", window.location.pathname);
-    window.location.href = "login.html";
-  }
-</script>
+        const entry = allEntries[i];
+        const updatedData = {
+          name: name,
+          age: parseInt(age),
+          salary: parseFloat(salary),
+        };
 
-</body>
+        // Update in Firebase if it has an ID
+        if (entry.id && window.firebaseDatabase) {
+          try {
+            const entryRef = window.firebaseRef(
+              window.firebaseDatabase,
+              `attendance/${entry.id}`,
+            );
+            await window.firebaseSet(entryRef, {
+              ...entry,
+              ...updatedData,
+              updatedAt: new Date().toISOString(),
+            });
+            console.log("Entry updated in Firebase");
+          } catch (error) {
+            console.error("Error updating in Firebase:", error);
+          }
+        }
+
+        // Update local data
+        allEntries[i] = { ...allEntries[i], ...updatedData };
+        document.getElementById("showAllBtn").click();
+      };
+
+      window.deleteEntry = async function (entryId, localIndex) {
+        if (!confirm("Delete this entry?")) return;
+
+        try {
+          // Delete from Firebase if it has an ID
+          if (entryId && entryId !== "Local" && window.firebaseDatabase) {
+            const entryRef = window.firebaseRef(
+              window.firebaseDatabase,
+              `attendance/${entryId}`,
+            );
+            await window.firebaseRemove(entryRef);
+            console.log("Entry deleted from Firebase");
+          }
+
+          // Remove from local array
+          allEntries.splice(localIndex, 1);
+          document.getElementById("showAllBtn").click();
+
+          alert("Entry deleted successfully!");
+        } catch (error) {
+          console.error("Error deleting entry:", error);
+          alert("Error deleting entry: " + error.message);
+        }
+      };
+
+      window.duplicateEntry = async function (i) {
+        const original = allEntries[i];
+        const duplicate = {
+          ...original,
+          date: new Date().toLocaleString(),
+          timestamp: new Date().toISOString(),
+        };
+
+        // Remove the Firebase ID so it gets a new one
+        delete duplicate.id;
+
+        try {
+          // Save duplicate to Firebase
+          if (window.firebaseDatabase) {
+            const attendanceRef = window.firebaseRef(
+              window.firebaseDatabase,
+              "attendance",
+            );
+            const newAttendanceRef = window.firebasePush(attendanceRef);
+            await window.firebaseSet(newAttendanceRef, {
+              ...duplicate,
+              id: newAttendanceRef.key,
+            });
+            duplicate.id = newAttendanceRef.key;
+            console.log("Duplicate saved to Firebase");
+          }
+
+          // Add to local array
+          allEntries.push(duplicate);
+          document.getElementById("showAllBtn").click();
+
+          alert("Entry duplicated successfully!");
+        } catch (error) {
+          console.error("Error duplicating entry:", error);
+          // Still add to local array even if Firebase fails
+          allEntries.push(duplicate);
+          document.getElementById("showAllBtn").click();
+          alert("Entry duplicated locally (Firebase save failed)");
+        }
+      };
+    </script>
+    <script>
+      if (sessionStorage.getItem("isLoggedIn") !== "true") {
+        sessionStorage.setItem("redirectAfterLogin", window.location.pathname);
+        window.location.href = "login.html";
+      }
+    </script>
+  </body>
 </html>
