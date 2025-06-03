@@ -1,0 +1,29 @@
+{
+  "name": "kawachi-admin-app",
+  "version": "1.5.0",
+  "description": "Kawachi admin app - employee management dashboard",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve . -p 3000",
+    "dev": "npx serve . -p 3000",
+    "build": "echo 'Static files ready for deployment'",
+    "serve": "npx serve . -p 3000"
+  },
+  "keywords": [
+    "admin",
+    "dashboard",
+    "employee",
+    "attendance",
+    "biometric"
+  ],
+  "author": "Kawachi Team",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.2.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "."
+  },
+  "homepage": "."
+}
