@@ -520,7 +520,6 @@
       window.firebaseApp = app;
       window.firebaseDatabase = database;
       window.firebaseAnalytics = analytics;
-      window.firebaseDatabase = database;
       window.firebaseRef = ref;
       window.firebasePush = push;
       window.firebaseSet = set;
@@ -530,6 +529,16 @@
       window.firebaseUpdate = update;
       window.firebaseOnValue = onValue;
       window.firebaseLogEvent = logEvent;
+
+      // Signal that Firebase is ready
+      window.firebaseReady = true;
+
+      // Trigger connection check if the function is available
+      setTimeout(() => {
+        if (typeof window.checkFirebaseConnection === "function") {
+          window.checkFirebaseConnection();
+        }
+      }, 500);
 
       // Employee management functions
       window.employeeAPI = {
@@ -721,6 +730,10 @@
           return false;
         }
       }
+
+      // Make functions globally accessible
+      window.updateFirebaseStatus = updateFirebaseStatus;
+      window.checkFirebaseConnection = checkFirebaseConnection;
 
       // Make functions globally accessible
       window.updateFirebaseStatus = updateFirebaseStatus;
