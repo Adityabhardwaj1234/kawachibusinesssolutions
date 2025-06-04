@@ -63,6 +63,87 @@ switchMode.addEventListener('change', function () {
     }
 })
 
+// Notification System
+let notificationCount = 0;
+const notificationList = document.querySelector('.notification-menu ul');
+const notificationBadge = document.querySelector('.notification .num');
+
+function addNotification(message, type = 'info') {
+    // Create notification element
+    const li = document.createElement('li');
+    li.className = `notification-item ${type}`;
+    li.innerHTML = `
+        <div class="notification-content">
+            <span class="notification-message">${message}</span>
+            <span class="notification-time">${new Date().toLocaleTimeString()}</span>
+        </div>
+    `;
+
+    // Add to notification list
+    notificationList.insertBefore(li, notificationList.firstChild);
+
+    // Update notification count
+    notificationCount++;
+    notificationBadge.textContent = notificationCount;
+
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        li.classList.add('fade-out');
+        setTimeout(() => {
+            li.remove();
+            notificationCount--;
+            notificationBadge.textContent = notificationCount;
+        }, 300);
+    }, 5000);
+}
+
+// Firebase Realtime Notifications
+if (window.firebaseDatabase) {
+    const employeesRef = window.firebaseRef(window.firebaseDatabase, 'employees');
+    const attendanceRef = window.firebaseRef(window.firebaseDatabase, 'attendance');
+
+    // Listen for employee changes
+    window.onValue(employeesRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+            // Compare with previous data to determine changes
+            if (window.previousEmployeeData) {
+                const newIds = Object.keys(data);
+                const oldIds = Object.keys(window.previousEmployeeData);
+
+                // Check for new employees
+                newIds.forEach(id => {
+                    if (!oldIds.includes(id)) {
+                        addNotification(`New employee added: ${data[id].name}`, 'success');
+                    }
+                });
+
+                // Check for deleted employees
+                oldIds.forEach(id => {
+                    if (!newIds.includes(id)) {
+                        addNotification(`Employee removed: ${window.previousEmployeeData[id].name}`, 'error');
+                    }
+                });
+            }
+            window.previousEmployeeData = data;
+        }
+    });
+
+    // Listen for attendance marks
+    window.onValue(attendanceRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+            const entries = Object.entries(data);
+            const latestEntry = entries[entries.length - 1];
+            
+            if (latestEntry && (!window.lastAttendanceId || window.lastAttendanceId !== latestEntry[0])) {
+                window.lastAttendanceId = latestEntry[0];
+                addNotification(`Attendance marked: ${latestEntry[1].name}`, 'info');
+            }
+        }
+    });
+}
+
 // Notification Menu Toggle
 document.querySelector('.notification').addEventListener('click', function () {
     document.querySelector('.notification-menu').classList.toggle('show');
@@ -84,29 +165,29 @@ window.addEventListener('click', function (e) {
 });
 
 // Menülerin açılıp kapanması için fonksiyon
-    function toggleMenu(menuId) {
-      var menu = document.getElementById(menuId);
-      var allMenus = document.querySelectorAll('.menu');
+function toggleMenu(menuId) {
+    var menu = document.getElementById(menuId);
+    var allMenus = document.querySelectorAll('.menu');
 
-      // Diğer tüm menüleri kapat
-      allMenus.forEach(function(m) {
+    // Diğer tüm menüleri kapat
+    allMenus.forEach(function(m) {
         if (m !== menu) {
-          m.style.display = 'none';
+            m.style.display = 'none';
         }
-      });
-
-      // Tıklanan menü varsa aç, yoksa kapat
-      if (menu.style.display === 'none' || menu.style.display === '') {
-        menu.style.display = 'block';
-      } else {
-        menu.style.display = 'none';
-      }
-    }
-
-    // Başlangıçta tüm menüleri kapalı tut
-    document.addEventListener("DOMContentLoaded", function() {
-      var allMenus = document.querySelectorAll('.menu');
-      allMenus.forEach(function(menu) {
-        menu.style.display = 'none';
-      });
     });
+
+    // Tıklanan menü varsa aç, yoksa kapat
+    if (menu.style.display === 'none' || menu.style.display === '') {
+        menu.style.display = 'block';
+    } else {
+        menu.style.display = 'none';
+    }
+}
+
+// Başlangıçta tüm menüleri kapalı tut
+document.addEventListener("DOMContentLoaded", function() {
+    var allMenus = document.querySelectorAll('.menu');
+    allMenus.forEach(function(menu) {
+        menu.style.display = 'none';
+    });
+});
