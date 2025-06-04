@@ -1,0 +1,1352 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Analytics - Salary Calculator</title>
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        color: #333;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      .header {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 30px;
+        text-align: center;
+        margin-bottom: 30px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .header h1 {
+        font-size: 2.5em;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 10px;
+        font-weight: 700;
+      }
+
+      .header p {
+        color: #666;
+        font-size: 1.1em;
+      }
+
+      .controls-section {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .controls-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+        margin-bottom: 25px;
+      }
+
+      .control-group {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        padding: 25px;
+        border-radius: 15px;
+        border: 2px solid #e9ecef;
+        transition: all 0.3s ease;
+      }
+
+      .control-group:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        border-color: #667eea;
+      }
+
+      .control-group h3 {
+        color: #495057;
+        margin-bottom: 15px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .control-group h3 i {
+        color: #667eea;
+        font-size: 1.2em;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #495057;
+        font-weight: 500;
+        font-size: 14px;
+      }
+
+      .form-group input,
+      .form-group select {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid #e9ecef;
+        border-radius: 10px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        background: white;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+
+      .btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin: 5px;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+      }
+
+      .btn-success {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+      }
+
+      .btn-warning {
+        background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+      }
+
+      .btn-danger {
+        background: linear-gradient(135deg, #dc3545 0%, #e83e8c 100%);
+      }
+
+      .btn-info {
+        background: linear-gradient(135deg, #17a2b8 0%, #6f42c1 100%);
+      }
+
+      .actions-section {
+        text-align: center;
+        margin: 30px 0;
+      }
+
+      .results-section {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .results-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        flex-wrap: wrap;
+        gap: 15px;
+      }
+
+      .results-header h2 {
+        color: #495057;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .summary-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .summary-card {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        padding: 20px;
+        border-radius: 15px;
+        text-align: center;
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+      }
+
+      .summary-card:hover {
+        transform: translateY(-5px);
+        border-color: #667eea;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .summary-card h4 {
+        color: #667eea;
+        font-size: 2em;
+        font-weight: 700;
+        margin-bottom: 5px;
+      }
+
+      .summary-card p {
+        color: #6c757d;
+        font-weight: 500;
+      }
+
+      .table-container {
+        overflow-x: auto;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      }
+
+      .salary-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+      }
+
+      .salary-table th {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 18px 15px;
+        text-align: left;
+        font-weight: 600;
+        font-size: 14px;
+        letter-spacing: 0.5px;
+      }
+
+      .salary-table td {
+        padding: 15px;
+        border-bottom: 1px solid #f8f9fa;
+        vertical-align: middle;
+      }
+
+      .salary-table tbody tr {
+        transition: all 0.3s ease;
+      }
+
+      .salary-table tbody tr:hover {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        transform: scale(1.01);
+      }
+
+      .salary-table tbody tr:nth-child(even) {
+        background: #f8f9fa;
+      }
+
+      .employee-id {
+        font-weight: 600;
+        color: #667eea;
+        font-family: monospace;
+      }
+
+      .salary-amount {
+        font-weight: 700;
+        color: #28a745;
+        font-size: 1.1em;
+      }
+
+      .attendance-badge {
+        background: linear-gradient(135deg, #17a2b8 0%, #6f42c1 100%);
+        color: white;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .missing-data {
+        color: #dc3545;
+        font-weight: 600;
+        text-align: center;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 50px;
+        color: #6c757d;
+        font-size: 1.1em;
+      }
+
+      .loading i {
+        font-size: 2em;
+        margin-bottom: 15px;
+        animation: spin 2s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .success-message {
+        background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+        color: #155724;
+        padding: 15px 20px;
+        border-radius: 10px;
+        border: 2px solid #c3e6cb;
+        margin: 20px 0;
+        display: none;
+      }
+
+      .error-message {
+        background: linear-gradient(135deg, #f8d7da 0%, #f1b0b7 100%);
+        color: #721c24;
+        padding: 15px 20px;
+        border-radius: 10px;
+        border: 2px solid #f1b0b7;
+        margin: 20px 0;
+        display: none;
+      }
+
+      @media (max-width: 768px) {
+        .controls-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .results-header {
+          flex-direction: column;
+          text-align: center;
+        }
+
+        .salary-table th,
+        .salary-table td {
+          padding: 10px 8px;
+          font-size: 14px;
+        }
+      }
+
+      .employee-info-preview {
+        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        border: 2px solid #2196f3;
+        border-radius: 10px;
+        padding: 15px;
+        margin-top: 15px;
+        display: none;
+      }
+
+      .employee-info-preview h4 {
+        color: #1976d2;
+        margin-bottom: 10px;
+      }
+
+      .info-row {
+        display: flex;
+        justify-content: space-between;
+        margin: 5px 0;
+        font-size: 14px;
+      }
+
+      .info-label {
+        font-weight: 600;
+        color: #424242;
+      }
+
+      .info-value {
+        color: #1976d2;
+        font-weight: 500;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Header -->
+      <div class="header">
+        <h1><i class="bx bx-line-chart"></i> Salary Analytics Dashboard</h1>
+        <p>
+          Calculate employee salaries based on attendance with precision and
+          ease
+        </p>
+      </div>
+
+      <!-- Controls Section -->
+      <div class="controls-section">
+        <div class="controls-grid">
+          <!-- Single Employee Calculation -->
+          <div class="control-group">
+            <h3><i class="bx bx-user"></i> Single Employee Calculation</h3>
+            <div class="form-group">
+              <label for="singleEmpId">Employee ID (Case Sensitive)</label>
+              <input
+                type="text"
+                id="singleEmpId"
+                placeholder="e.g., EMP001"
+                style="font-family: monospace"
+              />
+            </div>
+            <div class="form-group">
+              <label for="singleDaysPresent"
+                >Days Present (Decimals allowed)</label
+              >
+              <input
+                type="number"
+                id="singleDaysPresent"
+                placeholder="e.g., 20.5"
+                step="0.5"
+                min="0"
+              />
+            </div>
+            <div id="singleEmployeePreview" class="employee-info-preview"></div>
+          </div>
+
+          <!-- Month Configuration -->
+          <div class="control-group">
+            <h3><i class="bx bx-calendar"></i> Month Configuration</h3>
+            <div class="form-group">
+              <label for="monthYear">Select Month & Year</label>
+              <input type="month" id="monthYear" />
+            </div>
+            <div class="form-group">
+              <label for="totalWorkingDays">Total Working Days in Month</label>
+              <input
+                type="number"
+                id="totalWorkingDays"
+                placeholder="e.g., 22"
+                min="1"
+                max="31"
+              />
+            </div>
+            <div class="form-group">
+              <label for="calculationMode">Calculation Mode</label>
+              <select id="calculationMode">
+                <option value="single">Single Employee</option>
+                <option value="all">All Employees</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Bulk Upload -->
+          <div class="control-group">
+            <h3><i class="bx bx-upload"></i> Bulk Attendance Data</h3>
+            <div class="form-group">
+              <label for="bulkAttendanceData">Paste Attendance Data</label>
+              <textarea
+                id="bulkAttendanceData"
+                placeholder="Format: EMP001,20.5&#10;EMP002,21&#10;EMP003,19.5"
+                rows="5"
+                style="
+                  width: 100%;
+                  padding: 12px;
+                  border: 2px solid #e9ecef;
+                  border-radius: 10px;
+                  font-family: monospace;
+                  resize: vertical;
+                "
+              ></textarea>
+            </div>
+            <small style="color: #6c757d"
+              >Format: EmployeeID,DaysPresent (one per line)</small
+            >
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="actions-section">
+          <button class="btn btn-success" onclick="calculateSalary()">
+            <i class="bx bx-calculator"></i> Calculate Salary
+          </button>
+          <button class="btn btn-info" onclick="loadAllEmployees()">
+            <i class="bx bx-refresh"></i> Load All Employees
+          </button>
+          <button class="btn btn-warning" onclick="downloadSingleBill()">
+            <i class="bx bx-download"></i> Download Single Bill
+          </button>
+          <button class="btn btn-danger" onclick="downloadAllBills()">
+            <i class="bx bx-download"></i> Download All Bills
+          </button>
+        </div>
+
+        <!-- Messages -->
+        <div id="successMessage" class="success-message"></div>
+        <div id="errorMessage" class="error-message"></div>
+      </div>
+
+      <!-- Results Section -->
+      <div class="results-section">
+        <div class="results-header">
+          <h2><i class="bx bx-table"></i> Salary Calculation Results</h2>
+          <div>
+            <span
+              id="calculationDate"
+              style="color: #6c757d; font-size: 14px"
+            ></span>
+          </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="summary-cards">
+          <div class="summary-card">
+            <h4 id="totalEmployees">0</h4>
+            <p>Total Employees</p>
+          </div>
+          <div class="summary-card">
+            <h4 id="avgAttendance">0%</h4>
+            <p>Average Attendance</p>
+          </div>
+          <div class="summary-card">
+            <h4 id="totalSalaryPayout">₹0</h4>
+            <p>Total Salary Payout</p>
+          </div>
+          <div class="summary-card">
+            <h4 id="workingDaysDisplay">0</h4>
+            <p>Working Days</p>
+          </div>
+        </div>
+
+        <!-- Results Table -->
+        <div class="table-container">
+          <table class="salary-table">
+            <thead>
+              <tr>
+                <th>Employee ID</th>
+                <th>Employee Name</th>
+                <th>Basic Salary</th>
+                <th>Gross Salary</th>
+                <th>Days Present</th>
+                <th>Attendance %</th>
+                <th>Calculated Salary</th>
+                <th>Deductions</th>
+                <th>Net Salary</th>
+              </tr>
+            </thead>
+            <tbody id="salaryTableBody">
+              <tr>
+                <td colspan="9" class="loading">
+                  <i class="bx bx-loader-alt"></i><br />
+                  Load employee data to view salary calculations
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+      import {
+        getAnalytics,
+        logEvent,
+      } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+      import {
+        getDatabase,
+        ref,
+        get,
+      } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyB1wIsDf1qSLaIGyQvbri26z9e4ypxF-lw",
+        authDomain: "apikawachi.firebaseapp.com",
+        databaseURL:
+          "https://apikawachi-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "apikawachi",
+        storageBucket: "apikawachi.appspot.com",
+        messagingSenderId: "7573902945",
+        appId: "1:7573902945:web:be2c051ef0d0ceed787c20",
+        measurementId: "G-GT0F7K4NLP",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+      const database = getDatabase(app);
+
+      // Make Firebase available globally
+      window.firebaseApp = app;
+      window.firebaseDatabase = database;
+      window.firebaseAnalytics = analytics;
+      window.firebaseRef = ref;
+      window.firebaseGet = get;
+      window.firebaseLogEvent = logEvent;
+
+      console.log("🔥 Firebase initialized for Analytics");
+    </script>
+
+    <!-- XLSX library for Excel export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <script>
+      // Global variables
+      let allEmployees = [];
+      let calculationResults = [];
+      let currentMonth = "";
+      let currentYear = "";
+
+      // Authentication check
+      if (sessionStorage.getItem("isLoggedIn") !== "true") {
+        sessionStorage.setItem("redirectAfterLogin", window.location.pathname);
+        window.location.href = "login.html";
+      }
+
+      // Initialize page
+      document.addEventListener("DOMContentLoaded", function () {
+        // Set current month
+        const now = new Date();
+        document.getElementById("monthYear").value =
+          `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+
+        // Auto-calculate working days (assuming 22 working days per month)
+        document.getElementById("totalWorkingDays").value = 22;
+
+        // Update calculation date
+        document.getElementById("calculationDate").textContent =
+          `Calculation Date: ${now.toLocaleDateString()}`;
+
+        // Add event listeners
+        document
+          .getElementById("singleEmpId")
+          .addEventListener("input", previewSingleEmployee);
+        document
+          .getElementById("calculationMode")
+          .addEventListener("change", toggleCalculationMode);
+      });
+
+      // Preview single employee data
+      async function previewSingleEmployee() {
+        const empId = document.getElementById("singleEmpId").value.trim();
+        const previewDiv = document.getElementById("singleEmployeePreview");
+
+        if (!empId) {
+          previewDiv.style.display = "none";
+          return;
+        }
+
+        try {
+          const employeeRef = window.firebaseRef(
+            window.firebaseDatabase,
+            `employees/${empId}`,
+          );
+          const snapshot = await window.firebaseGet(employeeRef);
+
+          if (snapshot.exists()) {
+            const emp = snapshot.val();
+            previewDiv.innerHTML = `
+            <h4><i class='bx bx-user-check'></i> Employee Found</h4>
+            <div class="info-row">
+              <span class="info-label">Name:</span>
+              <span class="info-value">${emp.name}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Basic Salary:</span>
+              <span class="info-value">₹${emp.basicSalary?.toLocaleString()}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Gross Salary:</span>
+              <span class="info-value">₹${emp.grossSalary?.toLocaleString()}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Contact:</span>
+              <span class="info-value">${emp.contact || "N/A"}</span>
+            </div>
+          `;
+            previewDiv.style.display = "block";
+          } else {
+            previewDiv.innerHTML = `
+            <h4 style="color: #dc3545;"><i class='bx bx-user-x'></i> Employee Not Found</h4>
+            <p style="color: #6c757d; margin: 5px 0;">Employee ID "${empId}" does not exist in the database.</p>
+          `;
+            previewDiv.style.display = "block";
+          }
+        } catch (error) {
+          previewDiv.innerHTML = `
+          <h4 style="color: #dc3545;"><i class='bx bx-error'></i> Error</h4>
+          <p style="color: #6c757d; margin: 5px 0;">Failed to fetch employee data: ${error.message}</p>
+        `;
+          previewDiv.style.display = "block";
+        }
+      }
+
+      // Toggle calculation mode
+      function toggleCalculationMode() {
+        const mode = document.getElementById("calculationMode").value;
+        const singleSection = document.querySelector(
+          ".control-group:first-child",
+        );
+        const bulkSection = document.querySelector(".control-group:last-child");
+
+        if (mode === "single") {
+          singleSection.style.display = "block";
+          bulkSection.style.display = "none";
+        } else {
+          singleSection.style.display = "block";
+          bulkSection.style.display = "block";
+        }
+      }
+
+      // Load all employees from Firebase
+      async function loadAllEmployees() {
+        showMessage("Loading employees from Firebase...", "info");
+
+        try {
+          const employeesRef = window.firebaseRef(
+            window.firebaseDatabase,
+            "employees",
+          );
+          const snapshot = await window.firebaseGet(employeesRef);
+
+          if (snapshot.exists()) {
+            allEmployees = [];
+            snapshot.forEach((childSnapshot) => {
+              allEmployees.push({
+                ...childSnapshot.val(),
+              });
+            });
+
+            showMessage(
+              `Successfully loaded ${allEmployees.length} employees`,
+              "success",
+            );
+            updateSummaryCards();
+
+            // Log analytics
+            window.firebaseLogEvent(
+              window.firebaseAnalytics,
+              "employees_loaded_for_analytics",
+              {
+                count: allEmployees.length,
+              },
+            );
+          } else {
+            showMessage("No employees found in database", "error");
+            allEmployees = [];
+          }
+        } catch (error) {
+          console.error("Error loading employees:", error);
+          showMessage(`Error loading employees: ${error.message}`, "error");
+        }
+      }
+
+      // Calculate salary based on attendance
+      async function calculateSalary() {
+        const mode = document.getElementById("calculationMode").value;
+        const totalWorkingDays = parseInt(
+          document.getElementById("totalWorkingDays").value,
+        );
+        const monthYear = document.getElementById("monthYear").value;
+
+        if (!totalWorkingDays || totalWorkingDays <= 0) {
+          showMessage("Please enter valid total working days", "error");
+          return;
+        }
+
+        if (!monthYear) {
+          showMessage("Please select month and year", "error");
+          return;
+        }
+
+        currentMonth = monthYear;
+        calculationResults = [];
+
+        if (mode === "single") {
+          await calculateSingleEmployee(totalWorkingDays);
+        } else {
+          await calculateAllEmployees(totalWorkingDays);
+        }
+
+        displayResults();
+        updateSummaryCards();
+      }
+
+      // Calculate single employee salary
+      async function calculateSingleEmployee(totalWorkingDays) {
+        const empId = document.getElementById("singleEmpId").value.trim();
+        const daysPresent = parseFloat(
+          document.getElementById("singleDaysPresent").value,
+        );
+
+        if (!empId) {
+          showMessage("Please enter Employee ID", "error");
+          return;
+        }
+
+        if (isNaN(daysPresent) || daysPresent < 0) {
+          showMessage("Please enter valid days present", "error");
+          return;
+        }
+
+        if (daysPresent > totalWorkingDays) {
+          showMessage("Days present cannot exceed total working days", "error");
+          return;
+        }
+
+        try {
+          const employeeRef = window.firebaseRef(
+            window.firebaseDatabase,
+            `employees/${empId}`,
+          );
+          const snapshot = await window.firebaseGet(employeeRef);
+
+          if (snapshot.exists()) {
+            const emp = snapshot.val();
+            const result = calculateEmployeeSalary(
+              emp,
+              daysPresent,
+              totalWorkingDays,
+            );
+            calculationResults = [result];
+            showMessage(
+              "Single employee salary calculated successfully",
+              "success",
+            );
+          } else {
+            showMessage(`Employee ID "${empId}" not found`, "error");
+          }
+        } catch (error) {
+          showMessage(`Error calculating salary: ${error.message}`, "error");
+        }
+      }
+
+      // Calculate all employees salary
+      async function calculateAllEmployees(totalWorkingDays) {
+        if (allEmployees.length === 0) {
+          showMessage("Please load employees first", "error");
+          return;
+        }
+
+        const bulkData = document
+          .getElementById("bulkAttendanceData")
+          .value.trim();
+        const attendanceMap = new Map();
+
+        // Parse bulk attendance data
+        if (bulkData) {
+          const lines = bulkData.split("\n");
+          for (const line of lines) {
+            const [empId, days] = line.split(",").map((s) => s.trim());
+            if (empId && days) {
+              attendanceMap.set(empId, parseFloat(days));
+            }
+          }
+        }
+
+        calculationResults = [];
+
+        for (const emp of allEmployees) {
+          const daysPresent = attendanceMap.get(emp.empId) || 0;
+          const result = calculateEmployeeSalary(
+            emp,
+            daysPresent,
+            totalWorkingDays,
+          );
+          calculationResults.push(result);
+        }
+
+        showMessage(
+          `Calculated salaries for ${calculationResults.length} employees`,
+          "success",
+        );
+
+        // Log analytics
+        window.firebaseLogEvent(
+          window.firebaseAnalytics,
+          "bulk_salary_calculated",
+          {
+            employee_count: calculationResults.length,
+            total_working_days: totalWorkingDays,
+          },
+        );
+      }
+
+      // Calculate individual employee salary
+      function calculateEmployeeSalary(
+        employee,
+        daysPresent,
+        totalWorkingDays,
+      ) {
+        const basicSalary = employee.basicSalary || 0;
+        const grossSalary = employee.grossSalary || basicSalary;
+
+        // Calculate per day salary
+        const perDaySalary = grossSalary / totalWorkingDays;
+
+        // Calculate attendance percentage
+        const attendancePercentage = (daysPresent / totalWorkingDays) * 100;
+
+        // Calculate salary based on attendance
+        const calculatedSalary = perDaySalary * daysPresent;
+
+        // Calculate deductions (absent days)
+        const absentDays = totalWorkingDays - daysPresent;
+        const deductions = perDaySalary * absentDays;
+
+        // Net salary
+        const netSalary = calculatedSalary;
+
+        return {
+          empId: employee.empId,
+          name: employee.name || "N/A",
+          contact: employee.contact || "N/A",
+          email: employee.email || "N/A",
+          basicSalary: basicSalary,
+          grossSalary: grossSalary,
+          daysPresent: daysPresent,
+          totalWorkingDays: totalWorkingDays,
+          attendancePercentage: attendancePercentage,
+          perDaySalary: perDaySalary,
+          calculatedSalary: calculatedSalary,
+          deductions: deductions,
+          netSalary: netSalary,
+          hasCompleteData: !!(
+            employee.name &&
+            employee.contact &&
+            employee.email &&
+            basicSalary > 0
+          ),
+        };
+      }
+
+      // Display calculation results
+      function displayResults() {
+        const tbody = document.getElementById("salaryTableBody");
+        tbody.innerHTML = "";
+
+        if (calculationResults.length === 0) {
+          tbody.innerHTML = `
+          <tr>
+            <td colspan="9" class="loading">
+              No calculation results to display
+            </td>
+          </tr>
+        `;
+          return;
+        }
+
+        calculationResults.forEach((result) => {
+          const row = document.createElement("tr");
+
+          if (!result.hasCompleteData) {
+            row.style.opacity = "0.6";
+          }
+
+          row.innerHTML = `
+          <td><span class="employee-id">${result.empId}</span></td>
+          <td>${result.hasCompleteData ? result.name : '<span class="missing-data">-</span>'}</td>
+          <td>${result.hasCompleteData ? "₹" + result.basicSalary.toLocaleString() : '<span class="missing-data">-</span>'}</td>
+          <td>${result.hasCompleteData ? "₹" + result.grossSalary.toLocaleString() : '<span class="missing-data">-</span>'}</td>
+          <td><span class="attendance-badge">${result.daysPresent}/${result.totalWorkingDays}</span></td>
+          <td>${result.attendancePercentage.toFixed(1)}%</td>
+          <td><span class="salary-amount">₹${result.calculatedSalary.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></td>
+          <td style="color: #dc3545;">₹${result.deductions.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+          <td><span class="salary-amount">₹${result.netSalary.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></td>
+        `;
+
+          tbody.appendChild(row);
+        });
+      }
+
+      // Update summary cards
+      function updateSummaryCards() {
+        const totalEmployees = calculationResults.length || allEmployees.length;
+        const totalWorkingDays =
+          parseInt(document.getElementById("totalWorkingDays").value) || 0;
+
+        document.getElementById("totalEmployees").textContent = totalEmployees;
+        document.getElementById("workingDaysDisplay").textContent =
+          totalWorkingDays;
+
+        if (calculationResults.length > 0) {
+          const totalAttendance = calculationResults.reduce(
+            (sum, r) => sum + r.attendancePercentage,
+            0,
+          );
+          const avgAttendance = totalAttendance / calculationResults.length;
+
+          const totalPayout = calculationResults.reduce(
+            (sum, r) => sum + r.netSalary,
+            0,
+          );
+
+          document.getElementById("avgAttendance").textContent =
+            avgAttendance.toFixed(1) + "%";
+          document.getElementById("totalSalaryPayout").textContent =
+            "₹" + totalPayout.toLocaleString();
+        } else {
+          document.getElementById("avgAttendance").textContent = "0%";
+          document.getElementById("totalSalaryPayout").textContent = "₹0";
+        }
+      }
+
+      // Download single employee bill
+      function downloadSingleBill() {
+        const empId = document.getElementById("singleEmpId").value.trim();
+
+        if (!empId) {
+          showMessage(
+            "Please enter Employee ID for single bill download",
+            "error",
+          );
+          return;
+        }
+
+        const employeeResult = calculationResults.find(
+          (r) => r.empId === empId,
+        );
+
+        if (!employeeResult) {
+          showMessage(
+            "Please calculate salary first for this employee",
+            "error",
+          );
+          return;
+        }
+
+        const wb = XLSX.utils.book_new();
+
+        // Create detailed bill
+        const billData = [
+          ["SALARY BILL"],
+          [""],
+          ["Employee Information"],
+          ["Employee ID", employeeResult.empId],
+          ["Employee Name", employeeResult.name],
+          ["Contact", employeeResult.contact],
+          ["Email", employeeResult.email],
+          [""],
+          ["Salary Calculation"],
+          ["Month/Year", currentMonth],
+          ["Basic Salary", "₹" + employeeResult.basicSalary.toLocaleString()],
+          ["Gross Salary", "₹" + employeeResult.grossSalary.toLocaleString()],
+          ["Total Working Days", employeeResult.totalWorkingDays],
+          ["Days Present", employeeResult.daysPresent],
+          [
+            "Attendance Percentage",
+            employeeResult.attendancePercentage.toFixed(2) + "%",
+          ],
+          [
+            "Per Day Salary",
+            "₹" +
+              employeeResult.perDaySalary.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+              }),
+          ],
+          [""],
+          ["Final Calculation"],
+          [
+            "Calculated Salary",
+            "₹" +
+              employeeResult.calculatedSalary.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+              }),
+          ],
+          [
+            "Deductions (Absent Days)",
+            "₹" +
+              employeeResult.deductions.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+              }),
+          ],
+          [
+            "Net Salary",
+            "₹" +
+              employeeResult.netSalary.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+              }),
+          ],
+          [""],
+          ["Generated on", new Date().toLocaleString()],
+        ];
+
+        const ws = XLSX.utils.aoa_to_sheet(billData);
+        XLSX.utils.book_append_sheet(wb, ws, `${employeeResult.empId}_Bill`);
+
+        const filename = `${employeeResult.empId}_Salary_Bill_${currentMonth.replace("-", "_")}.xlsx`;
+        XLSX.writeFile(wb, filename);
+
+        showMessage(`Single bill downloaded: ${filename}`, "success");
+
+        // Log analytics
+        window.firebaseLogEvent(
+          window.firebaseAnalytics,
+          "single_bill_downloaded",
+          {
+            empId: employeeResult.empId,
+          },
+        );
+      }
+
+      // Download all employee bills
+      function downloadAllBills() {
+        if (calculationResults.length === 0) {
+          showMessage("Please calculate salaries first", "error");
+          return;
+        }
+
+        const wb = XLSX.utils.book_new();
+
+        // Summary sheet
+        const summaryData = [
+          ["SALARY SUMMARY - " + (currentMonth || "Current Month")],
+          [""],
+          ["Generated on:", new Date().toLocaleString()],
+          ["Total Employees:", calculationResults.length],
+          ["Total Working Days:", calculationResults[0]?.totalWorkingDays || 0],
+          [""],
+          [
+            "Employee ID",
+            "Name",
+            "Contact",
+            "Email",
+            "Basic Salary",
+            "Gross Salary",
+            "Days Present",
+            "Attendance %",
+            "Calculated Salary",
+            "Deductions",
+            "Net Salary",
+          ],
+        ];
+
+        let totalPayout = 0;
+        calculationResults.forEach((result) => {
+          summaryData.push([
+            result.empId,
+            result.hasCompleteData ? result.name : "-",
+            result.hasCompleteData ? result.contact : "-",
+            result.hasCompleteData ? result.email : "-",
+            result.hasCompleteData ? result.basicSalary : "-",
+            result.hasCompleteData ? result.grossSalary : "-",
+            result.daysPresent,
+            result.attendancePercentage.toFixed(2) + "%",
+            result.calculatedSalary.toFixed(2),
+            result.deductions.toFixed(2),
+            result.netSalary.toFixed(2),
+          ]);
+          totalPayout += result.netSalary;
+        });
+
+        summaryData.push([
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "Total Payout:",
+          totalPayout.toFixed(2),
+        ]);
+
+        const summaryWs = XLSX.utils.aoa_to_sheet(summaryData);
+        XLSX.utils.book_append_sheet(wb, summaryWs, "Summary");
+
+        // Individual sheets for employees with complete data
+        calculationResults
+          .filter((r) => r.hasCompleteData)
+          .forEach((result) => {
+            const billData = [
+              ["SALARY BILL"],
+              [""],
+              ["Employee Information"],
+              ["Employee ID", result.empId],
+              ["Employee Name", result.name],
+              ["Contact", result.contact],
+              ["Email", result.email],
+              [""],
+              ["Salary Calculation"],
+              ["Month/Year", currentMonth],
+              ["Basic Salary", result.basicSalary],
+              ["Gross Salary", result.grossSalary],
+              ["Total Working Days", result.totalWorkingDays],
+              ["Days Present", result.daysPresent],
+              [
+                "Attendance Percentage",
+                result.attendancePercentage.toFixed(2) + "%",
+              ],
+              ["Per Day Salary", result.perDaySalary.toFixed(2)],
+              [""],
+              ["Final Calculation"],
+              ["Calculated Salary", result.calculatedSalary.toFixed(2)],
+              ["Deductions", result.deductions.toFixed(2)],
+              ["Net Salary", result.netSalary.toFixed(2)],
+              [""],
+              ["Generated on", new Date().toLocaleString()],
+            ];
+
+            const ws = XLSX.utils.aoa_to_sheet(billData);
+            XLSX.utils.book_append_sheet(wb, ws, result.empId);
+          });
+
+        const filename = `All_Salary_Bills_${(currentMonth || "Current").replace("-", "_")}.xlsx`;
+        XLSX.writeFile(wb, filename);
+
+        showMessage(`All bills downloaded: ${filename}`, "success");
+
+        // Log analytics
+        window.firebaseLogEvent(
+          window.firebaseAnalytics,
+          "all_bills_downloaded",
+          {
+            employee_count: calculationResults.length,
+            month: currentMonth,
+          },
+        );
+      }
+
+      // Show message to user
+      function showMessage(message, type) {
+        const successDiv = document.getElementById("successMessage");
+        const errorDiv = document.getElementById("errorMessage");
+
+        // Hide both first
+        successDiv.style.display = "none";
+        errorDiv.style.display = "none";
+
+        if (type === "success") {
+          successDiv.textContent = message;
+          successDiv.style.display = "block";
+          setTimeout(() => (successDiv.style.display = "none"), 5000);
+        } else if (type === "error") {
+          errorDiv.textContent = message;
+          errorDiv.style.display = "block";
+          setTimeout(() => (errorDiv.style.display = "none"), 5000);
+        } else {
+          // Info message (temporary)
+          successDiv.textContent = message;
+          successDiv.style.display = "block";
+          setTimeout(() => (successDiv.style.display = "none"), 3000);
+        }
+      }
+
+      // Make functions globally available
+      window.calculateSalary = calculateSalary;
+      window.loadAllEmployees = loadAllEmployees;
+      window.downloadSingleBill = downloadSingleBill;
+      window.downloadAllBills = downloadAllBills;
+      window.previewSingleEmployee = previewSingleEmployee;
+      window.toggleCalculationMode = toggleCalculationMode;
+    </script>
+  </body>
+</html>
+<script>
+                window.addEventListener('message', (event) => {
+                  const { data } = event;
+                  if (!data?.type) {
+                    return;
+                  }
+
+                  switch (data.type) {
+                    case 'builder.evaluate': {
+                      const text = data.data.text;
+                      const args = data.data.arguments || [];
+                      const id = data.data.id;
+                      // tslint:disable-next-line:no-function-constructor-with-string-args
+                      const fn = new Function(text);
+                      let result;
+                      let error = null;
+                      try {
+                        // eslint-disable-next-line prefer-spread
+                        result = fn.apply(null, args);
+                      } catch (err) {
+                        error = err;
+                      }
+
+                      if (error) {
+                        window.parent?.postMessage(
+                          {
+                            type: 'builder.evaluateError',
+                            data: { id, error: error.message },
+                          },
+                          '*'
+                        );
+                      } else {
+                        if (result && typeof result.then === 'function') {
+                          result
+                            .then((finalResult) => {
+                              window.parent?.postMessage(
+                                {
+                                  type: 'builder.evaluateResult',
+                                  data: { id, result: finalResult },
+                                },
+                                '*'
+                              );
+                            })
+                            .catch(console.error);
+                        } else {
+                          window.parent?.postMessage(
+                            {
+                              type: 'builder.evaluateResult',
+                              data: { result, id },
+                            },
+                            '*'
+                          );
+                        }
+                      }
+                      break;
+                    }
+                  }
+                });
+
+                window.addEventListener('error', (event) => {
+                  window.parent?.postMessage(
+                    {
+                      type: 'builder.interactiveFrameError',
+                      data: { message: event.error?.stack || event.error?.message || event.message },
+                    },
+                    '*'
+                  );
+                });
+                
+                setTimeout(() => {
+                  const viteError = document.querySelector('vite-error-overlay')?.shadowRoot?.textContent;
+                  if (typeof viteError === 'string') {
+                    window.parent?.postMessage(
+                      {
+                        type: 'builder.interactiveFrameError',
+                        data: { message: viteError },
+                      },
+                      '*'
+                    );
+                  }
+                }, 500);
+
+              </script>

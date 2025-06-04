@@ -1,0 +1,554 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Boxicons -->
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- My CSS -->
+    <link rel="stylesheet" href="style.css" />
+
+    <title>AdminHub</title>
+  </head>
+  <body>
+    <!-- SIDEBAR -->
+    <section id="sidebar">
+      <a href="#" class="brand">
+        <i class="bx bxs-smile bx-lg"></i>
+        <span class="text">AdminHub</span>
+      </a>
+      <ul class="side-menu top">
+        <li class="active">
+          <a href="#" onclick="scrollToTop()">
+            <i class="bx bxs-dashboard bx-sm"></i>
+            <span class="text">Dashboard</span>
+          </a>
+        </li>
+
+        <li>
+          <a href="#">
+            <i class="bx bxs-shopping-bag-alt bx-sm"></i>
+            <span class="text">My Store</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" onclick="loadIframe('analytics.html')">
+            <i class="bx bxs-doughnut-chart bx-sm"></i>
+            <span class="text">Analytics</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://web.whatsapp.com/">
+            <i class="bx bxs-message-dots bx-sm"></i>
+            <span class="text">Message</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" onclick="loadIframe('biometric_app.html')">
+            <i class="bx bxs-message-dots bx-sm"></i>
+            <span class="text">Mark Attendance</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" onclick="loadIframe('employee_data.html')">
+            <i class="bx bxs-user-detail bx-sm"></i>
+            <span class="text">Team</span>
+          </a>
+        </li>
+      </ul>
+      <ul class="side-menu bottom">
+        <li>
+          <a href="settings.html">
+            <i class="bx bxs-cog bx-sm bx-spin-hover"></i>
+            <span class="text">Settings</span>
+          </a>
+        </li>
+        <li>
+          <a href="login.html" class="logout">
+            <i class="bx bx-power-off bx-sm bx-burst-hover"></i>
+            <span class="text">Logout</span>
+          </a>
+        </li>
+      </ul>
+    </section>
+    <!-- SIDEBAR -->
+
+    <!-- CONTENT -->
+    <section id="content">
+      <!-- NAVBAR -->
+      <nav>
+        <i class="bx bx-menu bx-sm"></i>
+        <a href="#" class="nav-link">Categories</a>
+        <form action="#">
+          <div class="form-input">
+            <input type="search" placeholder="Search..." />
+            <button type="submit" class="search-btn">
+              <i class="bx bx-search"></i>
+            </button>
+          </div>
+        </form>
+        <input type="checkbox" class="checkbox" id="switch-mode" hidden />
+        <label class="swith-lm" for="switch-mode">
+          <i class="bx bxs-moon"></i>
+          <i class="bx bx-sun"></i>
+          <div class="ball"></div>
+        </label>
+        <a href="#" class="notification" id="notificationIcon">
+          <i class="bx bxs-bell bx-tada-hover"></i>
+          <span class="num">8</span>
+        </a>
+        <div class="notification-menu" id="notificationMenu">
+          <ul>
+            <li>New message from John</li>
+            <li>Your order has been shipped</li>
+            <li>New comment on your post</li>
+            <li>Update available for your app</li>
+            <li>Reminder: Meeting at 3PM</li>
+          </ul>
+        </div>
+        <a href="#" class="profile" id="profileIcon">
+          <img
+            src="https://lh3.googleusercontent.com/a/AEdFTp6g51PKtZfMh13gW8LmVfZqDk3AecsJ7Po_jJv8=s96-c"
+            alt="Profile"
+          />
+        </a>
+        <div class="profile-menu" id="profileMenu">
+          <ul>
+            <li><a href="myprofile.html">My Profile</a></li>
+            <li><a href="settings.html">Settings</a></li>
+            <li><a href="login.html">Log Out</a></li>
+            <li><a href="clock.html">Check Out this Page</a></li>
+          </ul>
+        </div>
+      </nav>
+      <!-- NAVBAR -->
+
+      <!-- MAIN -->
+      <main>
+        <div class="head-title">
+          <div class="left">
+            <h1>Dashboard</h1>
+            <ul class="breadcrumb">
+              <li><a href="#">Dashboard</a></li>
+              <li><i class="bx bx-chevron-right"></i></li>
+              <li><a class="active" href="#">Home</a></li>
+            </ul>
+          </div>
+          <a href="#" class="btn-download">
+            <i class="bx bxs-cloud-download bx-fade-down-hover"></i>
+            <span class="text">Get PDF</span>
+          </a>
+        </div>
+
+        <ul class="box-info">
+          <li>
+            <i class="bx bxs-calendar-check"></i>
+            <span class="text">
+              <h3>10</h3>
+              <p>New Bid(s)</p>
+            </span>
+          </li>
+          <li>
+            <i class="bx bxs-group"></i>
+            <span class="text">
+              <h3>100</h3>
+              <!-- This is the part we will update -->
+              <p>Employees</p>
+            </span>
+          </li>
+
+          <li>
+            <i class="bx bxs-dollar-circle"></i>
+            <span class="text">
+              <h3>$69.00</h3>
+              <p>Total Sales</p>
+            </span>
+          </li>
+        </ul>
+
+        <div class="table-data">
+          <div class="order">
+            <div class="head">
+              <h3>Employees</h3>
+              <i class="bx bx-search"></i>
+              <i class="bx bx-filter"></i>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Employee</th>
+                  <th>Date Joined</th>
+                  <th>Gross Salary</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <img src="https://placehold.co/600x400/png" />
+                    <p>Micheal John</p>
+                  </td>
+                  <td>18-10-2021</td>
+                  <td><span class="status completed">Completed</span></td>
+                </tr>
+                <tr>
+                  <td>
+                    <img src="https://placehold.co/600x400/png" />
+                    <p>Ryan Doe</p>
+                  </td>
+                  <td>01-06-2022</td>
+                  <td><span class="status pending">Pending</span></td>
+                </tr>
+                <tr>
+                  <td>
+                    <img src="https://placehold.co/600x400/png" />
+                    <p>Tarry White</p>
+                  </td>
+                  <td>14-10-2021</td>
+                  <td><span class="status process">Process</span></td>
+                </tr>
+                <tr>
+                  <td>
+                    <img src="https://placehold.co/600x400/png" />
+                    <p>Selma</p>
+                  </td>
+                  <td>01-02-2023</td>
+                  <td><span class="status pending">Pending</span></td>
+                </tr>
+                <tr>
+                  <td>
+                    <img src="https://placehold.co/600x400/png" />
+                    <p>Andreas Doe</p>
+                  </td>
+                  <td>31-10-2021</td>
+                  <td><span class="status completed">Completed</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="todo">
+            <div class="head">
+              <h3>Tasks</h3>
+              <i class="bx bx-plus icon"></i>
+              <i class="bx bx-filter"></i>
+            </div>
+            <ul class="todo-list">
+              <li class="completed">
+                <p>Check Inventory</p>
+                <i class="bx bx-dots-vertical-rounded"></i>
+              </li>
+              <li class="completed">
+                <p>Manage Delivery Team</p>
+                <i class="bx bx-dots-vertical-rounded"></i>
+              </li>
+              <li class="not-completed">
+                <p>Contact Selma: Confirm Delivery</p>
+                <i class="bx bx-dots-vertical-rounded"></i>
+              </li>
+              <li class="completed">
+                <p>Update Shop Catalogue</p>
+                <i class="bx bx-dots-vertical-rounded"></i>
+              </li>
+              <li class="not-completed">
+                <p>Count Profit Analytics</p>
+                <i class="bx bx-dots-vertical-rounded"></i>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- IFRAME CONTAINER FOR DYNAMIC CONTENT -->
+        <div
+          id="iframeContainer"
+          style="display: none; height: 100%; margin-top: 20px"
+        >
+          <iframe
+            id="iframeLoader"
+            src=""
+            width="100%"
+            height="600px"
+            style="border: none"
+          ></iframe>
+        </div>
+      </main>
+      <!-- MAIN -->
+    </section>
+    <!-- CONTENT -->
+
+    <script>
+      // Redirect unauthenticated users
+      if (sessionStorage.getItem("isLoggedIn") !== "true") {
+        sessionStorage.setItem("redirectAfterLogin", window.location.pathname);
+        window.location.href = "login.html";
+      }
+
+      // Load iframe into main content
+      function loadIframe(url) {
+        const container = document.getElementById("iframeContainer");
+        const iframe = document.getElementById("iframeLoader");
+        iframe.src = url;
+        container.style.display = "block";
+        container.scrollIntoView({ behavior: "smooth" });
+      }
+
+      // Hide iframe and clear src
+      function hideIframe() {
+        const container = document.getElementById("iframeContainer");
+        const iframe = document.getElementById("iframeLoader");
+        iframe.src = "";
+        container.style.display = "none";
+      }
+
+      // Make hideIframe available to iframe content
+      window.hideIframe = hideIframe;
+
+      // Scroll to top function
+      function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+
+        // Hide iframe if it's open
+        if (typeof hideIframe === "function") {
+          hideIframe();
+        }
+      }
+    </script>
+    <!-- Firebase SDK -->
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+      import {
+        getAnalytics,
+        logEvent,
+      } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+      import {
+        getDatabase,
+        ref,
+        get,
+        onValue,
+      } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyB1wIsDf1qSLaIGyQvbri26z9e4ypxF-lw",
+        authDomain: "apikawachi.firebaseapp.com",
+        databaseURL:
+          "https://apikawachi-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "apikawachi",
+        storageBucket: "apikawachi.appspot.com",
+        messagingSenderId: "7573902945",
+        appId: "1:7573902945:web:be2c051ef0d0ceed787c20",
+        measurementId: "G-GT0F7K4NLP",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+      const database = getDatabase(app);
+
+      // Make Firebase available globally
+      window.firebaseApp = app;
+      window.firebaseDatabase = database;
+      window.firebaseAnalytics = analytics;
+
+      // Load and display employee data from Firebase in the dashboard
+      async function loadEmployeesFromFirebase() {
+        try {
+          const employeesRef = ref(database, "employees");
+          const snapshot = await get(employeesRef);
+
+          const tableBody = document.querySelector(
+            ".table-data .order table tbody",
+          );
+          const workerCountEl = document
+            .querySelector("li i.bxs-group")
+            .parentElement.querySelector("h3");
+
+          if (!tableBody || !workerCountEl) {
+            console.warn("Dashboard elements not found");
+            return;
+          }
+
+          tableBody.innerHTML = ""; // Clear existing rows
+
+          if (snapshot.exists()) {
+            const employees = [];
+            snapshot.forEach((childSnapshot) => {
+              employees.push({
+                id: childSnapshot.key,
+                ...childSnapshot.val(),
+              });
+            });
+
+            // Display employees in table
+            employees.forEach((emp) => {
+              const tr = document.createElement("tr");
+              tr.innerHTML = `
+						<td><img src="https://placehold.co/40x40" alt="user"><p>${emp.name} (${emp.empId})</p></td>
+						<td>${formatDate(emp.joinDate)}</td>
+						<td><span class="status completed">₹${emp.grossSalary?.toLocaleString() || emp.basicSalary?.toLocaleString() || "N/A"}</span></td>
+					`;
+              tableBody.appendChild(tr);
+            });
+
+            // Update worker count in dashboard
+            workerCountEl.textContent = employees.length;
+
+            // Log analytics
+            logEvent(analytics, "dashboard_loaded", {
+              employee_count: employees.length,
+            });
+          } else {
+            // No employees found
+            workerCountEl.textContent = "0";
+            tableBody.innerHTML =
+              '<tr><td colspan="3" style="text-align: center; color: #aaa;">No employees found. <a href="employee_data.html">Add employees</a></td></tr>';
+          }
+        } catch (error) {
+          console.error("Error loading employee data from Firebase:", error);
+          const tableBody = document.querySelector(
+            ".table-data .order table tbody",
+          );
+          const workerCountEl = document
+            .querySelector("li i.bxs-group")
+            .parentElement.querySelector("h3");
+
+          if (tableBody) {
+            tableBody.innerHTML =
+              '<tr><td colspan="3" style="text-align: center; color: #ff4757;">Error loading employee data</td></tr>';
+          }
+          if (workerCountEl) {
+            workerCountEl.textContent = "Error";
+          }
+        }
+      }
+
+      // Set up real-time listener for employee data
+      function setupEmployeeListener() {
+        const employeesRef = ref(database, "employees");
+        onValue(employeesRef, (snapshot) => {
+          loadEmployeesFromFirebase();
+        });
+      }
+
+      // Utility function to format dates
+      function formatDate(dateString) {
+        try {
+          const date = new Date(dateString);
+          return date
+            .toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+            })
+            .replace(/\//g, "-");
+        } catch (error) {
+          return dateString || "N/A";
+        }
+      }
+
+      // Initialize when DOM is loaded
+      document.addEventListener("DOMContentLoaded", () => {
+        loadEmployeesFromFirebase();
+        setupEmployeeListener();
+      });
+
+      // Load immediately if DOM already loaded
+      if (document.readyState === "loading") {
+        // Wait for DOMContentLoaded
+      } else {
+        loadEmployeesFromFirebase();
+        setupEmployeeListener();
+      }
+    </script>
+
+    <script src="script.js"></script>
+  </body>
+</html>
+<script>
+                window.addEventListener('message', (event) => {
+                  const { data } = event;
+                  if (!data?.type) {
+                    return;
+                  }
+
+                  switch (data.type) {
+                    case 'builder.evaluate': {
+                      const text = data.data.text;
+                      const args = data.data.arguments || [];
+                      const id = data.data.id;
+                      // tslint:disable-next-line:no-function-constructor-with-string-args
+                      const fn = new Function(text);
+                      let result;
+                      let error = null;
+                      try {
+                        // eslint-disable-next-line prefer-spread
+                        result = fn.apply(null, args);
+                      } catch (err) {
+                        error = err;
+                      }
+
+                      if (error) {
+                        window.parent?.postMessage(
+                          {
+                            type: 'builder.evaluateError',
+                            data: { id, error: error.message },
+                          },
+                          '*'
+                        );
+                      } else {
+                        if (result && typeof result.then === 'function') {
+                          result
+                            .then((finalResult) => {
+                              window.parent?.postMessage(
+                                {
+                                  type: 'builder.evaluateResult',
+                                  data: { id, result: finalResult },
+                                },
+                                '*'
+                              );
+                            })
+                            .catch(console.error);
+                        } else {
+                          window.parent?.postMessage(
+                            {
+                              type: 'builder.evaluateResult',
+                              data: { result, id },
+                            },
+                            '*'
+                          );
+                        }
+                      }
+                      break;
+                    }
+                  }
+                });
+
+                window.addEventListener('error', (event) => {
+                  window.parent?.postMessage(
+                    {
+                      type: 'builder.interactiveFrameError',
+                      data: { message: event.error?.stack || event.error?.message || event.message },
+                    },
+                    '*'
+                  );
+                });
+                
+                setTimeout(() => {
+                  const viteError = document.querySelector('vite-error-overlay')?.shadowRoot?.textContent;
+                  if (typeof viteError === 'string') {
+                    window.parent?.postMessage(
+                      {
+                        type: 'builder.interactiveFrameError',
+                        data: { message: viteError },
+                      },
+                      '*'
+                    );
+                  }
+                }, 500);
+
+              </script>
