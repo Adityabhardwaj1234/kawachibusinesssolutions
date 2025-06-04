@@ -15,27 +15,23 @@ allSideMenu.forEach(item => {
 const menuBar = document.querySelector('#content nav .bx.bx-menu');
 const sidebar = document.getElementById('sidebar');
 
-// Sidebar toggle işlemi
 menuBar.addEventListener('click', function () {
     sidebar.classList.toggle('hide');
 });
 
-// Sayfa yüklendiğinde ve boyut değişimlerinde sidebar durumunu ayarlama
 function adjustSidebar() {
     if (window.innerWidth <= 576) {
-        sidebar.classList.add('hide');  // 576px ve altı için sidebar gizli
+        sidebar.classList.add('hide');
         sidebar.classList.remove('show');
     } else {
-        sidebar.classList.remove('hide');  // 576px'den büyükse sidebar görünür
+        sidebar.classList.remove('hide');
         sidebar.classList.add('show');
     }
 }
 
-// Sayfa yüklendiğinde ve pencere boyutu değiştiğinde sidebar durumunu ayarlama
 window.addEventListener('load', adjustSidebar);
 window.addEventListener('resize', adjustSidebar);
 
-// Arama butonunu toggle etme
 const searchButton = document.querySelector('#content nav form .form-input button');
 const searchButtonIcon = document.querySelector('#content nav form .form-input button .bx');
 const searchForm = document.querySelector('#content nav form');
@@ -50,7 +46,7 @@ searchButton.addEventListener('click', function (e) {
             searchButtonIcon.classList.replace('bx-x', 'bx-search');
         }
     }
-})
+});
 
 // Dark Mode Switch
 const switchMode = document.getElementById('switch-mode');
@@ -61,7 +57,71 @@ switchMode.addEventListener('change', function () {
     } else {
         document.body.classList.remove('dark');
     }
-})
+});
+
+// Task Management
+let tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+const todoList = document.querySelector('.todo-list');
+const taskInput = document.querySelector('#newTaskInput');
+const addTaskBtn = document.querySelector('#addTaskBtn');
+
+function renderTasks() {
+    if (!todoList) return;
+    
+    todoList.innerHTML = '';
+    tasks.forEach((task, index) => {
+        const li = document.createElement('li');
+        li.className = task.completed ? 'completed' : 'not-completed';
+        li.innerHTML = `
+            <div class="task-content">
+                <input type="checkbox" ${task.completed ? 'checked' : ''} 
+                       onchange="toggleTask(${index})">
+                <p>${task.text}</p>
+            </div>
+            <div class="task-actions">
+                <span class="task-date">${task.date}</span>
+                <i class="bx bx-dots-vertical-rounded" onclick="deleteTask(${index})"></i>
+            </div>
+        `;
+        todoList.appendChild(li);
+    });
+    
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+}
+
+function addTask(text) {
+    if (!text.trim()) return;
+    tasks.unshift({
+        text: text,
+        completed: false,
+        date: new Date().toLocaleDateString()
+    });
+    renderTasks();
+    addNotification('New task added', 'info');
+}
+
+function toggleTask(index) {
+    tasks[index].completed = !tasks[index].completed;
+    renderTasks();
+    addNotification(`Task ${tasks[index].completed ? 'completed' : 'uncompleted'}`, 'success');
+}
+
+function deleteTask(index) {
+    const taskText = tasks[index].text;
+    tasks.splice(index, 1);
+    renderTasks();
+    addNotification(`Task "${taskText}" deleted`, 'error');
+}
+
+if (addTaskBtn) {
+    addTaskBtn.addEventListener('click', () => {
+        const text = taskInput.value.trim();
+        if (text) {
+            addTask(text);
+            taskInput.value = '';
+        }
+    });
+}
 
 // Notification System
 let notificationCount = 0;
@@ -69,7 +129,6 @@ const notificationList = document.querySelector('.notification-menu ul');
 const notificationBadge = document.querySelector('.notification .num');
 
 function addNotification(message, type = 'info') {
-    // Create notification element
     const li = document.createElement('li');
     li.className = `notification-item ${type}`;
     li.innerHTML = `
@@ -79,14 +138,10 @@ function addNotification(message, type = 'info') {
         </div>
     `;
 
-    // Add to notification list
     notificationList.insertBefore(li, notificationList.firstChild);
-
-    // Update notification count
     notificationCount++;
     notificationBadge.textContent = notificationCount;
 
-    // Auto remove after 5 seconds
     setTimeout(() => {
         li.classList.add('fade-out');
         setTimeout(() => {
@@ -102,23 +157,19 @@ if (window.firebaseDatabase) {
     const employeesRef = window.firebaseRef(window.firebaseDatabase, 'employees');
     const attendanceRef = window.firebaseRef(window.firebaseDatabase, 'attendance');
 
-    // Listen for employee changes
     window.onValue(employeesRef, (snapshot) => {
         const data = snapshot.val();
         if (data) {
-            // Compare with previous data to determine changes
             if (window.previousEmployeeData) {
                 const newIds = Object.keys(data);
                 const oldIds = Object.keys(window.previousEmployeeData);
 
-                // Check for new employees
                 newIds.forEach(id => {
                     if (!oldIds.includes(id)) {
                         addNotification(`New employee added: ${data[id].name}`, 'success');
                     }
                 });
 
-                // Check for deleted employees
                 oldIds.forEach(id => {
                     if (!newIds.includes(id)) {
                         addNotification(`Employee removed: ${window.previousEmployeeData[id].name}`, 'error');
@@ -129,7 +180,6 @@ if (window.firebaseDatabase) {
         }
     });
 
-    // Listen for attendance marks
     window.onValue(attendanceRef, (snapshot) => {
         const data = snapshot.val();
         if (data) {
@@ -144,19 +194,17 @@ if (window.firebaseDatabase) {
     });
 }
 
-// Notification Menu Toggle
+// Menu Toggles
 document.querySelector('.notification').addEventListener('click', function () {
     document.querySelector('.notification-menu').classList.toggle('show');
-    document.querySelector('.profile-menu').classList.remove('show'); // Close profile menu if open
+    document.querySelector('.profile-menu').classList.remove('show');
 });
 
-// Profile Menu Toggle
 document.querySelector('.profile').addEventListener('click', function () {
     document.querySelector('.profile-menu').classList.toggle('show');
-    document.querySelector('.notification-menu').classList.remove('show'); // Close notification menu if open
+    document.querySelector('.notification-menu').classList.remove('show');
 });
 
-// Close menus if clicked outside
 window.addEventListener('click', function (e) {
     if (!e.target.closest('.notification') && !e.target.closest('.profile')) {
         document.querySelector('.notification-menu').classList.remove('show');
@@ -164,30 +212,17 @@ window.addEventListener('click', function (e) {
     }
 });
 
-// Menülerin açılıp kapanması için fonksiyon
-function toggleMenu(menuId) {
-    var menu = document.getElementById(menuId);
-    var allMenus = document.querySelectorAll('.menu');
-
-    // Diğer tüm menüleri kapat
-    allMenus.forEach(function(m) {
-        if (m !== menu) {
-            m.style.display = 'none';
-        }
-    });
-
-    // Tıklanan menü varsa aç, yoksa kapat
-    if (menu.style.display === 'none' || menu.style.display === '') {
-        menu.style.display = 'block';
-    } else {
-        menu.style.display = 'none';
+// Initialize tasks on page load
+document.addEventListener('DOMContentLoaded', () => {
+    renderTasks();
+    
+    // Check user permissions
+    const user = JSON.parse(sessionStorage.getItem('loggedInUser') || '{}');
+    if (user.role === 'GUEST') {
+        // Disable editing features for guests
+        const editButtons = document.querySelectorAll('.edit-btn, .delete-btn, #addTaskBtn');
+        editButtons.forEach(btn => {
+            btn.style.display = 'none';
+        });
     }
-}
-
-// Başlangıçta tüm menüleri kapalı tut
-document.addEventListener("DOMContentLoaded", function() {
-    var allMenus = document.querySelectorAll('.menu');
-    allMenus.forEach(function(menu) {
-        menu.style.display = 'none';
-    });
 });

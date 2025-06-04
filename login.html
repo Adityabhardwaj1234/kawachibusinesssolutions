@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -29,6 +28,17 @@
       margin-bottom: 20px;
       text-align: center;
     }
+    .guest-login {
+      margin-top: 20px;
+      text-align: center;
+    }
+    .guest-login a {
+      color: #3C91E6;
+      text-decoration: none;
+    }
+    .guest-login a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -37,22 +47,64 @@
     <form onsubmit="login(event)">
       <div class="form-group">
         <label>Username</label>
-        <input type="text" id="username" class="form-control" required>
+        <input type="text" id="username" class="form-control">
       </div>
       <div class="form-group">
         <label>Password</label>
-        <input type="password" id="password" class="form-control" required>
+        <input type="password" id="password" class="form-control">
       </div>
       <div id="loginMsg" class="text-danger mb-2"></div>
       <button type="submit" class="btn btn-primary btn-block">Login</button>
     </form>
+    <div class="guest-login">
+      <a href="#" onclick="loginAsGuest(event)">Continue as Guest</a>
+    </div>
   </div>
 
   <script>
     const users = [
-      { id: "170712@ab", password: "OWNER@00014243774", name: "Aditya Bhardwaj" },
-      { id: "310712@cb", password: "CO-OWNER@bhardwaj3107cb", name: "Chandan Bhardwaj" },
-      { id: "310712@db", password: "CO-OWNER@bhardwaj3107db", name: "Deepak Bhardwaj" }
+      { 
+        id: "170712@ab", 
+        password: "OWNER@00014243774", 
+        name: "Aditya Bhardwaj",
+        role: "OWNER",
+        permissions: ["all"]
+      },
+      { 
+        id: "310712@cb", 
+        password: "CO-OWNER@bhardwaj3107cb", 
+        name: "Chandan Bhardwaj",
+        role: "CO-OWNER",
+        permissions: ["view", "edit", "attendance"]
+      },
+      { 
+        id: "310712@db", 
+        password: "CO-OWNER@bhardwaj3107db", 
+        name: "Deepak Bhardwaj",
+        role: "CO-OWNER",
+        permissions: ["view", "edit", "attendance"]
+      },
+      {
+        id: "hr@kawachi",
+        password: "HR@kawachi2024",
+        name: "HR Manager",
+        role: "HR",
+        permissions: ["view", "edit", "attendance", "salary"]
+      },
+      {
+        id: "finance@kawachi",
+        password: "FIN@kawachi2024",
+        name: "Finance Manager",
+        role: "FINANCE",
+        permissions: ["view", "salary", "bank"]
+      },
+      {
+        id: "attendance@kawachi",
+        password: "ATT@kawachi2024",
+        name: "Attendance Manager",
+        role: "ATTENDANCE",
+        permissions: ["view", "attendance"]
+      }
     ];
 
     function login(e) {
@@ -62,101 +114,28 @@
       const user = users.find(u => u.id === id && u.password === pw);
 
       if (user) {
-        // Save login status
         sessionStorage.setItem("isLoggedIn", "true");
         sessionStorage.setItem("loggedInUser", JSON.stringify(user));
-
-        // Redirect to previously requested page or default to index.html
         const targetPage = sessionStorage.getItem("redirectAfterLogin") || "index.html";
-        sessionStorage.removeItem("redirectAfterLogin"); // clean up
+        sessionStorage.removeItem("redirectAfterLogin");
         window.location.href = targetPage;
       } else {
         document.getElementById("loginMsg").textContent = "Invalid credentials.";
       }
     }
+
+    function loginAsGuest(e) {
+      e.preventDefault();
+      const guestUser = {
+        id: "guest",
+        name: "Guest User",
+        role: "GUEST",
+        permissions: ["view"]
+      };
+      sessionStorage.setItem("isLoggedIn", "true");
+      sessionStorage.setItem("loggedInUser", JSON.stringify(guestUser));
+      window.location.href = "index.html";
+    }
   </script>
 </body>
 </html>
-<script>
-                window.addEventListener('message', (event) => {
-                  const { data } = event;
-                  if (!data?.type) {
-                    return;
-                  }
-
-                  switch (data.type) {
-                    case 'builder.evaluate': {
-                      const text = data.data.text;
-                      const args = data.data.arguments || [];
-                      const id = data.data.id;
-                      // tslint:disable-next-line:no-function-constructor-with-string-args
-                      const fn = new Function(text);
-                      let result;
-                      let error = null;
-                      try {
-                        // eslint-disable-next-line prefer-spread
-                        result = fn.apply(null, args);
-                      } catch (err) {
-                        error = err;
-                      }
-
-                      if (error) {
-                        window.parent?.postMessage(
-                          {
-                            type: 'builder.evaluateError',
-                            data: { id, error: error.message },
-                          },
-                          '*'
-                        );
-                      } else {
-                        if (result && typeof result.then === 'function') {
-                          result
-                            .then((finalResult) => {
-                              window.parent?.postMessage(
-                                {
-                                  type: 'builder.evaluateResult',
-                                  data: { id, result: finalResult },
-                                },
-                                '*'
-                              );
-                            })
-                            .catch(console.error);
-                        } else {
-                          window.parent?.postMessage(
-                            {
-                              type: 'builder.evaluateResult',
-                              data: { result, id },
-                            },
-                            '*'
-                          );
-                        }
-                      }
-                      break;
-                    }
-                  }
-                });
-
-                window.addEventListener('error', (event) => {
-                  window.parent?.postMessage(
-                    {
-                      type: 'builder.interactiveFrameError',
-                      data: { message: event.error?.stack || event.error?.message || event.message },
-                    },
-                    '*'
-                  );
-                });
-                
-                setTimeout(() => {
-                  const viteError = document.querySelector('vite-error-overlay')?.shadowRoot?.textContent;
-                  if (typeof viteError === 'string') {
-                    window.parent?.postMessage(
-                      {
-                        type: 'builder.interactiveFrameError',
-                        data: { message: viteError },
-                      },
-                      '*'
-                    );
-                  }
-                }, 500);
-
-              </script>
