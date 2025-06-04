@@ -46,10 +46,6 @@ body {
 	overflow-x: hidden;
 }
 
-
-
-
-
 /* SIDEBAR */
 #sidebar {
 	position: fixed;
@@ -158,23 +154,17 @@ body {
 	justify-content: center;
 }
 
-#sidebar .side-menu.bottom li:nth-last-of-type(-n+2) { /* Son iki <li>'yi seç */
-  position: absolute; /* Ebeveynine göre konumlandır */
-  bottom: 0; /* En alt */
+#sidebar .side-menu.bottom li:nth-last-of-type(-n+2) {
+  position: absolute;
+  bottom: 0;
   left: 0;
   right: 0;
   text-align: center;
 }
 
-/* Birbirinin üzerine binmesini engellemek için */
 #sidebar .side-menu.bottom li:nth-last-of-type(2) {
-  bottom: 40px; /* İkinci son öğeyi yukarı kaydır */
+  bottom: 40px;
 }
-/* SIDEBAR */
-
-
-
-
 
 /* CONTENT */
 #content {
@@ -187,9 +177,6 @@ body {
 	width: calc(100% - 60px);
 	left: 60px;
 }
-
-
-
 
 /* NAVBAR */
 #content nav {
@@ -284,6 +271,7 @@ body {
     justify-content: center;
     align-items: center;
 }
+
 /* Notification Dropdown */
 #content nav .notification-menu {
     display: none;
@@ -375,6 +363,7 @@ body.dark #content nav .profile-menu li a {
 #content nav .profile-menu li:hover a {
     color: var(--dark);
 }
+
 /* Active State for Menus */
 #content nav .notification-menu.show,
 #content nav .profile-menu.show {
@@ -404,7 +393,6 @@ body.dark #content nav .profile-menu li a {
 #content nav #switch-mode:checked + .switch-mode::before {
 	left: calc(100% - (25px - 4px) - 2px);
 }
-
 
 #content nav .swith-lm {
 	background-color:  var(--grey);
@@ -443,14 +431,6 @@ body.dark #content nav .profile-menu li a {
 	color: var(--orange);
 	animation: shakeOn .7s;
 }
-
-
-
-/* NAVBAR */
-
-
-
-
 
 /* MAIN */
 #content main {
@@ -502,9 +482,6 @@ body.dark #content nav .profile-menu li a {
 	font-weight: 500;
 }
 
-
-
-
 #content main .box-info {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -548,10 +525,6 @@ body.dark #content nav .profile-menu li a {
 #content main .box-info li .text p {
 	color: var(--dark);	
 }
-
-
-
-
 
 #content main .table-data {
 	display: flex;
@@ -631,7 +604,6 @@ body.dark #content nav .profile-menu li a {
 	background: var(--orange);
 }
 
-
 #content main .table-data .todo {
 	flex-grow: 1;
 	flex-basis: 300px;
@@ -661,33 +633,31 @@ body.dark #content nav .profile-menu li a {
 #content main .table-data .todo .todo-list li:last-child {
 	margin-bottom: 0;
 }
-/* MAIN */
-/* CONTENT */
+
 #content main .menu, #content nav .menu {
-
     display: none;
-      list-style-type: none;
-      padding-left: 20px;
-      margin-top: 5px;
-      position: absolute;
-      background-color: #f9f9f9;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      width: 200px;
- }
+    list-style-type: none;
+    padding-left: 20px;
+    margin-top: 5px;
+    position: absolute;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 200px;
+}
 
- #content main .menu a , #content nav .menu a {
+#content main .menu a, #content nav .menu a {
     color: white;
     text-decoration: none;
     display: block;
     padding: 8px 16px;
 }
 
-#content main .menu a:hover , #content nav .menu a:hover {
+#content main .menu a:hover, #content nav .menu a:hover {
     background-color: #444;
 }
         
-#content main .menu-link , #content nav .menu-link {
+#content main .menu-link, #content nav .menu-link {
     margin: 5px;
     padding: 10px 20px;
     font-size: 16px;
@@ -700,13 +670,97 @@ body.dark #content nav .profile-menu li a {
     text-decoration: underline;
 }
 
+/* Notification Styles */
+.notification-item {
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--grey);
+    animation: slideIn 0.3s ease;
+    transition: all 0.3s ease;
+}
 
+.notification-item.success {
+    border-left: 4px solid #28a745;
+}
 
+.notification-item.error {
+    border-left: 4px solid #dc3545;
+}
 
+.notification-item.info {
+    border-left: 4px solid #17a2b8;
+}
+
+.notification-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.notification-message {
+    color: var(--dark);
+    margin-bottom: 5px;
+}
+
+.notification-time {
+    font-size: 0.8em;
+    color: var(--dark-grey);
+}
+
+.fade-out {
+    opacity: 0;
+    transform: translateX(100%);
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Bank Details Styles */
+.bank-details {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 15px;
+}
+
+.bank-details h4 {
+    color: var(--blue);
+    margin-bottom: 10px;
+    font-size: 1.1em;
+}
+
+.bank-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+}
+
+.bank-info-item {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 8px 12px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.bank-info-label {
+    color: var(--dark-grey);
+    font-size: 0.9em;
+}
+
+.bank-info-value {
+    color: var(--dark);
+    font-weight: 500;
+}
 
 /* Media Query for Smaller Screens */
 @media screen and (max-width: 768px) {
-    /* Reduce width of notification and profile menu */
     #content nav .notification-menu,
     #content nav .profile-menu {
         width: 180px;
@@ -724,9 +778,6 @@ body.dark #content nav .profile-menu li a {
 		display: none;
 	}
 }
-
-
-
 
 @media screen and (max-width: 576px) {
     #content nav .notification-menu,
