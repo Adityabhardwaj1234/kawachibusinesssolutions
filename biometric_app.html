@@ -272,7 +272,7 @@
         <input
           type="text"
           id="employeeIdInput"
-          placeholder="Enter Employee ID (e.g., EMP001)"
+          placeholder="Enter Employee ID (Case Sensitive - e.g., EMP001)"
           class="form-control"
           style="
             font-size: 16px;
@@ -281,6 +281,7 @@
             border-radius: 8px;
             background: white;
             color: #333;
+            font-family: monospace;
           "
           onchange="fetchEmployeeData()"
         />
@@ -453,9 +454,9 @@
         document.getElementById("attendanceActions").style.display = "none";
       }
 
-      // Fetch employee data by ID
+      // Fetch employee data by ID (case-sensitive)
       async function fetchEmployeeData() {
-        const empId = document.getElementById("employeeIdInput").value.trim();
+        const empId = document.getElementById("employeeIdInput").value.trim(); // Keep original case
         const infoDisplay = document.getElementById("employeeInfoDisplay");
         const actionsDiv = document.getElementById("attendanceActions");
 
@@ -467,11 +468,11 @@
         }
 
         try {
-          // Fetch from Firebase
+          // Fetch from Firebase with exact case match
           const employeeRef = window.firebaseRef(
             window.firebaseDatabase,
-            `employees/${empId.toUpperCase()}`,
-          );
+            `employees/${empId}`,
+          ); // No case conversion
           const snapshot = await window.firebaseGet(employeeRef);
 
           if (snapshot.exists()) {
