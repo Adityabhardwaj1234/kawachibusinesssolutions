@@ -36,7 +36,15 @@
         -webkit-text-fill-color: transparent;
       }
 
-      .add-employee-btn {
+      .action-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        justify-content: center;
+        margin-bottom: 30px;
+      }
+
+      .action-btn {
         background: linear-gradient(to right, #0072ff, #00c6ff);
         border: none;
         border-radius: 12px;
@@ -46,12 +54,56 @@
         padding: 12px 24px;
         cursor: pointer;
         transition: all 0.3s ease;
-        margin-bottom: 30px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
       }
 
-      .add-employee-btn:hover {
+      .action-btn:hover {
         transform: translateY(-2px);
         box-shadow: 0 10px 20px rgba(0, 114, 255, 0.3);
+      }
+
+      .action-btn.fetch-btn {
+        background: linear-gradient(to right, #27ae60, #2ecc71);
+      }
+
+      .action-btn.export-btn {
+        background: linear-gradient(to right, #f39c12, #e67e22);
+      }
+
+      /* Fetch Employee Section */
+      .fetch-section {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 30px;
+        margin-bottom: 30px;
+        backdrop-filter: blur(10px);
+      }
+
+      .fetch-input-group {
+        display: flex;
+        gap: 15px;
+        align-items: end;
+        flex-wrap: wrap;
+      }
+
+      .fetch-input-group input {
+        flex: 1;
+        min-width: 200px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        padding: 12px 16px;
+        color: white;
+        font-size: 16px;
+      }
+
+      .fetch-input-group input:focus {
+        outline: none;
+        border-color: rgba(0, 198, 255, 0.5);
+        box-shadow: 0 0 0 2px rgba(0, 198, 255, 0.2);
       }
 
       /* Modal Styles */
@@ -67,16 +119,7 @@
         z-index: 10000;
         justify-content: center;
         align-items: center;
-      }
-
-      .add-employee-modal {
-        font-family: "Segoe UI", sans-serif;
-        font-size: 16px;
-        font-weight: 400;
-        line-height: normal;
-        color: rgb(255, 255, 255);
-        background-color: rgba(0, 0, 0, 0);
-        animation: fadeIn 1s ease-in-out;
+        overflow-y: auto;
       }
 
       .modal-content {
@@ -87,11 +130,13 @@
         border-style: solid;
         border-width: 0.8px;
         box-shadow: rgba(0, 0, 0, 0.3) 0px 20px 40px 0px;
-        font-weight: 400;
         padding: 40px;
-        width: 420px;
-        max-width: 90vw;
+        width: 90%;
+        max-width: 800px;
+        max-height: 90vh;
+        overflow-y: auto;
         position: relative;
+        margin: 20px;
       }
 
       .modal-close {
@@ -118,22 +163,34 @@
         font-size: 28.8px;
         font-weight: 700;
         margin-bottom: 20px;
+        text-align: center;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 20px;
       }
 
       .form-group {
         display: flex;
         flex-direction: column;
-        margin-bottom: 20px;
+      }
+
+      .form-group.full-width {
+        grid-column: 1 / -1;
       }
 
       .form-group label {
         font-size: 14.4px;
-        font-weight: 400;
+        font-weight: 500;
         margin-bottom: 8px;
         color: rgba(255, 255, 255, 0.9);
       }
 
-      .form-group input {
+      .form-group input,
+      .form-group select {
         background: rgba(255, 255, 255, 0.1);
         border: 1px solid rgba(255, 255, 255, 0.2);
         border-radius: 8px;
@@ -144,16 +201,17 @@
         transition: all 0.3s ease;
       }
 
-      .form-group input:focus {
+      .form-group input:focus,
+      .form-group select:focus {
         outline: none;
         border-color: rgba(0, 198, 255, 0.5);
         box-shadow: 0 0 0 2px rgba(0, 198, 255, 0.2);
         background: rgba(255, 255, 255, 0.15);
       }
 
-      .form-group input[type="date"] {
-        font-family: monospace;
-        font-size: 13px;
+      .form-group select option {
+        background: #2b2b3f;
+        color: white;
       }
 
       .btn-submit {
@@ -166,9 +224,9 @@
         border-radius: 12px;
         border: none;
         font-family: Arial;
-        font-weight: 400;
+        font-weight: 600;
         margin-top: 20px;
-        padding: 12px;
+        padding: 15px 30px;
         transition: all 0.3s ease;
         width: 100%;
         color: white;
@@ -179,6 +237,11 @@
       .btn-submit:hover {
         transform: translateY(-2px);
         box-shadow: 0 10px 20px rgba(0, 114, 255, 0.3);
+      }
+
+      .btn-submit:disabled {
+        cursor: not-allowed;
+        opacity: 0.7;
       }
 
       .success-message {
@@ -193,20 +256,7 @@
         border: 1px solid rgba(39, 174, 96, 0.3);
       }
 
-      #firebaseStatus {
-        padding: 8px 12px;
-        border-radius: 8px;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        transition: all 0.3s ease;
-      }
-
-      .btn-submit:disabled {
-        cursor: not-allowed;
-        opacity: 0.7;
-      }
-
-      .form-step-indicator {
+      .step-indicator {
         display: none;
         margin-top: 10px;
         padding: 8px;
@@ -218,6 +268,18 @@
         text-align: center;
       }
 
+      #firebaseStatus {
+        padding: 8px 12px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+        text-align: center;
+        margin-bottom: 15px;
+        font-size: 14px;
+      }
+
+      /* Employee Display */
       .employee-grid {
         display: flex;
         flex-wrap: wrap;
@@ -230,11 +292,11 @@
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 20px;
         padding: 30px;
-        width: 300px;
+        width: 350px;
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
         backdrop-filter: blur(10px);
         animation: fadeIn 1.2s ease-in-out;
-        text-align: center;
+        text-align: left;
         position: relative;
       }
 
@@ -243,51 +305,56 @@
         transition: all 0.3s ease;
       }
 
-      .avatar {
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        margin: 0 auto 20px;
-        background-size: cover;
-        background-position: center;
-        animation: popIn 1.4s ease;
+      .profile-header {
+        text-align: center;
+        margin-bottom: 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 15px;
       }
 
-      .profile-card h1 {
-        font-size: 1.8em;
-        margin-bottom: 8px;
-        animation: slideUp 1s ease;
+      .profile-header h3 {
+        color: #00c6ff;
+        margin-bottom: 5px;
+        font-size: 1.4em;
       }
 
-      .profile-card p.role {
+      .emp-id {
+        background: linear-gradient(to right, #0072ff, #00c6ff);
+        color: white;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+      }
+
+      .info-grid {
+        display: grid;
+        gap: 8px;
+        font-size: 14px;
+      }
+
+      .info-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 5px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .info-label {
         color: #aaa;
-        font-size: 1.1em;
-        margin-bottom: 15px;
-        animation: slideUp 1.2s ease;
+        font-weight: 500;
+        min-width: 120px;
       }
 
-      .profile-card ul.roles {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        animation: fadeInUp 1.5s ease;
-      }
-
-      .profile-card ul.roles li {
-        background: rgba(255, 255, 255, 0.05);
-        padding: 8px 12px;
-        border-radius: 12px;
-        margin: 6px 0;
-        font-size: 0.95em;
-        transition: background 0.3s ease;
-      }
-
-      .profile-card ul.roles li:hover {
-        background: rgba(255, 255, 255, 0.15);
+      .info-value {
+        color: white;
+        font-weight: 400;
+        text-align: right;
+        flex: 1;
       }
 
       .employee-actions {
-        margin-top: 15px;
+        margin-top: 20px;
         display: flex;
         gap: 10px;
         justify-content: center;
@@ -302,6 +369,7 @@
         font-size: 14px;
         font-weight: 500;
         transition: all 0.3s ease;
+        flex: 1;
       }
 
       .btn-edit {
@@ -327,27 +395,43 @@
         margin: 50px 0;
       }
 
-      .export-section {
+      /* Employee Details View */
+      .employee-details {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        padding: 25px;
+        margin-top: 20px;
+        backdrop-filter: blur(10px);
+      }
+
+      .details-header {
         text-align: center;
-        margin: 30px 0;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid rgba(0, 198, 255, 0.3);
       }
 
-      .export-btn {
-        background: linear-gradient(to right, #2ecc71, #27ae60);
-        border: none;
-        border-radius: 12px;
-        color: white;
-        font-size: 16px;
+      .details-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+      }
+
+      .detail-section {
+        background: rgba(255, 255, 255, 0.03);
+        padding: 20px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .section-title {
+        color: #00c6ff;
         font-weight: 600;
-        padding: 12px 24px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        margin: 0 10px;
-      }
-
-      .export-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(46, 204, 113, 0.3);
+        margin-bottom: 15px;
+        font-size: 16px;
+        border-bottom: 1px solid rgba(0, 198, 255, 0.2);
+        padding-bottom: 5px;
       }
 
       @keyframes fadeIn {
@@ -360,56 +444,54 @@
           transform: scale(1);
         }
       }
-
-      @keyframes popIn {
-        from {
-          transform: scale(0);
-          opacity: 0;
-        }
-        to {
-          transform: scale(1);
-          opacity: 1;
-        }
-      }
-
-      @keyframes slideUp {
-        from {
-          transform: translateY(20px);
-          opacity: 0;
-        }
-        to {
-          transform: translateY(0);
-          opacity: 1;
-        }
-      }
-
-      @keyframes fadeInUp {
-        from {
-          opacity: 0;
-          transform: translateY(30px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
     </style>
   </head>
   <body>
     <div class="header-section">
-      <h1>Employee Management</h1>
-      <button class="add-employee-btn" onclick="showAddEmployeeModal()">
-        <i class="bx bx-plus"></i> Add New Employee
-      </button>
+      <h1>Employee Management System</h1>
+
+      <div class="action-buttons">
+        <button class="action-btn" onclick="showAddEmployeeModal()">
+          <i class="bx bx-plus"></i> Add New Employee
+        </button>
+        <button class="action-btn fetch-btn" onclick="toggleFetchSection()">
+          <i class="bx bx-search"></i> Fetch Employee Data
+        </button>
+        <button class="action-btn export-btn" onclick="exportToExcel()">
+          <i class="bx bx-download"></i> Export to Excel
+        </button>
+        <button class="action-btn" onclick="syncWithFirebase()">
+          <i class="bx bx-refresh"></i> Sync with Firebase
+        </button>
+      </div>
     </div>
 
-    <div class="export-section">
-      <button class="export-btn" onclick="exportToExcel()">
-        <i class="bx bx-download"></i> Export to Excel
-      </button>
-      <button class="export-btn" onclick="syncWithFirebase()">
-        <i class="bx bx-refresh"></i> Sync with Firebase
-      </button>
+    <!-- Fetch Employee Section -->
+    <div id="fetchSection" class="fetch-section" style="display: none">
+      <h3 style="margin-bottom: 20px; color: #00c6ff">
+        <i class="bx bx-search"></i> Fetch Employee by ID
+      </h3>
+      <div class="fetch-input-group">
+        <div style="flex: 1">
+          <label style="display: block; margin-bottom: 5px; color: #aaa"
+            >Employee ID</label
+          >
+          <input
+            type="text"
+            id="fetchEmpId"
+            placeholder="Enter Employee ID (e.g., EMP001)"
+            style="width: 100%"
+          />
+        </div>
+        <button
+          class="action-btn"
+          onclick="fetchEmployeeById()"
+          style="height: fit-content"
+        >
+          <i class="bx bx-search"></i> Fetch Data
+        </button>
+      </div>
+      <div id="fetchResult" style="margin-top: 20px"></div>
     </div>
 
     <div id="loadingMessage" class="loading">
@@ -419,62 +501,220 @@
 
     <!-- Add Employee Modal -->
     <div id="addEmployeeModal" class="modal-overlay">
-      <div class="add-employee-modal">
-        <div class="modal-content">
-          <button class="modal-close" onclick="hideAddEmployeeModal()">
-            &times;
-          </button>
-          <h2 class="modal-title">Add New Employee</h2>
-          <div
-            id="firebaseStatus"
-            style="text-align: center; margin-bottom: 15px; font-size: 14px"
-          >
-            <span
-              id="firebaseIndicator"
-              style="
-                display: inline-block;
-                width: 10px;
-                height: 10px;
-                border-radius: 50%;
-                background: #ff4757;
-                margin-right: 8px;
-              "
-            ></span>
-            <span id="firebaseStatusText">Connecting to Firebase...</span>
-          </div>
-          <form id="addEmployeeForm" onsubmit="handleAddEmployee(event)">
+      <div class="modal-content">
+        <button class="modal-close" onclick="hideAddEmployeeModal()">
+          &times;
+        </button>
+        <h2 class="modal-title">Add New Employee</h2>
+
+        <div id="firebaseStatus">
+          <span
+            id="firebaseIndicator"
+            style="
+              display: inline-block;
+              width: 10px;
+              height: 10px;
+              border-radius: 50%;
+              background: #ff4757;
+              margin-right: 8px;
+            "
+          ></span>
+          <span id="firebaseStatusText">Connecting to Firebase...</span>
+        </div>
+
+        <form id="addEmployeeForm" onsubmit="handleAddEmployee(event)">
+          <div class="form-grid">
+            <!-- Personal Information -->
             <div class="form-group">
-              <label for="empName">Full Name</label>
-              <input type="text" id="empName" name="empName" required />
-            </div>
-            <div class="form-group">
-              <label for="empAge">Age</label>
+              <label for="empId">Employee ID *</label>
               <input
-                type="number"
-                id="empAge"
-                name="empAge"
-                min="18"
-                max="100"
+                type="text"
+                id="empId"
+                name="empId"
+                placeholder="EMP001"
                 required
               />
             </div>
             <div class="form-group">
-              <label for="empPosition">Position</label>
-              <input type="text" id="empPosition" name="empPosition" required />
+              <label for="empName">Full Name *</label>
+              <input type="text" id="empName" name="empName" required />
             </div>
             <div class="form-group">
-              <label for="empJoinDate">Join Date</label>
+              <label for="empContact">Contact Number *</label>
+              <input
+                type="tel"
+                id="empContact"
+                name="empContact"
+                placeholder="9876543210"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="empEmail">Email *</label>
+              <input type="email" id="empEmail" name="empEmail" required />
+            </div>
+            <div class="form-group">
+              <label for="empMaritalStatus">Marital Status</label>
+              <select id="empMaritalStatus" name="empMaritalStatus">
+                <option value="">Select Status</option>
+                <option value="Single">Single</option>
+                <option value="Married">Married</option>
+                <option value="Divorced">Divorced</option>
+                <option value="Widowed">Widowed</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="empEmergencyContact">Emergency Contact</label>
+              <input
+                type="tel"
+                id="empEmergencyContact"
+                name="empEmergencyContact"
+                placeholder="Emergency contact number"
+              />
+            </div>
+
+            <!-- Address -->
+            <div class="form-group full-width">
+              <label for="empAddress">Address</label>
+              <input
+                type="text"
+                id="empAddress"
+                name="empAddress"
+                placeholder="Complete address"
+              />
+            </div>
+
+            <!-- Government IDs -->
+            <div class="form-group">
+              <label for="empPan">PAN (10 Digits Alpha Numeric)</label>
+              <input
+                type="text"
+                id="empPan"
+                name="empPan"
+                placeholder="ABCDE1234F"
+                maxlength="10"
+                style="text-transform: uppercase"
+              />
+            </div>
+            <div class="form-group">
+              <label for="empAadhar">Aadhar (12 Digit Number)</label>
+              <input
+                type="text"
+                id="empAadhar"
+                name="empAadhar"
+                placeholder="123456789012"
+                maxlength="12"
+              />
+            </div>
+            <div class="form-group">
+              <label for="empUan">UAN (12 Digit Number)</label>
+              <input
+                type="text"
+                id="empUan"
+                name="empUan"
+                placeholder="123456789012"
+                maxlength="12"
+              />
+            </div>
+
+            <!-- Employment Details -->
+            <div class="form-group">
+              <label for="empJoinDate">Date of Joining *</label>
               <input type="date" id="empJoinDate" name="empJoinDate" required />
             </div>
-            <button type="submit" class="btn-submit">Add Employee</button>
-            <div id="stepIndicator" class="form-step-indicator">
-              Step 1: Validating data...
+            <div class="form-group">
+              <label for="empExitDate">Date of Exit</label>
+              <input type="date" id="empExitDate" name="empExitDate" />
             </div>
-            <div id="successMessage" class="success-message">
-              Employee added successfully!
+
+            <!-- Salary Details -->
+            <div class="form-group">
+              <label for="empBasicSalary">Basic Salary *</label>
+              <input
+                type="number"
+                id="empBasicSalary"
+                name="empBasicSalary"
+                placeholder="25000"
+                step="0.01"
+                required
+              />
             </div>
-          </form>
-        </div>
+            <div class="form-group">
+              <label for="empDearnessAllowance">Dearness Allowance</label>
+              <input
+                type="number"
+                id="empDearnessAllowance"
+                name="empDearnessAllowance"
+                placeholder="2000"
+                step="0.01"
+              />
+            </div>
+            <div class="form-group">
+              <label for="empPersonalAllowance">Personal Allowance</label>
+              <input
+                type="number"
+                id="empPersonalAllowance"
+                name="empPersonalAllowance"
+                placeholder="1500"
+                step="0.01"
+              />
+            </div>
+            <div class="form-group">
+              <label for="empConveyanceAllowance">Conveyance Allowance</label>
+              <input
+                type="number"
+                id="empConveyanceAllowance"
+                name="empConveyanceAllowance"
+                placeholder="1000"
+                step="0.01"
+              />
+            </div>
+            <div class="form-group">
+              <label for="empProfessionalAllowance"
+                >Professional Allowance</label
+              >
+              <input
+                type="number"
+                id="empProfessionalAllowance"
+                name="empProfessionalAllowance"
+                placeholder="2000"
+                step="0.01"
+              />
+            </div>
+            <div class="form-group">
+              <label for="empBonus">Bonus</label>
+              <input
+                type="number"
+                id="empBonus"
+                name="empBonus"
+                placeholder="5000"
+                step="0.01"
+              />
+            </div>
+            <div class="form-group">
+              <label for="empGrossSalary">Gross Salary (Auto-calculated)</label>
+              <input
+                type="number"
+                id="empGrossSalary"
+                name="empGrossSalary"
+                readonly
+                style="background: rgba(255, 255, 255, 0.05)"
+              />
+            </div>
+          </div>
+
+          <button type="submit" class="btn-submit">
+            Add Employee to Firebase
+          </button>
+
+          <div id="stepIndicator" class="step-indicator">
+            Step 1: Validating data...
+          </div>
+
+          <div id="successMessage" class="success-message">
+            Employee added successfully!
+          </div>
+        </form>
       </div>
     </div>
 
@@ -533,87 +773,95 @@
       // Signal that Firebase is ready
       window.firebaseReady = true;
 
-      // Trigger connection check if the function is available
-      setTimeout(() => {
-        if (typeof window.checkFirebaseConnection === "function") {
-          window.checkFirebaseConnection();
-        }
-      }, 500);
-
       // Employee management functions
       window.employeeAPI = {
         async addEmployee(employeeData) {
           try {
-            // Validate data before saving to Firebase
+            // Validate required fields
             if (
+              !employeeData.empId ||
               !employeeData.name ||
-              !employeeData.position ||
-              !employeeData.joinDate
+              !employeeData.contact ||
+              !employeeData.email ||
+              !employeeData.joinDate ||
+              !employeeData.basicSalary
             ) {
               throw new Error(
-                "Missing required fields: name, position, or joinDate",
+                "Missing required fields: Employee ID, Name, Contact, Email, Join Date, or Basic Salary",
               );
             }
 
-            if (
-              !employeeData.age ||
-              employeeData.age < 18 ||
-              employeeData.age > 100
-            ) {
-              throw new Error("Invalid age: must be between 18 and 100");
+            // Check if employee ID already exists
+            const existingEmp = await this.getEmployeeById(employeeData.empId);
+            if (existingEmp.success && existingEmp.data) {
+              throw new Error(
+                `Employee ID ${employeeData.empId} already exists`,
+              );
             }
 
             // Prepare data for Firebase
             const firebaseEmployeeData = {
+              empId: String(employeeData.empId).trim().toUpperCase(),
               name: String(employeeData.name).trim(),
-              age: parseInt(employeeData.age),
-              position: String(employeeData.position).trim(),
+              contact: String(employeeData.contact).trim(),
+              email: String(employeeData.email).trim().toLowerCase(),
+              maritalStatus: employeeData.maritalStatus || "",
+              emergencyContact: employeeData.emergencyContact || "",
+              address: employeeData.address || "",
+              pan: String(employeeData.pan || "")
+                .trim()
+                .toUpperCase(),
+              aadhar: String(employeeData.aadhar || "").trim(),
+              uan: String(employeeData.uan || "").trim(),
               joinDate: employeeData.joinDate,
+              exitDate: employeeData.exitDate || "",
+              basicSalary: parseFloat(employeeData.basicSalary) || 0,
+              dearnessAllowance:
+                parseFloat(employeeData.dearnessAllowance) || 0,
+              personalAllowance:
+                parseFloat(employeeData.personalAllowance) || 0,
+              conveyanceAllowance:
+                parseFloat(employeeData.conveyanceAllowance) || 0,
+              professionalAllowance:
+                parseFloat(employeeData.professionalAllowance) || 0,
+              bonus: parseFloat(employeeData.bonus) || 0,
+              grossSalary: parseFloat(employeeData.grossSalary) || 0,
               createdAt: new Date().toISOString(),
               updatedAt: new Date().toISOString(),
               status: "active",
             };
 
-            // Save to Firebase
-            const employeesRef = ref(database, "employees");
-            const newEmployeeRef = push(employeesRef);
+            // Save to Firebase with Employee ID as key
+            const employeeRef = ref(
+              database,
+              `employees/${firebaseEmployeeData.empId}`,
+            );
+            await set(employeeRef, firebaseEmployeeData);
 
-            // Add the Firebase-generated ID to the data
-            firebaseEmployeeData.id = newEmployeeRef.key;
+            console.log(
+              "✅ Employee successfully saved to Firebase:",
+              firebaseEmployeeData.empId,
+            );
 
-            await set(newEmployeeRef, firebaseEmployeeData);
-
-            console.log("✅ Employee successfully saved to Firebase:", {
-              id: newEmployeeRef.key,
-              name: firebaseEmployeeData.name,
-              position: firebaseEmployeeData.position,
-            });
-
-            // Log analytics with more details
+            // Log analytics
             logEvent(analytics, "employee_added", {
-              position: firebaseEmployeeData.position,
-              firebase_id: newEmployeeRef.key,
-              timestamp: firebaseEmployeeData.createdAt,
+              empId: firebaseEmployeeData.empId,
+              name: firebaseEmployeeData.name,
             });
 
             return {
               success: true,
-              id: newEmployeeRef.key,
+              id: firebaseEmployeeData.empId,
               data: firebaseEmployeeData,
             };
           } catch (error) {
             console.error("❌ Error adding employee to Firebase:", error);
-
-            // Log error analytics
             logEvent(analytics, "employee_add_error", {
               error_message: error.message,
-              error_code: error.code || "unknown",
             });
-
             return {
               success: false,
               error: error.message,
-              code: error.code || "unknown_error",
             };
           }
         },
@@ -626,7 +874,6 @@
               const employees = [];
               snapshot.forEach((childSnapshot) => {
                 employees.push({
-                  id: childSnapshot.key,
                   ...childSnapshot.val(),
                 });
               });
@@ -640,9 +887,27 @@
           }
         },
 
-        async updateEmployee(employeeId, updateData) {
+        async getEmployeeById(empId) {
           try {
-            const employeeRef = ref(database, `employees/${employeeId}`);
+            const employeeRef = ref(
+              database,
+              `employees/${empId.toUpperCase()}`,
+            );
+            const snapshot = await get(employeeRef);
+            if (snapshot.exists()) {
+              return { success: true, data: snapshot.val() };
+            } else {
+              return { success: true, data: null };
+            }
+          } catch (error) {
+            console.error("Error fetching employee:", error);
+            return { success: false, error: error.message };
+          }
+        },
+
+        async updateEmployee(empId, updateData) {
+          try {
+            const employeeRef = ref(database, `employees/${empId}`);
             await update(employeeRef, {
               ...updateData,
               updatedAt: new Date().toISOString(),
@@ -654,14 +919,11 @@
           }
         },
 
-        async deleteEmployee(employeeId) {
+        async deleteEmployee(empId) {
           try {
-            const employeeRef = ref(database, `employees/${employeeId}`);
+            const employeeRef = ref(database, `employees/${empId}`);
             await remove(employeeRef);
-
-            // Log analytics
-            logEvent(analytics, "employee_deleted");
-
+            logEvent(analytics, "employee_deleted", { empId: empId });
             return { success: true };
           } catch (error) {
             console.error("Error deleting employee:", error);
@@ -672,6 +934,13 @@
 
       // Initialize the page
       loadEmployees();
+
+      // Trigger connection check
+      setTimeout(() => {
+        if (typeof window.checkFirebaseConnection === "function") {
+          window.checkFirebaseConnection();
+        }
+      }, 500);
     </script>
 
     <!-- XLSX library for Excel export -->
@@ -707,7 +976,6 @@
       // Test Firebase connection
       async function checkFirebaseConnection() {
         try {
-          // Wait for Firebase to be available
           if (
             !window.firebaseDatabase ||
             !window.firebaseRef ||
@@ -718,7 +986,6 @@
             return false;
           }
 
-          // Test Firebase connection using a simple read operation
           const employeesRef = window.firebaseRef(
             window.firebaseDatabase,
             "employees",
@@ -739,28 +1006,47 @@
       window.updateFirebaseStatus = updateFirebaseStatus;
       window.checkFirebaseConnection = checkFirebaseConnection;
 
-      // Make functions globally accessible
-      window.updateFirebaseStatus = updateFirebaseStatus;
-      window.checkFirebaseConnection = checkFirebaseConnection;
+      // Calculate gross salary automatically
+      function calculateGrossSalary() {
+        const basic =
+          parseFloat(document.getElementById("empBasicSalary").value) || 0;
+        const dearness =
+          parseFloat(document.getElementById("empDearnessAllowance").value) ||
+          0;
+        const personal =
+          parseFloat(document.getElementById("empPersonalAllowance").value) ||
+          0;
+        const conveyance =
+          parseFloat(document.getElementById("empConveyanceAllowance").value) ||
+          0;
+        const professional =
+          parseFloat(
+            document.getElementById("empProfessionalAllowance").value,
+          ) || 0;
+        const bonus =
+          parseFloat(document.getElementById("empBonus").value) || 0;
 
-      // Debug: Verify functions are accessible
-      console.log("🔧 Debug: Firebase functions registered:", {
-        updateFirebaseStatus: typeof window.updateFirebaseStatus,
-        checkFirebaseConnection: typeof window.checkFirebaseConnection,
-        showAddEmployeeModal: typeof window.showAddEmployeeModal,
-      });
+        const gross =
+          basic + dearness + personal + conveyance + professional + bonus;
+        document.getElementById("empGrossSalary").value = gross.toFixed(2);
+      }
 
-      // Initialize Firebase connection check after page loads
-      window.addEventListener("load", () => {
-        // Wait a bit for Firebase to initialize, then check connection
-        setTimeout(() => {
-          if (window.firebaseReady) {
-            console.log("🔥 Firebase ready, checking connection...");
-            checkFirebaseConnection();
-          } else {
-            console.log("⏳ Firebase not ready yet, waiting...");
+      // Add event listeners for salary calculation
+      document.addEventListener("DOMContentLoaded", () => {
+        const salaryFields = [
+          "empBasicSalary",
+          "empDearnessAllowance",
+          "empPersonalAllowance",
+          "empConveyanceAllowance",
+          "empProfessionalAllowance",
+          "empBonus",
+        ];
+        salaryFields.forEach((fieldId) => {
+          const field = document.getElementById(fieldId);
+          if (field) {
+            field.addEventListener("input", calculateGrossSalary);
           }
-        }, 2000);
+        });
       });
 
       // Load employees from Firebase
@@ -798,22 +1084,37 @@
           const card = document.createElement("div");
           card.classList.add("profile-card");
           card.innerHTML = `
-          <div class="avatar" style="background-image: url('https://placehold.co/120x120/0072ff/ffffff?text=${emp.name
-            .split(" ")
-            .map((n) => n[0])
-            .join("")}')"></div>
-          <h1>${emp.name}</h1>
-          <p class="role">${emp.position}</p>
-          <ul class="roles">
-            <li>📅 Joined: ${formatDate(emp.joinDate)}</li>
-            <li>👤 Age: ${emp.age}</li>
-            <li>🆔 ID: ${emp.id.slice(-6)}</li>
-          </ul>
+          <div class="profile-header">
+            <h3>${emp.name}</h3>
+            <span class="emp-id">${emp.empId}</span>
+          </div>
+          <div class="info-grid">
+            <div class="info-row">
+              <span class="info-label">Contact:</span>
+              <span class="info-value">${emp.contact}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Email:</span>
+              <span class="info-value">${emp.email}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Join Date:</span>
+              <span class="info-value">${formatDate(emp.joinDate)}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Basic Salary:</span>
+              <span class="info-value">₹${emp.basicSalary?.toLocaleString()}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Gross Salary:</span>
+              <span class="info-value">₹${emp.grossSalary?.toLocaleString()}</span>
+            </div>
+          </div>
           <div class="employee-actions">
-            <button class="btn-edit" onclick="editEmployee('${emp.id}')">
+            <button class="btn-edit" onclick="editEmployee('${emp.empId}')">
               <i class='bx bx-edit'></i> Edit
             </button>
-            <button class="btn-delete" onclick="deleteEmployee('${emp.id}')">
+            <button class="btn-delete" onclick="deleteEmployee('${emp.empId}')">
               <i class='bx bx-trash'></i> Delete
             </button>
           </div>
@@ -822,11 +1123,85 @@
         });
       }
 
+      // Toggle fetch section
+      function toggleFetchSection() {
+        const section = document.getElementById("fetchSection");
+        section.style.display =
+          section.style.display === "none" ? "block" : "none";
+      }
+
+      // Fetch employee by ID
+      async function fetchEmployeeById() {
+        const empId = document.getElementById("fetchEmpId").value.trim();
+        const resultDiv = document.getElementById("fetchResult");
+
+        if (!empId) {
+          alert("Please enter an Employee ID");
+          return;
+        }
+
+        resultDiv.innerHTML =
+          '<div class="loading">Fetching employee data...</div>';
+
+        try {
+          const result = await window.employeeAPI.getEmployeeById(empId);
+
+          if (result.success && result.data) {
+            const emp = result.data;
+            resultDiv.innerHTML = `
+            <div class="employee-details">
+              <div class="details-header">
+                <h3>${emp.name} (${emp.empId})</h3>
+              </div>
+              <div class="details-grid">
+                <div class="detail-section">
+                  <div class="section-title">Personal Information</div>
+                  <div class="info-row"><span class="info-label">Name:</span><span class="info-value">${emp.name}</span></div>
+                  <div class="info-row"><span class="info-label">Contact:</span><span class="info-value">${emp.contact}</span></div>
+                  <div class="info-row"><span class="info-label">Email:</span><span class="info-value">${emp.email}</span></div>
+                  <div class="info-row"><span class="info-label">Marital Status:</span><span class="info-value">${emp.maritalStatus || "N/A"}</span></div>
+                  <div class="info-row"><span class="info-label">Emergency Contact:</span><span class="info-value">${emp.emergencyContact || "N/A"}</span></div>
+                  <div class="info-row"><span class="info-label">Address:</span><span class="info-value">${emp.address || "N/A"}</span></div>
+                </div>
+                <div class="detail-section">
+                  <div class="section-title">Government IDs</div>
+                  <div class="info-row"><span class="info-label">PAN:</span><span class="info-value">${emp.pan || "N/A"}</span></div>
+                  <div class="info-row"><span class="info-label">Aadhar:</span><span class="info-value">${emp.aadhar || "N/A"}</span></div>
+                  <div class="info-row"><span class="info-label">UAN:</span><span class="info-value">${emp.uan || "N/A"}</span></div>
+                </div>
+                <div class="detail-section">
+                  <div class="section-title">Employment</div>
+                  <div class="info-row"><span class="info-label">Join Date:</span><span class="info-value">${formatDate(emp.joinDate)}</span></div>
+                  <div class="info-row"><span class="info-label">Exit Date:</span><span class="info-value">${emp.exitDate ? formatDate(emp.exitDate) : "Active"}</span></div>
+                  <div class="info-row"><span class="info-label">Status:</span><span class="info-value">${emp.status || "Active"}</span></div>
+                </div>
+                <div class="detail-section">
+                  <div class="section-title">Salary Details</div>
+                  <div class="info-row"><span class="info-label">Basic Salary:</span><span class="info-value">₹${emp.basicSalary?.toLocaleString()}</span></div>
+                  <div class="info-row"><span class="info-label">Dearness Allowance:</span><span class="info-value">₹${emp.dearnessAllowance?.toLocaleString()}</span></div>
+                  <div class="info-row"><span class="info-label">Personal Allowance:</span><span class="info-value">₹${emp.personalAllowance?.toLocaleString()}</span></div>
+                  <div class="info-row"><span class="info-label">Conveyance Allowance:</span><span class="info-value">₹${emp.conveyanceAllowance?.toLocaleString()}</span></div>
+                  <div class="info-row"><span class="info-label">Professional Allowance:</span><span class="info-value">₹${emp.professionalAllowance?.toLocaleString()}</span></div>
+                  <div class="info-row"><span class="info-label">Bonus:</span><span class="info-value">₹${emp.bonus?.toLocaleString()}</span></div>
+                  <div class="info-row"><span class="info-label"><strong>Gross Salary:</strong></span><span class="info-value"><strong>₹${emp.grossSalary?.toLocaleString()}</strong></span></div>
+                </div>
+              </div>
+            </div>
+          `;
+          } else {
+            resultDiv.innerHTML = `<div style="color: #ff4757; text-align: center; padding: 20px;">Employee with ID "${empId}" not found.</div>`;
+          }
+        } catch (error) {
+          console.error("Error fetching employee:", error);
+          resultDiv.innerHTML = `<div style="color: #ff4757; text-align: center; padding: 20px;">Error fetching employee: ${error.message}</div>`;
+        }
+      }
+
       // Modal functions
       function showAddEmployeeModal() {
         document.getElementById("addEmployeeModal").style.display = "flex";
 
-        // Check Firebase connection when modal opens (with multiple safety checks)
+        // Check Firebase connection when modal opens
         try {
           if (typeof window.checkFirebaseConnection === "function") {
             window.checkFirebaseConnection();
@@ -836,14 +1211,10 @@
             console.warn(
               "checkFirebaseConnection function not available yet, will retry...",
             );
-            // Set a default disconnected state
             if (typeof updateFirebaseStatus === "function") {
               updateFirebaseStatus(false);
-            } else if (typeof window.updateFirebaseStatus === "function") {
-              window.updateFirebaseStatus(false);
             }
 
-            // Retry after a short delay
             setTimeout(() => {
               if (typeof window.checkFirebaseConnection === "function") {
                 window.checkFirebaseConnection();
@@ -852,7 +1223,6 @@
           }
         } catch (error) {
           console.error("Error checking Firebase connection:", error);
-          // Fallback: set disconnected status
           const indicator = document.getElementById("firebaseIndicator");
           const statusText = document.getElementById("firebaseStatusText");
           if (indicator && statusText) {
@@ -868,16 +1238,14 @@
         document.getElementById("addEmployeeForm").reset();
         document.getElementById("successMessage").style.display = "none";
 
-        // Reset step indicator
         const stepIndicator = document.getElementById("stepIndicator");
         stepIndicator.style.display = "none";
         stepIndicator.style.background = "rgba(0, 114, 255, 0.1)";
         stepIndicator.style.borderColor = "rgba(0, 114, 255, 0.3)";
         stepIndicator.style.color = "#00c6ff";
 
-        // Reset submit button
         const submitButton = document.querySelector(".btn-submit");
-        submitButton.innerHTML = "Add Employee";
+        submitButton.innerHTML = "Add Employee to Firebase";
         submitButton.style.background =
           "linear-gradient(to right, rgb(0, 114, 255), rgb(0, 198, 255))";
         submitButton.disabled = false;
@@ -899,34 +1267,38 @@
 
         const formData = new FormData(event.target);
         const employeeData = {
-          name: formData.get("empName").trim(),
-          age: parseInt(formData.get("empAge")),
-          position: formData.get("empPosition").trim(),
+          empId: formData.get("empId"),
+          name: formData.get("empName"),
+          contact: formData.get("empContact"),
+          email: formData.get("empEmail"),
+          maritalStatus: formData.get("empMaritalStatus"),
+          emergencyContact: formData.get("empEmergencyContact"),
+          address: formData.get("empAddress"),
+          pan: formData.get("empPan"),
+          aadhar: formData.get("empAadhar"),
+          uan: formData.get("empUan"),
           joinDate: formData.get("empJoinDate"),
+          exitDate: formData.get("empExitDate"),
+          basicSalary: formData.get("empBasicSalary"),
+          dearnessAllowance: formData.get("empDearnessAllowance"),
+          personalAllowance: formData.get("empPersonalAllowance"),
+          conveyanceAllowance: formData.get("empConveyanceAllowance"),
+          professionalAllowance: formData.get("empProfessionalAllowance"),
+          bonus: formData.get("empBonus"),
+          grossSalary: formData.get("empGrossSalary"),
         };
 
-        // Validate data
+        // Validate required fields
         if (
+          !employeeData.empId ||
           !employeeData.name ||
-          !employeeData.age ||
-          !employeeData.position ||
-          !employeeData.joinDate
+          !employeeData.contact ||
+          !employeeData.email ||
+          !employeeData.joinDate ||
+          !employeeData.basicSalary
         ) {
           stepIndicator.innerHTML =
-            "❌ Validation failed: Please fill in all fields";
-          stepIndicator.style.background = "rgba(231, 76, 60, 0.1)";
-          stepIndicator.style.borderColor = "rgba(231, 76, 60, 0.3)";
-          stepIndicator.style.color = "#ff4757";
-          submitButton.disabled = false;
-          setTimeout(() => {
-            stepIndicator.style.display = "none";
-          }, 3000);
-          return;
-        }
-
-        if (employeeData.age < 18 || employeeData.age > 100) {
-          stepIndicator.innerHTML =
-            "❌ Validation failed: Age must be between 18 and 100";
+            "❌ Validation failed: Please fill in all required fields";
           stepIndicator.style.background = "rgba(231, 76, 60, 0.1)";
           stepIndicator.style.borderColor = "rgba(231, 76, 60, 0.3)";
           stepIndicator.style.color = "#ff4757";
@@ -945,7 +1317,7 @@
         stepIndicator.style.color = "#00c6ff";
         submitButton.innerHTML = "🔗 Connecting to Firebase...";
 
-        await new Promise((resolve) => setTimeout(resolve, 500)); // Brief pause for UX
+        await new Promise((resolve) => setTimeout(resolve, 500));
 
         try {
           // Step 3: Saving to Firebase
@@ -953,7 +1325,6 @@
             "🔥 Step 3: Saving employee to Firebase database...";
           submitButton.innerHTML = "💾 Saving to Firebase...";
 
-          // Add employee to Firebase
           const result = await window.employeeAPI.addEmployee(employeeData);
 
           if (result.success) {
@@ -964,55 +1335,35 @@
             stepIndicator.style.borderColor = "rgba(39, 174, 96, 0.3)";
             stepIndicator.style.color = "#27ae60";
 
-            // Show detailed success message
             successMessage.innerHTML = `
             ✅ Employee saved to Firebase successfully!<br>
-            <small>Firebase ID: ${result.id}</small><br>
-            <small>Name: ${employeeData.name} | Position: ${employeeData.position}</small>
+            <small>Employee ID: ${result.id}</small><br>
+            <small>Name: ${employeeData.name}</small>
           `;
             successMessage.style.display = "block";
             successMessage.style.color = "#27ae60";
 
-            // Update button to show success
             submitButton.innerHTML = "✅ Saved to Firebase!";
             submitButton.style.background =
               "linear-gradient(to right, #27ae60, #2ecc71)";
 
             // Step 5: Refreshing data
             stepIndicator.innerHTML = "🔄 Step 5: Refreshing employee list...";
-
-            // Reload employees to show the new one
             await loadEmployees();
 
-            // Final step
             stepIndicator.innerHTML =
               "✨ Complete! Employee added successfully to Firebase!";
             stepIndicator.style.background = "rgba(39, 174, 96, 0.2)";
             stepIndicator.style.borderColor = "rgba(39, 174, 96, 0.5)";
 
-            // Reset form after a delay
             setTimeout(() => {
               hideAddEmployeeModal();
-              // Reset button state
               submitButton.innerHTML = originalButtonText;
               submitButton.style.background =
                 "linear-gradient(to right, rgb(0, 114, 255), rgb(0, 198, 255))";
               submitButton.disabled = false;
             }, 2500);
-
-            // Log success analytics
-            if (window.firebaseLogEvent && window.firebaseAnalytics) {
-              window.firebaseLogEvent(
-                window.firebaseAnalytics,
-                "employee_added_success",
-                {
-                  position: employeeData.position,
-                  firebase_id: result.id,
-                },
-              );
-            }
           } else {
-            // Handle Firebase error
             stepIndicator.innerHTML = `❌ Step 3 Failed: ${result.error || "Unknown Firebase error"}`;
             stepIndicator.style.background = "rgba(231, 76, 60, 0.1)";
             stepIndicator.style.borderColor = "rgba(231, 76, 60, 0.3)";
@@ -1026,7 +1377,6 @@
             successMessage.style.display = "block";
             successMessage.style.color = "#ff4757";
 
-            // Reset button after delay
             setTimeout(() => {
               submitButton.innerHTML = originalButtonText;
               submitButton.style.background =
@@ -1037,7 +1387,6 @@
         } catch (error) {
           console.error("Form submission error:", error);
 
-          // Handle network/connection errors
           stepIndicator.innerHTML = `❌ Connection Error: ${error.message}`;
           stepIndicator.style.background = "rgba(231, 76, 60, 0.1)";
           stepIndicator.style.borderColor = "rgba(231, 76, 60, 0.3)";
@@ -1051,7 +1400,6 @@
           successMessage.style.display = "block";
           successMessage.style.color = "#ff4757";
 
-          // Reset button after delay
           setTimeout(() => {
             submitButton.innerHTML = originalButtonText;
             submitButton.style.background =
@@ -1061,54 +1409,20 @@
         }
       }
 
-      // Edit employee function
-      async function editEmployee(employeeId) {
-        const employee = currentEmployees.find((emp) => emp.id === employeeId);
-        if (!employee) return;
-
-        const name = prompt("Enter new name:", employee.name);
-        if (name === null) return;
-
-        const age = prompt("Enter new age:", employee.age);
-        if (age === null) return;
-
-        const position = prompt("Enter new position:", employee.position);
-        if (position === null) return;
-
-        const joinDate = prompt(
-          "Enter new join date (YYYY-MM-DD):",
-          employee.joinDate,
+      // Edit employee function (simplified for now)
+      async function editEmployee(empId) {
+        alert(
+          `Edit functionality for ${empId} - Will be implemented in the next version`,
         );
-        if (joinDate === null) return;
-
-        try {
-          const result = await window.employeeAPI.updateEmployee(employeeId, {
-            name: name,
-            age: parseInt(age),
-            position: position,
-            joinDate: joinDate,
-          });
-
-          if (result.success) {
-            await loadEmployees();
-            alert("Employee updated successfully!");
-          } else {
-            alert(
-              "Error updating employee: " + (result.error || "Unknown error"),
-            );
-          }
-        } catch (error) {
-          console.error("Error updating employee:", error);
-          alert("Error updating employee: " + error.message);
-        }
       }
 
       // Delete employee function
-      async function deleteEmployee(employeeId) {
-        if (!confirm("Are you sure you want to delete this employee?")) return;
+      async function deleteEmployee(empId) {
+        if (!confirm(`Are you sure you want to delete employee ${empId}?`))
+          return;
 
         try {
-          const result = await window.employeeAPI.deleteEmployee(employeeId);
+          const result = await window.employeeAPI.deleteEmployee(empId);
 
           if (result.success) {
             await loadEmployees();
@@ -1134,22 +1448,49 @@
 
           const wsData = [
             [
+              "Emp_ID",
               "Name",
-              "Age",
-              "Position",
-              "Join Date",
-              "Employee ID",
-              "Created At",
+              "Contact Number",
+              "Email",
+              "Marital Status",
+              "Emergency Contact",
+              "Address",
+              "PAN [10 Digits Alpha Numeric]",
+              "Aadhar [12 digit Number]",
+              "UAN [12 Digit Number]",
+              "Date of Joining",
+              "Date of Exit",
+              "Basic Salary",
+              "Dearness Allowance",
+              "Personal Allowance",
+              "Conveyance Allowance",
+              "Professional Allowance",
+              "Bonus",
+              "Gross Salary",
             ],
           ];
+
           currentEmployees.forEach((emp) => {
             wsData.push([
+              emp.empId,
               emp.name,
-              emp.age,
-              emp.position,
+              emp.contact,
+              emp.email,
+              emp.maritalStatus || "",
+              emp.emergencyContact || "",
+              emp.address || "",
+              emp.pan || "",
+              emp.aadhar || "",
+              emp.uan || "",
               emp.joinDate,
-              emp.id,
-              emp.createdAt ? formatDate(emp.createdAt) : "N/A",
+              emp.exitDate || "",
+              emp.basicSalary || 0,
+              emp.dearnessAllowance || 0,
+              emp.personalAllowance || 0,
+              emp.conveyanceAllowance || 0,
+              emp.professionalAllowance || 0,
+              emp.bonus || 0,
+              emp.grossSalary || 0,
             ]);
           });
 
@@ -1157,10 +1498,9 @@
           const wb = XLSX.utils.book_new();
           XLSX.utils.book_append_sheet(wb, ws, "Employees");
 
-          const filename = `employees_${new Date().toISOString().split("T")[0]}.xlsx`;
+          const filename = `employees_complete_${new Date().toISOString().split("T")[0]}.xlsx`;
           XLSX.writeFile(wb, filename);
 
-          // Log analytics
           if (window.firebaseLogEvent) {
             window.firebaseLogEvent(
               window.firebaseAnalytics,
@@ -1208,6 +1548,20 @@
       window.deleteEmployee = deleteEmployee;
       window.exportToExcel = exportToExcel;
       window.syncWithFirebase = syncWithFirebase;
+      window.toggleFetchSection = toggleFetchSection;
+      window.fetchEmployeeById = fetchEmployeeById;
+
+      // Initialize Firebase connection check after page loads
+      window.addEventListener("load", () => {
+        setTimeout(() => {
+          if (window.firebaseReady) {
+            console.log("🔥 Firebase ready, checking connection...");
+            checkFirebaseConnection();
+          } else {
+            console.log("⏳ Firebase not ready yet, waiting...");
+          }
+        }, 2000);
+      });
     </script>
   </body>
 </html>

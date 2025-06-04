@@ -138,20 +138,77 @@
         margin-top: 40px;
       }
 
+      .employee-info-display {
+        background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+        border-radius: 15px;
+        padding: 20px;
+        margin: 20px 0;
+        text-align: left;
+        border: 2px solid #0db8de;
+      }
+
+      .employee-info-display h4 {
+        color: #0db8de;
+        margin-bottom: 15px;
+        text-align: center;
+      }
+
+      .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 10px;
+      }
+
+      .info-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 5px 0;
+        border-bottom: 1px solid #dee2e6;
+      }
+
+      .info-label {
+        font-weight: bold;
+        color: #495057;
+      }
+
+      .info-value {
+        color: #212529;
+      }
+
       table {
         width: 100%;
         border-collapse: collapse;
         margin-top: 10px;
       }
+
       th,
       td {
         border: 1px solid #ccc;
         padding: 10px;
         font-size: 14px;
       }
+
       thead {
         background-color: #2575fc;
         color: white;
+      }
+
+      .attendance-summary {
+        background: linear-gradient(145deg, #e3f2fd, #bbdefb);
+        border-radius: 10px;
+        padding: 15px;
+        margin: 15px 0;
+        border-left: 4px solid #2196f3;
+      }
+
+      .btn-primary,
+      .btn-success,
+      .btn-danger,
+      .btn-warning,
+      .btn-info,
+      .btn-secondary {
+        margin: 5px;
+        min-width: 120px;
       }
     </style>
   </head>
@@ -163,7 +220,7 @@
           <div class="col-lg-12 login-key">
             <i class="fa fa-key" aria-hidden="true"></i>
           </div>
-          <div class="col-lg-12 login-title">ADMIN PANEL</div>
+          <div class="col-lg-12 login-title">BIOMETRIC ATTENDANCE</div>
           <div class="col-lg-12 login-form">
             <form onsubmit="login(event)">
               <div class="form-group">
@@ -205,38 +262,76 @@
 
     <!-- Main App -->
     <div class="container container-main" id="mainApp" style="display: none">
-      <h1>Biometric Attendance App</h1>
-      <input
-        type="text"
-        id="nameInput"
-        placeholder="Enter your name"
-        class="form-control mb-2"
-      />
-      <input
-        type="number"
-        id="ageInput"
-        placeholder="Enter your age"
-        class="form-control mb-2"
-      />
-      <input
-        type="number"
-        id="salaryInput"
-        placeholder="Enter your salary"
-        class="form-control mb-3"
-      />
-      <div>
-        <button id="scanButton" class="btn btn-success m-1">Save</button>
-        <button id="downloadExcel" class="btn btn-primary m-1">
-          Download Excel
-        </button>
-        <button id="fetchFromAPI" class="btn btn-secondary m-1">
-          Fetch from API
-        </button>
-        <button id="clearDataBtn" class="btn btn-danger m-1">Clear All</button>
-        <button id="newEntryBtn" class="btn btn-warning m-1">New</button>
-        <button id="showAllBtn" class="btn btn-info m-1">Show All</button>
+      <h1>Biometric Attendance System</h1>
+
+      <!-- Employee ID Input -->
+      <div class="form-group">
+        <label for="employeeIdInput" style="color: #495057; font-weight: bold"
+          >Employee ID</label
+        >
+        <input
+          type="text"
+          id="employeeIdInput"
+          placeholder="Enter Employee ID (e.g., EMP001)"
+          class="form-control"
+          style="
+            font-size: 16px;
+            padding: 12px;
+            border: 2px solid #0db8de;
+            border-radius: 8px;
+            background: white;
+            color: #333;
+          "
+          onchange="fetchEmployeeData()"
+        />
       </div>
+
+      <!-- Employee Information Display -->
+      <div id="employeeInfoDisplay" style="display: none"></div>
+
+      <!-- Attendance Action Buttons -->
+      <div id="attendanceActions" style="display: none">
+        <button
+          id="markAttendanceBtn"
+          class="btn btn-success"
+          onclick="markAttendance()"
+        >
+          📍 Mark Attendance
+        </button>
+        <button
+          id="fetchFromAPI"
+          class="btn btn-secondary"
+          onclick="fetchAttendanceFromAPI()"
+        >
+          🔄 Fetch from API
+        </button>
+        <button
+          id="downloadExcel"
+          class="btn btn-primary"
+          onclick="downloadAttendanceExcel()"
+        >
+          📊 Download Excel
+        </button>
+        <button
+          id="showAllBtn"
+          class="btn btn-info"
+          onclick="showAllAttendance()"
+        >
+          📋 Show All Records
+        </button>
+        <button
+          id="clearDataBtn"
+          class="btn btn-danger"
+          onclick="clearAllData()"
+        >
+          🗑️ Clear All Data
+        </button>
+      </div>
+
+      <!-- Attendance Details Display -->
       <div id="attendanceDetails" class="mt-4"></div>
+
+      <!-- Fingerprint Display -->
       <div id="fingerprintContainer" style="display: none; margin-top: 20px">
         <canvas id="fingerprintCanvas" width="317" height="270"></canvas>
       </div>
@@ -312,8 +407,9 @@
         },
       ];
 
-      let allEntries = [];
+      let allAttendanceEntries = [];
       let employeesFromAPI = [];
+      let currentEmployee = null;
 
       function login(e) {
         e.preventDefault();
@@ -341,204 +437,304 @@
             `Welcome, ${user.name}`;
         }
       }
+
       function signOut() {
         localStorage.removeItem("loggedInUser");
+        currentEmployee = null;
 
-        // Only hide the iframe without navigating
         if (window.top && typeof window.top.hideIframe === "function") {
           window.top.hideIframe();
         }
 
-        // Reset UI inside iframe to login form
         document.getElementById("mainApp").style.display = "none";
         document.getElementById("userBar").style.display = "none";
         document.getElementById("loginPage").style.display = "block";
+        document.getElementById("employeeInfoDisplay").style.display = "none";
+        document.getElementById("attendanceActions").style.display = "none";
       }
 
-      window.onload = () => {
-        const user = JSON.parse(localStorage.getItem("loggedInUser"));
-        if (user) showApp();
-        else document.getElementById("loginPage").style.display = "block";
-      };
+      // Fetch employee data by ID
+      async function fetchEmployeeData() {
+        const empId = document.getElementById("employeeIdInput").value.trim();
+        const infoDisplay = document.getElementById("employeeInfoDisplay");
+        const actionsDiv = document.getElementById("attendanceActions");
 
-      document
-        .getElementById("scanButton")
-        .addEventListener("click", async () => {
-          const name = document.getElementById("nameInput").value.trim();
-          const age = document.getElementById("ageInput").value.trim();
-          const salary = document.getElementById("salaryInput").value.trim();
-          if (!name || !age || !salary) return alert("Fill all fields.");
+        if (!empId) {
+          infoDisplay.style.display = "none";
+          actionsDiv.style.display = "none";
+          currentEmployee = null;
+          return;
+        }
 
-          const date = new Date().toLocaleString();
-          let ip = "Unknown",
-            coords = "Unknown";
+        try {
+          // Fetch from Firebase
+          const employeeRef = window.firebaseRef(
+            window.firebaseDatabase,
+            `employees/${empId.toUpperCase()}`,
+          );
+          const snapshot = await window.firebaseGet(employeeRef);
 
-          try {
-            const ipRes = await fetch("https://api.ipify.org?format=json");
-            const ipData = await ipRes.json();
-            ip = ipData.ip;
-            const locRes = await fetch(`https://ipapi.co/${ip}/json/`);
-            const locData = await locRes.json();
-            coords = `${locData.latitude}, ${locData.longitude}`;
-          } catch (error) {
-            console.log("Location services not available");
+          if (snapshot.exists()) {
+            currentEmployee = snapshot.val();
+            displayEmployeeInfo(currentEmployee);
+            actionsDiv.style.display = "block";
+          } else {
+            infoDisplay.innerHTML = `
+        <div class="alert alert-warning">
+          <h4>⚠️ Employee Not Found</h4>
+          <p>Employee ID "${empId}" not found in the database.</p>
+          <p>Please check the Employee ID or contact HR to add this employee.</p>
+        </div>
+      `;
+            infoDisplay.style.display = "block";
+            actionsDiv.style.display = "none";
+            currentEmployee = null;
           }
+        } catch (error) {
+          console.error("Error fetching employee:", error);
+          infoDisplay.innerHTML = `
+      <div class="alert alert-danger">
+        <h4>❌ Error</h4>
+        <p>Failed to fetch employee data: ${error.message}</p>
+      </div>
+    `;
+          infoDisplay.style.display = "block";
+          actionsDiv.style.display = "none";
+          currentEmployee = null;
+        }
+      }
 
-          const entry = {
-            date,
-            name,
-            age: parseInt(age),
-            salary: parseFloat(salary),
-            ip,
-            coords,
-            timestamp: new Date().toISOString(),
-          };
+      // Display employee information
+      function displayEmployeeInfo(employee) {
+        const infoDisplay = document.getElementById("employeeInfoDisplay");
 
-          // Save to Firebase
-          try {
-            if (window.firebaseDatabase) {
-              const attendanceRef = window.firebaseRef(
-                window.firebaseDatabase,
-                "attendance",
-              );
-              const newAttendanceRef = window.firebasePush(attendanceRef);
-              await window.firebaseSet(newAttendanceRef, {
-                ...entry,
-                id: newAttendanceRef.key,
-              });
-
-              // Log analytics
-              window.firebaseLogEvent(
-                window.firebaseAnalytics,
-                "attendance_recorded",
-                {
-                  employee_name: name,
-                },
-              );
-
-              console.log("Attendance saved to Firebase successfully");
-            }
-          } catch (error) {
-            console.error("Error saving to Firebase:", error);
-          }
-
-          // Also keep in local array for immediate display
-          allEntries.push(entry);
-
-          document.getElementById("attendanceDetails").innerHTML = `
-    <p><strong>Recorded at:</strong> ${date}</p>
-    <p><strong>Name:</strong> ${name}</p>
-    <p><strong>Age:</strong> ${age}</p>
-    <p><strong>Salary:</strong> ₹${parseFloat(salary).toFixed(2)}</p>
-    <p><strong>IP:</strong> ${ip}</p>
-    <p><strong>Coordinates:</strong> ${coords}</p>
-    <p style="color: #00ff00;"><strong>✓ Saved to Firebase</strong></p>
+        infoDisplay.innerHTML = `
+    <div class="employee-info-display">
+      <h4>👤 Employee Information</h4>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">Employee ID:</span>
+          <span class="info-value">${employee.empId}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Name:</span>
+          <span class="info-value">${employee.name}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Contact:</span>
+          <span class="info-value">${employee.contact}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Email:</span>
+          <span class="info-value">${employee.email}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Join Date:</span>
+          <span class="info-value">${formatDate(employee.joinDate)}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Basic Salary:</span>
+          <span class="info-value">₹${employee.basicSalary?.toLocaleString()}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Gross Salary:</span>
+          <span class="info-value">₹${employee.grossSalary?.toLocaleString()}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Status:</span>
+          <span class="info-value">${employee.status || "Active"}</span>
+        </div>
+      </div>
+    </div>
   `;
 
-          document.getElementById("fingerprintContainer").style.display =
-            "block";
-          const canvas = document.getElementById("fingerprintCanvas");
-          const ctx = canvas.getContext("2d");
-          const img = new Image();
-          img.src =
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Fingerprint_icon.svg/1200px-Fingerprint_icon.svg.png";
-          img.onload = () =>
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        });
+        infoDisplay.style.display = "block";
+      }
 
-      // Fetch data from Firebase API
-      document
-        .getElementById("fetchFromAPI")
-        .addEventListener("click", async () => {
-          try {
-            if (!window.firebaseDatabase) {
-              return alert("Firebase not initialized");
-            }
+      // Mark attendance for current employee
+      async function markAttendance() {
+        if (!currentEmployee) {
+          alert("Please select an employee first.");
+          return;
+        }
 
-            // Fetch attendance data
+        const date = new Date().toLocaleString();
+        let ip = "Unknown",
+          coords = "Unknown";
+
+        try {
+          const ipRes = await fetch("https://api.ipify.org?format=json");
+          const ipData = await ipRes.json();
+          ip = ipData.ip;
+          const locRes = await fetch(`https://ipapi.co/${ip}/json/`);
+          const locData = await locRes.json();
+          coords = `${locData.latitude}, ${locData.longitude}`;
+        } catch (error) {
+          console.log("Location services not available");
+        }
+
+        const attendanceEntry = {
+          empId: currentEmployee.empId,
+          name: currentEmployee.name,
+          contact: currentEmployee.contact,
+          email: currentEmployee.email,
+          basicSalary: currentEmployee.basicSalary,
+          grossSalary: currentEmployee.grossSalary,
+          date,
+          ip,
+          coords,
+          timestamp: new Date().toISOString(),
+        };
+
+        // Save to Firebase
+        try {
+          if (window.firebaseDatabase) {
             const attendanceRef = window.firebaseRef(
               window.firebaseDatabase,
               "attendance",
             );
-            const attendanceSnapshot = await window.firebaseGet(attendanceRef);
-
-            // Fetch employee data
-            const employeesRef = window.firebaseRef(
-              window.firebaseDatabase,
-              "employees",
-            );
-            const employeesSnapshot = await window.firebaseGet(employeesRef);
-
-            let message = "Data fetched from Firebase:\n\n";
-
-            if (attendanceSnapshot.exists()) {
-              const attendanceData = [];
-              attendanceSnapshot.forEach((childSnapshot) => {
-                attendanceData.push({
-                  id: childSnapshot.key,
-                  ...childSnapshot.val(),
-                });
-              });
-              allEntries = attendanceData;
-              message += `📊 Attendance Records: ${attendanceData.length}\n`;
-            } else {
-              message += "📊 Attendance Records: 0\n";
-            }
-
-            if (employeesSnapshot.exists()) {
-              employeesFromAPI = [];
-              employeesSnapshot.forEach((childSnapshot) => {
-                employeesFromAPI.push({
-                  id: childSnapshot.key,
-                  ...childSnapshot.val(),
-                });
-              });
-              message += `👥 Employee Records: ${employeesFromAPI.length}\n`;
-            } else {
-              message += "👥 Employee Records: 0\n";
-            }
-
-            alert(message + "\nData is now available for Excel export!");
+            const newAttendanceRef = window.firebasePush(attendanceRef);
+            await window.firebaseSet(newAttendanceRef, {
+              ...attendanceEntry,
+              id: newAttendanceRef.key,
+            });
 
             // Log analytics
             window.firebaseLogEvent(
               window.firebaseAnalytics,
-              "data_fetched_from_api",
+              "attendance_recorded",
+              {
+                empId: attendanceEntry.empId,
+                employee_name: attendanceEntry.name,
+              },
             );
-          } catch (error) {
-            console.error("Error fetching from Firebase:", error);
-            alert("Error fetching data from Firebase: " + error.message);
-          }
-        });
 
-      document.getElementById("downloadExcel").addEventListener("click", () => {
+            console.log("Attendance saved to Firebase successfully");
+          }
+        } catch (error) {
+          console.error("Error saving to Firebase:", error);
+        }
+
+        // Also keep in local array for immediate display
+        allAttendanceEntries.push(attendanceEntry);
+
+        document.getElementById("attendanceDetails").innerHTML = `
+    <div class="attendance-summary">
+      <h4>✅ Attendance Marked Successfully</h4>
+      <p><strong>Employee:</strong> ${attendanceEntry.name} (${attendanceEntry.empId})</p>
+      <p><strong>Date & Time:</strong> ${date}</p>
+      <p><strong>Location:</strong> ${coords}</p>
+      <p><strong>IP Address:</strong> ${ip}</p>
+      <p style="color: #00ff00;"><strong>✓ Saved to Firebase Database</strong></p>
+    </div>
+  `;
+
+        document.getElementById("fingerprintContainer").style.display = "block";
+        const canvas = document.getElementById("fingerprintCanvas");
+        const ctx = canvas.getContext("2d");
+        const img = new Image();
+        img.src =
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Fingerprint_icon.svg/1200px-Fingerprint_icon.svg.png";
+        img.onload = () =>
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      }
+
+      // Fetch attendance data from Firebase API
+      async function fetchAttendanceFromAPI() {
         try {
-          // Create workbook with multiple sheets
+          if (!window.firebaseDatabase) {
+            return alert("Firebase not initialized");
+          }
+
+          // Fetch attendance data
+          const attendanceRef = window.firebaseRef(
+            window.firebaseDatabase,
+            "attendance",
+          );
+          const attendanceSnapshot = await window.firebaseGet(attendanceRef);
+
+          // Fetch employee data
+          const employeesRef = window.firebaseRef(
+            window.firebaseDatabase,
+            "employees",
+          );
+          const employeesSnapshot = await window.firebaseGet(employeesRef);
+
+          let message = "Data fetched from Firebase API:\n\n";
+
+          if (attendanceSnapshot.exists()) {
+            const attendanceData = [];
+            attendanceSnapshot.forEach((childSnapshot) => {
+              attendanceData.push({
+                id: childSnapshot.key,
+                ...childSnapshot.val(),
+              });
+            });
+            allAttendanceEntries = attendanceData;
+            message += `📊 Attendance Records: ${attendanceData.length}\n`;
+          } else {
+            message += "📊 Attendance Records: 0\n";
+          }
+
+          if (employeesSnapshot.exists()) {
+            employeesFromAPI = [];
+            employeesSnapshot.forEach((childSnapshot) => {
+              employeesFromAPI.push({
+                ...childSnapshot.val(),
+              });
+            });
+            message += `👥 Employee Records: ${employeesFromAPI.length}\n`;
+          } else {
+            message += "👥 Employee Records: 0\n";
+          }
+
+          alert(message + "\nData is now available for Excel export!");
+
+          // Log analytics
+          window.firebaseLogEvent(
+            window.firebaseAnalytics,
+            "data_fetched_from_api",
+          );
+        } catch (error) {
+          console.error("Error fetching from Firebase:", error);
+          alert("Error fetching data from Firebase: " + error.message);
+        }
+      }
+
+      // Download attendance Excel with comprehensive data
+      function downloadAttendanceExcel() {
+        try {
           const wb = XLSX.utils.book_new();
 
           // Attendance data sheet
-          if (allEntries.length > 0) {
+          if (allAttendanceEntries.length > 0) {
             const attendanceData = [
               [
                 "S.No",
-                "Timestamp",
+                "Emp_ID",
                 "Name",
-                "Age",
-                "Salary",
-                "IP",
+                "Contact Number",
+                "Email",
+                "Basic Salary",
+                "Gross Salary",
+                "Date & Time",
+                "IP Address",
                 "Coordinates",
                 "Firebase ID",
               ],
             ];
-            allEntries.forEach((e, i) =>
+            allAttendanceEntries.forEach((e, i) =>
               attendanceData.push([
                 i + 1,
+                e.empId || "N/A",
+                e.name || "N/A",
+                e.contact || "N/A",
+                e.email || "N/A",
+                e.basicSalary || 0,
+                e.grossSalary || 0,
                 e.date || e.timestamp,
-                e.name,
-                e.age,
-                e.salary,
-                e.ip,
-                e.coords,
+                e.ip || "N/A",
+                e.coords || "N/A",
                 e.id || "Local",
               ]),
             );
@@ -550,28 +746,56 @@
           if (employeesFromAPI.length > 0) {
             const employeeData = [
               [
-                "S.No",
+                "Emp_ID",
                 "Name",
-                "Age",
-                "Position",
-                "Join Date",
-                "Firebase ID",
-                "Created At",
+                "Contact Number",
+                "Email",
+                "Marital Status",
+                "Emergency Contact",
+                "Address",
+                "PAN [10 Digits Alpha Numeric]",
+                "Aadhar [12 digit Number]",
+                "UAN [12 Digit Number]",
+                "Date of Joining",
+                "Date of Exit",
+                "Basic Salary",
+                "Dearness Allowance",
+                "Personal Allowance",
+                "Conveyance Allowance",
+                "Professional Allowance",
+                "Bonus",
+                "Gross Salary",
               ],
             ];
             employeesFromAPI.forEach((e, i) =>
               employeeData.push([
-                i + 1,
+                e.empId,
                 e.name,
-                e.age,
-                e.position,
+                e.contact,
+                e.email,
+                e.maritalStatus || "",
+                e.emergencyContact || "",
+                e.address || "",
+                e.pan || "",
+                e.aadhar || "",
+                e.uan || "",
                 e.joinDate,
-                e.id,
-                e.createdAt ? new Date(e.createdAt).toLocaleString() : "N/A",
+                e.exitDate || "",
+                e.basicSalary || 0,
+                e.dearnessAllowance || 0,
+                e.personalAllowance || 0,
+                e.conveyanceAllowance || 0,
+                e.professionalAllowance || 0,
+                e.bonus || 0,
+                e.grossSalary || 0,
               ]),
             );
             const employeeWs = XLSX.utils.aoa_to_sheet(employeeData);
-            XLSX.utils.book_append_sheet(wb, employeeWs, "Employees");
+            XLSX.utils.book_append_sheet(
+              wb,
+              employeeWs,
+              "Complete Employee Data",
+            );
           }
 
           if (wb.SheetNames.length === 0) {
@@ -580,220 +804,126 @@
             );
           }
 
-          const filename = `kawachi_data_${new Date().toISOString().split("T")[0]}.xlsx`;
+          const filename = `biometric_attendance_${new Date().toISOString().split("T")[0]}.xlsx`;
           XLSX.writeFile(wb, filename);
 
           // Log analytics
           window.firebaseLogEvent(window.firebaseAnalytics, "excel_exported", {
-            attendance_count: allEntries.length,
+            attendance_count: allAttendanceEntries.length,
             employee_count: employeesFromAPI.length,
           });
 
           alert(
-            `Excel file "${filename}" downloaded successfully!\n\nContains:\n- ${allEntries.length} attendance records\n- ${employeesFromAPI.length} employee records`,
+            `Excel file "${filename}" downloaded successfully!\n\nContains:\n- ${allAttendanceEntries.length} attendance records\n- ${employeesFromAPI.length} complete employee records`,
           );
         } catch (error) {
           console.error("Error creating Excel file:", error);
           alert("Error creating Excel file: " + error.message);
         }
-      });
+      }
 
-      document
-        .getElementById("clearDataBtn")
-        .addEventListener("click", async () => {
-          if (
-            confirm(
-              "Clear all data? This will remove data from Firebase and local storage.",
-            )
-          ) {
-            try {
-              // Clear from Firebase
-              if (window.firebaseDatabase) {
-                const attendanceRef = window.firebaseRef(
-                  window.firebaseDatabase,
-                  "attendance",
-                );
-                await window.firebaseRemove(attendanceRef);
-                console.log("Attendance data cleared from Firebase");
-              }
-
-              // Clear local data
-              allEntries = [];
-              employeesFromAPI = [];
-
-              // Clear form
-              document.getElementById("nameInput").value = "";
-              document.getElementById("ageInput").value = "";
-              document.getElementById("salaryInput").value = "";
-              document.getElementById("attendanceDetails").innerHTML = "";
-              document.getElementById("fingerprintContainer").style.display =
-                "none";
-
-              alert("All data cleared successfully!");
-
-              // Log analytics
-              window.firebaseLogEvent(window.firebaseAnalytics, "data_cleared");
-            } catch (error) {
-              console.error("Error clearing data:", error);
-              alert("Error clearing data: " + error.message);
-            }
-          }
-        });
-
-      document.getElementById("newEntryBtn").addEventListener("click", () => {
-        document.getElementById("nameInput").value = "";
-        document.getElementById("ageInput").value = "";
-        document.getElementById("salaryInput").value = "";
-        document.getElementById("attendanceDetails").innerHTML = "";
-        document.getElementById("fingerprintContainer").style.display = "none";
-      });
-
-      document.getElementById("showAllBtn").addEventListener("click", () => {
-        if (allEntries.length === 0)
+      // Show all attendance records
+      function showAllAttendance() {
+        if (allAttendanceEntries.length === 0) {
           return alert(
-            "No entries. Use 'Fetch from API' to load data from Firebase.",
+            "No attendance records. Use 'Fetch from API' to load data from Firebase.",
           );
+        }
 
-        let html = `<h3>All Attendance Entries (${allEntries.length} records)</h3><div style="overflow-x:auto;"><table><thead><tr>
-    <th>#</th><th>Date</th><th>Name</th><th>Age</th><th>Salary</th><th>IP</th><th>Coordinates</th><th>Firebase ID</th><th>Action</th>
+        let html = `<h3>All Attendance Records (${allAttendanceEntries.length} entries)</h3><div style="overflow-x:auto;"><table><thead><tr>
+    <th>#</th><th>Employee ID</th><th>Name</th><th>Date & Time</th><th>IP</th><th>Location</th><th>Salary</th><th>Firebase ID</th>
   </tr></thead><tbody>`;
 
-        allEntries.forEach((e, i) => {
+        allAttendanceEntries.forEach((e, i) => {
           html += `<tr>
       <td>${i + 1}</td>
+      <td>${e.empId || "N/A"}</td>
+      <td>${e.name || "N/A"}</td>
       <td>${e.date || e.timestamp}</td>
-      <td>${e.name}</td>
-      <td>${e.age}</td>
-      <td>₹${parseFloat(e.salary).toFixed(2)}</td>
-      <td>${e.ip}</td>
-      <td>${e.coords}</td>
+      <td>${e.ip || "N/A"}</td>
+      <td>${e.coords || "N/A"}</td>
+      <td>₹${(e.grossSalary || 0).toLocaleString()}</td>
       <td>${e.id || "Local"}</td>
-      <td>
-        <button onclick="editEntry(${i})" style="background: #0072ff; color: white; border: none; padding: 4px 8px; border-radius: 4px; margin: 2px;">Edit</button>
-        <button onclick="duplicateEntry(${i})" style="background: #27ae60; color: white; border: none; padding: 4px 8px; border-radius: 4px; margin: 2px;">Duplicate</button>
-        <button onclick="deleteEntry('${e.id}', ${i})" style="background: #e74c3c; color: white; border: none; padding: 4px 8px; border-radius: 4px; margin: 2px;">Delete</button>
-      </td>
     </tr>`;
         });
         html += "</tbody></table></div>";
         document.getElementById("attendanceDetails").innerHTML = html;
-      });
+      }
 
-      window.editEntry = function (i) {
-        const e = allEntries[i];
-        const row = document.querySelectorAll("#attendanceDetails tbody tr")[i];
-        row.innerHTML = `<td>${i + 1}</td><td>${e.date || e.timestamp}</td>
-    <td><input id="editName${i}" value="${e.name}" style="width: 100px;"></td>
-    <td><input id="editAge${i}" value="${e.age}" style="width: 60px;"></td>
-    <td><input id="editSalary${i}" value="${e.salary}" style="width: 80px;"></td>
-    <td>${e.ip}</td><td>${e.coords}</td><td>${e.id || "Local"}</td>
-    <td><button onclick="saveEdit(${i})" style="background: #27ae60; color: white; border: none; padding: 4px 8px; border-radius: 4px;">Save</button></td>`;
-      };
-
-      window.saveEdit = async function (i) {
-        const name = document.getElementById(`editName${i}`).value;
-        const age = document.getElementById(`editAge${i}`).value;
-        const salary = document.getElementById(`editSalary${i}`).value;
-
-        if (!name || !age || !salary) return alert("All fields required.");
-
-        const entry = allEntries[i];
-        const updatedData = {
-          name: name,
-          age: parseInt(age),
-          salary: parseFloat(salary),
-        };
-
-        // Update in Firebase if it has an ID
-        if (entry.id && window.firebaseDatabase) {
+      // Clear all data
+      async function clearAllData() {
+        if (
+          confirm(
+            "Clear all attendance data? This will remove data from Firebase.",
+          )
+        ) {
           try {
-            const entryRef = window.firebaseRef(
-              window.firebaseDatabase,
-              `attendance/${entry.id}`,
-            );
-            await window.firebaseSet(entryRef, {
-              ...entry,
-              ...updatedData,
-              updatedAt: new Date().toISOString(),
-            });
-            console.log("Entry updated in Firebase");
+            // Clear from Firebase
+            if (window.firebaseDatabase) {
+              const attendanceRef = window.firebaseRef(
+                window.firebaseDatabase,
+                "attendance",
+              );
+              await window.firebaseRemove(attendanceRef);
+              console.log("Attendance data cleared from Firebase");
+            }
+
+            // Clear local data
+            allAttendanceEntries = [];
+            employeesFromAPI = [];
+
+            // Clear displays
+            document.getElementById("attendanceDetails").innerHTML = "";
+            document.getElementById("fingerprintContainer").style.display =
+              "none";
+            document.getElementById("employeeIdInput").value = "";
+            document.getElementById("employeeInfoDisplay").style.display =
+              "none";
+            document.getElementById("attendanceActions").style.display = "none";
+            currentEmployee = null;
+
+            alert("All attendance data cleared successfully!");
+
+            // Log analytics
+            window.firebaseLogEvent(window.firebaseAnalytics, "data_cleared");
           } catch (error) {
-            console.error("Error updating in Firebase:", error);
+            console.error("Error clearing data:", error);
+            alert("Error clearing data: " + error.message);
           }
         }
+      }
 
-        // Update local data
-        allEntries[i] = { ...allEntries[i], ...updatedData };
-        document.getElementById("showAllBtn").click();
-      };
-
-      window.deleteEntry = async function (entryId, localIndex) {
-        if (!confirm("Delete this entry?")) return;
-
+      // Utility function to format dates
+      function formatDate(dateString) {
         try {
-          // Delete from Firebase if it has an ID
-          if (entryId && entryId !== "Local" && window.firebaseDatabase) {
-            const entryRef = window.firebaseRef(
-              window.firebaseDatabase,
-              `attendance/${entryId}`,
-            );
-            await window.firebaseRemove(entryRef);
-            console.log("Entry deleted from Firebase");
-          }
-
-          // Remove from local array
-          allEntries.splice(localIndex, 1);
-          document.getElementById("showAllBtn").click();
-
-          alert("Entry deleted successfully!");
+          const date = new Date(dateString);
+          return date
+            .toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+            })
+            .replace(/\//g, "-");
         } catch (error) {
-          console.error("Error deleting entry:", error);
-          alert("Error deleting entry: " + error.message);
+          return dateString;
         }
+      }
+
+      window.onload = () => {
+        const user = JSON.parse(localStorage.getItem("loggedInUser"));
+        if (user) showApp();
+        else document.getElementById("loginPage").style.display = "block";
       };
 
-      window.duplicateEntry = async function (i) {
-        const original = allEntries[i];
-        const duplicate = {
-          ...original,
-          date: new Date().toLocaleString(),
-          timestamp: new Date().toISOString(),
-        };
+      // Make functions globally available
+      window.fetchEmployeeData = fetchEmployeeData;
+      window.markAttendance = markAttendance;
+      window.fetchAttendanceFromAPI = fetchAttendanceFromAPI;
+      window.downloadAttendanceExcel = downloadAttendanceExcel;
+      window.showAllAttendance = showAllAttendance;
+      window.clearAllData = clearAllData;
 
-        // Remove the Firebase ID so it gets a new one
-        delete duplicate.id;
-
-        try {
-          // Save duplicate to Firebase
-          if (window.firebaseDatabase) {
-            const attendanceRef = window.firebaseRef(
-              window.firebaseDatabase,
-              "attendance",
-            );
-            const newAttendanceRef = window.firebasePush(attendanceRef);
-            await window.firebaseSet(newAttendanceRef, {
-              ...duplicate,
-              id: newAttendanceRef.key,
-            });
-            duplicate.id = newAttendanceRef.key;
-            console.log("Duplicate saved to Firebase");
-          }
-
-          // Add to local array
-          allEntries.push(duplicate);
-          document.getElementById("showAllBtn").click();
-
-          alert("Entry duplicated successfully!");
-        } catch (error) {
-          console.error("Error duplicating entry:", error);
-          // Still add to local array even if Firebase fails
-          allEntries.push(duplicate);
-          document.getElementById("showAllBtn").click();
-          alert("Entry duplicated locally (Firebase save failed)");
-        }
-      };
-    </script>
-    <script>
+      // Authentication check
       if (sessionStorage.getItem("isLoggedIn") !== "true") {
         sessionStorage.setItem("redirectAfterLogin", window.location.pathname);
         window.location.href = "login.html";
