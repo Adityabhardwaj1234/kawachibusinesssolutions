@@ -268,7 +268,8 @@
         text-align: center;
       }
 
-      #firebaseStatus {
+      #firebaseStatus,
+      #editFirebaseStatus {
         padding: 8px 12px;
         border-radius: 8px;
         background: rgba(255, 255, 255, 0.05);
@@ -498,6 +499,214 @@
       Loading employees from Firebase...
     </div>
     <div id="teamContainer" class="employee-grid"></div>
+
+    <!-- Edit Employee Modal -->
+    <div id="editEmployeeModal" class="modal-overlay">
+      <div class="modal-content">
+        <button class="modal-close" onclick="hideEditEmployeeModal()">
+          &times;
+        </button>
+        <h2 class="modal-title">Edit Employee</h2>
+
+        <div id="editFirebaseStatus">
+          <span
+            id="editFirebaseIndicator"
+            style="
+              display: inline-block;
+              width: 10px;
+              height: 10px;
+              border-radius: 50%;
+              background: #ff4757;
+              margin-right: 8px;
+            "
+          ></span>
+          <span id="editFirebaseStatusText">Connecting to Firebase...</span>
+        </div>
+
+        <form id="editEmployeeForm" onsubmit="handleEditEmployee(event)">
+          <div class="form-grid">
+            <!-- Personal Information -->
+            <div class="form-group">
+              <label for="editEmpId">Employee ID *</label>
+              <input
+                type="text"
+                id="editEmpId"
+                name="empId"
+                required
+                readonly
+                style="background: rgba(255, 255, 255, 0.05)"
+              />
+            </div>
+            <div class="form-group">
+              <label for="editEmpName">Full Name *</label>
+              <input type="text" id="editEmpName" name="empName" required />
+            </div>
+            <div class="form-group">
+              <label for="editEmpContact">Contact Number *</label>
+              <input
+                type="tel"
+                id="editEmpContact"
+                name="empContact"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="editEmpEmail">Email *</label>
+              <input type="email" id="editEmpEmail" name="empEmail" required />
+            </div>
+            <div class="form-group">
+              <label for="editEmpMaritalStatus">Marital Status</label>
+              <select id="editEmpMaritalStatus" name="empMaritalStatus">
+                <option value="">Select Status</option>
+                <option value="Single">Single</option>
+                <option value="Married">Married</option>
+                <option value="Divorced">Divorced</option>
+                <option value="Widowed">Widowed</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="editEmpEmergencyContact">Emergency Contact</label>
+              <input
+                type="tel"
+                id="editEmpEmergencyContact"
+                name="empEmergencyContact"
+              />
+            </div>
+
+            <!-- Address -->
+            <div class="form-group full-width">
+              <label for="editEmpAddress">Address</label>
+              <input type="text" id="editEmpAddress" name="empAddress" />
+            </div>
+
+            <!-- Government IDs -->
+            <div class="form-group">
+              <label for="editEmpPan">PAN (10 Digits Alpha Numeric)</label>
+              <input
+                type="text"
+                id="editEmpPan"
+                name="empPan"
+                maxlength="10"
+                style="text-transform: uppercase"
+              />
+            </div>
+            <div class="form-group">
+              <label for="editEmpAadhar">Aadhar (12 Digit Number)</label>
+              <input
+                type="text"
+                id="editEmpAadhar"
+                name="empAadhar"
+                maxlength="12"
+              />
+            </div>
+            <div class="form-group">
+              <label for="editEmpUan">UAN (12 Digit Number)</label>
+              <input type="text" id="editEmpUan" name="empUan" maxlength="12" />
+            </div>
+
+            <!-- Employment Details -->
+            <div class="form-group">
+              <label for="editEmpJoinDate">Date of Joining *</label>
+              <input
+                type="date"
+                id="editEmpJoinDate"
+                name="empJoinDate"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="editEmpExitDate">Date of Exit</label>
+              <input type="date" id="editEmpExitDate" name="empExitDate" />
+            </div>
+
+            <!-- Salary Details -->
+            <div class="form-group">
+              <label for="editEmpBasicSalary">Basic Salary *</label>
+              <input
+                type="number"
+                id="editEmpBasicSalary"
+                name="empBasicSalary"
+                step="0.01"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="editEmpDearnessAllowance">Dearness Allowance</label>
+              <input
+                type="number"
+                id="editEmpDearnessAllowance"
+                name="empDearnessAllowance"
+                step="0.01"
+              />
+            </div>
+            <div class="form-group">
+              <label for="editEmpPersonalAllowance">Personal Allowance</label>
+              <input
+                type="number"
+                id="editEmpPersonalAllowance"
+                name="empPersonalAllowance"
+                step="0.01"
+              />
+            </div>
+            <div class="form-group">
+              <label for="editEmpConveyanceAllowance"
+                >Conveyance Allowance</label
+              >
+              <input
+                type="number"
+                id="editEmpConveyanceAllowance"
+                name="empConveyanceAllowance"
+                step="0.01"
+              />
+            </div>
+            <div class="form-group">
+              <label for="editEmpProfessionalAllowance"
+                >Professional Allowance</label
+              >
+              <input
+                type="number"
+                id="editEmpProfessionalAllowance"
+                name="empProfessionalAllowance"
+                step="0.01"
+              />
+            </div>
+            <div class="form-group">
+              <label for="editEmpBonus">Bonus</label>
+              <input
+                type="number"
+                id="editEmpBonus"
+                name="empBonus"
+                step="0.01"
+              />
+            </div>
+            <div class="form-group">
+              <label for="editEmpGrossSalary"
+                >Gross Salary (Auto-calculated)</label
+              >
+              <input
+                type="number"
+                id="editEmpGrossSalary"
+                name="empGrossSalary"
+                readonly
+                style="background: rgba(255, 255, 255, 0.05)"
+              />
+            </div>
+          </div>
+
+          <button type="submit" class="btn-submit">
+            Update Employee in Firebase
+          </button>
+
+          <div id="editStepIndicator" class="step-indicator">
+            Step 1: Validating data...
+          </div>
+
+          <div id="editSuccessMessage" class="success-message">
+            Employee updated successfully!
+          </div>
+        </form>
+      </div>
+    </div>
 
     <!-- Add Employee Modal -->
     <div id="addEmployeeModal" class="modal-overlay">
@@ -907,14 +1116,56 @@
 
         async updateEmployee(empId, updateData) {
           try {
-            const employeeRef = ref(database, `employees/${empId}`);
-            await update(employeeRef, {
-              ...updateData,
+            // Prepare data for Firebase update
+            const firebaseUpdateData = {
+              name: String(updateData.name || "").trim(),
+              contact: String(updateData.contact || "").trim(),
+              email: String(updateData.email || "")
+                .trim()
+                .toLowerCase(),
+              maritalStatus: updateData.maritalStatus || "",
+              emergencyContact: updateData.emergencyContact || "",
+              address: updateData.address || "",
+              pan: String(updateData.pan || "")
+                .trim()
+                .toUpperCase(),
+              aadhar: String(updateData.aadhar || "").trim(),
+              uan: String(updateData.uan || "").trim(),
+              joinDate: updateData.joinDate || "",
+              exitDate: updateData.exitDate || "",
+              basicSalary: parseFloat(updateData.basicSalary) || 0,
+              dearnessAllowance: parseFloat(updateData.dearnessAllowance) || 0,
+              personalAllowance: parseFloat(updateData.personalAllowance) || 0,
+              conveyanceAllowance:
+                parseFloat(updateData.conveyanceAllowance) || 0,
+              professionalAllowance:
+                parseFloat(updateData.professionalAllowance) || 0,
+              bonus: parseFloat(updateData.bonus) || 0,
+              grossSalary: parseFloat(updateData.grossSalary) || 0,
               updatedAt: new Date().toISOString(),
+            };
+
+            const employeeRef = ref(database, `employees/${empId}`);
+            await update(employeeRef, firebaseUpdateData);
+
+            console.log("✅ Employee successfully updated in Firebase:", empId);
+
+            // Log analytics
+            logEvent(analytics, "employee_updated", {
+              empId: empId,
+              name: firebaseUpdateData.name,
             });
+
             return { success: true };
           } catch (error) {
             console.error("Error updating employee:", error);
+
+            // Log error analytics
+            logEvent(analytics, "employee_update_error", {
+              empId: empId,
+              error_message: error.message,
+            });
+
             return { success: false, error: error.message };
           }
         },
@@ -1047,6 +1298,22 @@
             field.addEventListener("input", calculateGrossSalary);
           }
         });
+
+        // Add event listeners for edit form salary calculation
+        const editSalaryFields = [
+          "editEmpBasicSalary",
+          "editEmpDearnessAllowance",
+          "editEmpPersonalAllowance",
+          "editEmpConveyanceAllowance",
+          "editEmpProfessionalAllowance",
+          "editEmpBonus",
+        ];
+        editSalaryFields.forEach((fieldId) => {
+          const field = document.getElementById(fieldId);
+          if (field) {
+            field.addEventListener("input", calculateEditGrossSalary);
+          }
+        });
       });
 
       // Load employees from Firebase
@@ -1086,7 +1353,7 @@
           card.innerHTML = `
           <div class="profile-header">
             <h3>${emp.name}</h3>
-            <span class="emp-id">${emp.empId}</span>
+            <span class="emp-id">id=${emp.empId}</span>
           </div>
           <div class="info-grid">
             <div class="info-row">
@@ -1409,11 +1676,297 @@
         }
       }
 
-      // Edit employee function (simplified for now)
+      // Edit employee function
       async function editEmployee(empId) {
-        alert(
-          `Edit functionality for ${empId} - Will be implemented in the next version`,
+        try {
+          // Fetch employee data
+          const result = await window.employeeAPI.getEmployeeById(empId);
+
+          if (result.success && result.data) {
+            const emp = result.data;
+
+            // Fill the edit form with current data
+            document.getElementById("editEmpId").value = emp.empId || "";
+            document.getElementById("editEmpName").value = emp.name || "";
+            document.getElementById("editEmpContact").value = emp.contact || "";
+            document.getElementById("editEmpEmail").value = emp.email || "";
+            document.getElementById("editEmpMaritalStatus").value =
+              emp.maritalStatus || "";
+            document.getElementById("editEmpEmergencyContact").value =
+              emp.emergencyContact || "";
+            document.getElementById("editEmpAddress").value = emp.address || "";
+            document.getElementById("editEmpPan").value = emp.pan || "";
+            document.getElementById("editEmpAadhar").value = emp.aadhar || "";
+            document.getElementById("editEmpUan").value = emp.uan || "";
+            document.getElementById("editEmpJoinDate").value =
+              emp.joinDate || "";
+            document.getElementById("editEmpExitDate").value =
+              emp.exitDate || "";
+            document.getElementById("editEmpBasicSalary").value =
+              emp.basicSalary || "";
+            document.getElementById("editEmpDearnessAllowance").value =
+              emp.dearnessAllowance || "";
+            document.getElementById("editEmpPersonalAllowance").value =
+              emp.personalAllowance || "";
+            document.getElementById("editEmpConveyanceAllowance").value =
+              emp.conveyanceAllowance || "";
+            document.getElementById("editEmpProfessionalAllowance").value =
+              emp.professionalAllowance || "";
+            document.getElementById("editEmpBonus").value = emp.bonus || "";
+            document.getElementById("editEmpGrossSalary").value =
+              emp.grossSalary || "";
+
+            // Show the edit modal
+            document.getElementById("editEmployeeModal").style.display = "flex";
+
+            // Check Firebase connection
+            updateEditFirebaseStatus(true);
+
+            // Calculate gross salary for the edit form
+            calculateEditGrossSalary();
+          } else {
+            alert("Employee not found or error fetching data");
+          }
+        } catch (error) {
+          console.error("Error loading employee for edit:", error);
+          alert("Error loading employee data: " + error.message);
+        }
+      }
+
+      // Hide edit employee modal
+      function hideEditEmployeeModal() {
+        document.getElementById("editEmployeeModal").style.display = "none";
+        document.getElementById("editEmployeeForm").reset();
+        document.getElementById("editSuccessMessage").style.display = "none";
+
+        const stepIndicator = document.getElementById("editStepIndicator");
+        stepIndicator.style.display = "none";
+        stepIndicator.style.background = "rgba(0, 114, 255, 0.1)";
+        stepIndicator.style.borderColor = "rgba(0, 114, 255, 0.3)";
+        stepIndicator.style.color = "#00c6ff";
+
+        const submitButton = document.querySelector(
+          "#editEmployeeForm .btn-submit",
         );
+        if (submitButton) {
+          submitButton.innerHTML = "Update Employee in Firebase";
+          submitButton.style.background =
+            "linear-gradient(to right, rgb(0, 114, 255), rgb(0, 198, 255))";
+          submitButton.disabled = false;
+        }
+      }
+
+      // Update Firebase status for edit modal
+      function updateEditFirebaseStatus(connected = false) {
+        const indicator = document.getElementById("editFirebaseIndicator");
+        const statusText = document.getElementById("editFirebaseStatusText");
+
+        if (indicator && statusText) {
+          if (connected) {
+            indicator.style.background = "#27ae60";
+            statusText.textContent = "🔥 Connected to Firebase";
+            statusText.style.color = "#27ae60";
+          } else {
+            indicator.style.background = "#ff4757";
+            statusText.textContent = "❌ Firebase Disconnected";
+            statusText.style.color = "#ff4757";
+          }
+        }
+      }
+
+      // Calculate gross salary for edit form
+      function calculateEditGrossSalary() {
+        const basic =
+          parseFloat(document.getElementById("editEmpBasicSalary").value) || 0;
+        const dearness =
+          parseFloat(
+            document.getElementById("editEmpDearnessAllowance").value,
+          ) || 0;
+        const personal =
+          parseFloat(
+            document.getElementById("editEmpPersonalAllowance").value,
+          ) || 0;
+        const conveyance =
+          parseFloat(
+            document.getElementById("editEmpConveyanceAllowance").value,
+          ) || 0;
+        const professional =
+          parseFloat(
+            document.getElementById("editEmpProfessionalAllowance").value,
+          ) || 0;
+        const bonus =
+          parseFloat(document.getElementById("editEmpBonus").value) || 0;
+
+        const gross =
+          basic + dearness + personal + conveyance + professional + bonus;
+        document.getElementById("editEmpGrossSalary").value = gross.toFixed(2);
+      }
+
+      // Handle edit employee form submission
+      async function handleEditEmployee(event) {
+        event.preventDefault();
+
+        const submitButton = document.querySelector(
+          "#editEmployeeForm .btn-submit",
+        );
+        const successMessage = document.getElementById("editSuccessMessage");
+        const stepIndicator = document.getElementById("editStepIndicator");
+        const originalButtonText = submitButton.innerHTML;
+
+        // Step 1: Show validation
+        stepIndicator.innerHTML = "🔍 Step 1: Validating employee data...";
+        stepIndicator.style.display = "block";
+        submitButton.disabled = true;
+
+        const formData = new FormData(event.target);
+        const employeeData = {
+          empId: formData.get("empId"),
+          name: formData.get("empName"),
+          contact: formData.get("empContact"),
+          email: formData.get("empEmail"),
+          maritalStatus: formData.get("empMaritalStatus"),
+          emergencyContact: formData.get("empEmergencyContact"),
+          address: formData.get("empAddress"),
+          pan: formData.get("empPan"),
+          aadhar: formData.get("empAadhar"),
+          uan: formData.get("empUan"),
+          joinDate: formData.get("empJoinDate"),
+          exitDate: formData.get("empExitDate"),
+          basicSalary: formData.get("empBasicSalary"),
+          dearnessAllowance: formData.get("empDearnessAllowance"),
+          personalAllowance: formData.get("empPersonalAllowance"),
+          conveyanceAllowance: formData.get("empConveyanceAllowance"),
+          professionalAllowance: formData.get("empProfessionalAllowance"),
+          bonus: formData.get("empBonus"),
+          grossSalary: formData.get("empGrossSalary"),
+        };
+
+        // Validate required fields
+        if (
+          !employeeData.empId ||
+          !employeeData.name ||
+          !employeeData.contact ||
+          !employeeData.email ||
+          !employeeData.joinDate ||
+          !employeeData.basicSalary
+        ) {
+          stepIndicator.innerHTML =
+            "❌ Validation failed: Please fill in all required fields";
+          stepIndicator.style.background = "rgba(231, 76, 60, 0.1)";
+          stepIndicator.style.borderColor = "rgba(231, 76, 60, 0.3)";
+          stepIndicator.style.color = "#ff4757";
+          submitButton.disabled = false;
+          setTimeout(() => {
+            stepIndicator.style.display = "none";
+          }, 3000);
+          return;
+        }
+
+        // Step 2: Data validated, connecting to Firebase
+        stepIndicator.innerHTML =
+          "✅ Step 2: Data validated, updating in Firebase...";
+        stepIndicator.style.background = "rgba(0, 114, 255, 0.1)";
+        stepIndicator.style.borderColor = "rgba(0, 114, 255, 0.3)";
+        stepIndicator.style.color = "#00c6ff";
+        submitButton.innerHTML = "🔗 Connecting to Firebase...";
+
+        await new Promise((resolve) => setTimeout(resolve, 500));
+
+        try {
+          // Step 3: Updating in Firebase
+          stepIndicator.innerHTML =
+            "🔥 Step 3: Updating employee in Firebase database...";
+          submitButton.innerHTML = "💾 Updating in Firebase...";
+
+          // Prepare update data (remove empId since it's the key)
+          const updateData = { ...employeeData };
+          delete updateData.empId;
+
+          const result = await window.employeeAPI.updateEmployee(
+            employeeData.empId,
+            updateData,
+          );
+
+          if (result.success) {
+            // Step 4: Success
+            stepIndicator.innerHTML =
+              "🎉 Step 4: Employee successfully updated in Firebase!";
+            stepIndicator.style.background = "rgba(39, 174, 96, 0.1)";
+            stepIndicator.style.borderColor = "rgba(39, 174, 96, 0.3)";
+            stepIndicator.style.color = "#27ae60";
+
+            successMessage.innerHTML = `
+            ✅ Employee updated in Firebase successfully!<br>
+            <small>Employee ID: ${employeeData.empId}</small><br>
+            <small>Name: ${employeeData.name}</small>
+          `;
+            successMessage.style.display = "block";
+            successMessage.style.color = "#27ae60";
+
+            submitButton.innerHTML = "✅ Updated in Firebase!";
+            submitButton.style.background =
+              "linear-gradient(to right, #27ae60, #2ecc71)";
+
+            // Step 5: Refreshing data
+            stepIndicator.innerHTML = "🔄 Step 5: Refreshing employee list...";
+            await loadEmployees();
+
+            stepIndicator.innerHTML =
+              "✨ Complete! Employee updated successfully in Firebase!";
+            stepIndicator.style.background = "rgba(39, 174, 96, 0.2)";
+            stepIndicator.style.borderColor = "rgba(39, 174, 96, 0.5)";
+
+            setTimeout(() => {
+              hideEditEmployeeModal();
+              submitButton.innerHTML = originalButtonText;
+              submitButton.style.background =
+                "linear-gradient(to right, rgb(0, 114, 255), rgb(0, 198, 255))";
+              submitButton.disabled = false;
+            }, 2500);
+          } else {
+            stepIndicator.innerHTML = `❌ Step 3 Failed: ${result.error || "Unknown Firebase error"}`;
+            stepIndicator.style.background = "rgba(231, 76, 60, 0.1)";
+            stepIndicator.style.borderColor = "rgba(231, 76, 60, 0.3)";
+            stepIndicator.style.color = "#ff4757";
+
+            submitButton.innerHTML = "❌ Firebase Error";
+            submitButton.style.background =
+              "linear-gradient(to right, #e74c3c, #c0392b)";
+
+            successMessage.innerHTML = `❌ Failed to update in Firebase: ${result.error || "Unknown error"}`;
+            successMessage.style.display = "block";
+            successMessage.style.color = "#ff4757";
+
+            setTimeout(() => {
+              submitButton.innerHTML = originalButtonText;
+              submitButton.style.background =
+                "linear-gradient(to right, rgb(0, 114, 255), rgb(0, 198, 255))";
+              submitButton.disabled = false;
+            }, 3000);
+          }
+        } catch (error) {
+          console.error("Edit form submission error:", error);
+
+          stepIndicator.innerHTML = `❌ Connection Error: ${error.message}`;
+          stepIndicator.style.background = "rgba(231, 76, 60, 0.1)";
+          stepIndicator.style.borderColor = "rgba(231, 76, 60, 0.3)";
+          stepIndicator.style.color = "#ff4757";
+
+          submitButton.innerHTML = "❌ Connection Error";
+          submitButton.style.background =
+            "linear-gradient(to right, #e74c3c, #c0392b)";
+
+          successMessage.innerHTML = `❌ Network error: ${error.message}`;
+          successMessage.style.display = "block";
+          successMessage.style.color = "#ff4757";
+
+          setTimeout(() => {
+            submitButton.innerHTML = originalButtonText;
+            submitButton.style.background =
+              "linear-gradient(to right, rgb(0, 114, 255), rgb(0, 198, 255))";
+            submitButton.disabled = false;
+          }, 3000);
+        }
       }
 
       // Delete employee function
@@ -1545,6 +2098,10 @@
       window.hideAddEmployeeModal = hideAddEmployeeModal;
       window.handleAddEmployee = handleAddEmployee;
       window.editEmployee = editEmployee;
+      window.hideEditEmployeeModal = hideEditEmployeeModal;
+      window.handleEditEmployee = handleEditEmployee;
+      window.calculateEditGrossSalary = calculateEditGrossSalary;
+      window.updateEditFirebaseStatus = updateEditFirebaseStatus;
       window.deleteEmployee = deleteEmployee;
       window.exportToExcel = exportToExcel;
       window.syncWithFirebase = syncWithFirebase;
