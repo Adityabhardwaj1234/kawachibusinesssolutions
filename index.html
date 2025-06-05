@@ -742,8 +742,22 @@
         });
       }
 
-      // Make function globally available
+      // Clear all notifications
+      function clearAllNotifications() {
+        notifications.length = 0; // Clear array
+        const notificationList = document.getElementById("notificationList");
+        const countElement = document.getElementById("notificationCount");
+
+        notificationList.innerHTML =
+          '<li style="text-align: center; color: #aaa; font-style: italic;">No notifications</li>';
+        countElement.textContent = "0";
+
+        showNotification("All notifications cleared", "info");
+      }
+
+      // Make functions globally available
       window.initializeMenuToggles = initializeMenuToggles;
+      window.clearAllNotifications = clearAllNotifications;
     </script>
 
     <script src="script.js"></script>
