@@ -663,11 +663,78 @@
       window.toggleTask = toggleTask;
       window.deleteTask = deleteTask;
 
-      // Initialize notifications
+      // Initialize notifications and menu functionality
       document.addEventListener("DOMContentLoaded", () => {
+        // Initialize notification and profile menu toggles
+        initializeMenuToggles();
+
         showNotification("AdminHub dashboard loaded successfully!", "success");
         showNotification("All systems operational", "info");
       });
+
+      // Initialize menu toggle functionality
+      function initializeMenuToggles() {
+        // Notification menu toggle
+        const notificationIcon = document.getElementById("notificationIcon");
+        const notificationMenu = document.getElementById("notificationMenu");
+        const profileIcon = document.getElementById("profileIcon");
+        const profileMenu = document.getElementById("profileMenu");
+
+        if (notificationIcon && notificationMenu) {
+          notificationIcon.addEventListener("click", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            // Toggle notification menu
+            notificationMenu.classList.toggle("show");
+
+            // Close profile menu if open
+            if (profileMenu) {
+              profileMenu.classList.remove("show");
+            }
+
+            console.log(
+              "Notification menu toggled:",
+              notificationMenu.classList.contains("show"),
+            );
+          });
+        }
+
+        // Profile menu toggle
+        if (profileIcon && profileMenu) {
+          profileIcon.addEventListener("click", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            // Toggle profile menu
+            profileMenu.classList.toggle("show");
+
+            // Close notification menu if open
+            if (notificationMenu) {
+              notificationMenu.classList.remove("show");
+            }
+
+            console.log(
+              "Profile menu toggled:",
+              profileMenu.classList.contains("show"),
+            );
+          });
+        }
+
+        // Close menus when clicking outside
+        document.addEventListener("click", function (e) {
+          if (
+            !e.target.closest(".notification") &&
+            !e.target.closest(".profile")
+          ) {
+            if (notificationMenu) notificationMenu.classList.remove("show");
+            if (profileMenu) profileMenu.classList.remove("show");
+          }
+        });
+      }
+
+      // Make function globally available
+      window.initializeMenuToggles = initializeMenuToggles;
     </script>
 
     <script src="script.js"></script>
