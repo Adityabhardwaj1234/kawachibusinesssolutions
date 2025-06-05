@@ -574,13 +574,24 @@ body {
   background-color: var(--dark-grey);
   color: var(--light);
 }
+body.dark #content nav .notification-menu {
+  background: #1a1a2e;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+body.dark #content nav .notification-menu li {
+  color: var(--light);
+  border-bottom: 1px solid #2a2a3e;
+}
+
 body.dark #content nav .notification-menu li:hover {
-  background-color: var(--light-blue);
+  background-color: rgba(60, 145, 230, 0.2);
   color: var(--light);
 }
-body.dark #content nav .notification-menu li a {
-  background-color: var(--dark-grey);
-  color: var(--light);
+
+body.dark #content nav .profile-menu {
+  background: #1a1a2e;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 #content nav .profile img {
   width: 36px;
