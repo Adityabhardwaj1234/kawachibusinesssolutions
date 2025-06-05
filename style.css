@@ -594,6 +594,24 @@ body.dark .notification-header h4 {
   overflow-y: auto;
 }
 
+/* Custom scrollbar for notification menu */
+#content nav .notification-menu ul::-webkit-scrollbar {
+  width: 6px;
+}
+
+#content nav .notification-menu ul::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#content nav .notification-menu ul::-webkit-scrollbar-thumb {
+  background: var(--blue);
+  border-radius: 3px;
+}
+
+#content nav .notification-menu ul::-webkit-scrollbar-thumb:hover {
+  background: #2980b9;
+}
+
 #content nav .notification-menu li {
   padding: 12px 15px;
   border-bottom: 1px solid var(--grey);
