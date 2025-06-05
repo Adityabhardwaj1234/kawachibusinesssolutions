@@ -5,247 +5,422 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Biometric Attendance</title>
     <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
       rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
     />
     <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
       body {
-        background: #222d32;
-        font-family: "Roboto", sans-serif;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(
+          135deg,
+          #0c0c1e 0%,
+          #1a1a2e 50%,
+          #16213e 100%
+        );
+        color: #fbfbfb;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      .login-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
       }
 
       .login-box {
-        margin-top: 75px;
-        height: auto;
-        background: #1a2226;
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 40px;
+        width: 100%;
+        max-width: 450px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
         text-align: center;
-        box-shadow:
-          0 3px 6px rgba(0, 0, 0, 0.16),
-          0 3px 6px rgba(0, 0, 0, 0.23);
       }
 
       .login-key {
-        height: 100px;
         font-size: 80px;
         line-height: 100px;
-        background: -webkit-linear-gradient(#27ef9f, #0db8de);
+        background: linear-gradient(135deg, #3c91e6, #0db8de);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 20px;
+      }
+
+      .login-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: #fbfbfb;
+        margin-bottom: 30px;
+        letter-spacing: 1px;
+      }
+
+      .form-group {
+        margin-bottom: 25px;
+        text-align: left;
+      }
+
+      .form-group label {
+        display: block;
+        color: #aaaaaa;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+      }
+
+      .form-group input,
+      .form-group select {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        border-bottom: 2px solid #3c91e6;
+        border-radius: 8px;
+        padding: 15px;
+        color: #fbfbfb;
+        font-size: 16px;
+        transition: all 0.3s ease;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus {
+        outline: none;
+        background: rgba(255, 255, 255, 0.15);
+        border-bottom-color: #0db8de;
+        box-shadow: 0 0 20px rgba(60, 145, 230, 0.3);
+      }
+
+      .form-group select {
+        cursor: pointer;
+      }
+
+      .form-group select option {
+        background: #1a1a2e;
+        color: #fbfbfb;
+        padding: 10px;
+      }
+
+      .btn {
+        background: linear-gradient(135deg, #3c91e6, #0db8de);
+        border: none;
+        border-radius: 12px;
+        color: white;
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        padding: 15px 30px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        margin: 10px 5px;
+        min-width: 150px;
+      }
+
+      .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(60, 145, 230, 0.4);
+      }
+
+      .btn-success {
+        background: linear-gradient(135deg, #27ef9f, #0db8de);
+      }
+
+      .btn-secondary {
+        background: linear-gradient(135deg, #6c6c6c, #aaaaaa);
+      }
+
+      .btn-danger {
+        background: linear-gradient(135deg, #ff4757, #ff3838);
+      }
+
+      .btn-warning {
+        background: linear-gradient(135deg, #ffa726, #ff7043);
+      }
+
+      .btn-info {
+        background: linear-gradient(135deg, #42a5f5, #1e88e5);
+      }
+
+      #userBar {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 15px;
+        padding: 15px 20px;
+        color: #fbfbfb;
+        font-size: 14px;
+        display: none;
+        z-index: 1000;
+      }
+
+      .container-main {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 25px;
+        padding: 40px;
+        width: 95%;
+        max-width: 1000px;
+        margin: 40px auto;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        text-align: center;
+      }
+
+      .container-main h1 {
+        color: #fbfbfb;
+        font-size: 2.5em;
+        font-weight: 700;
+        margin-bottom: 30px;
+        background: linear-gradient(135deg, #3c91e6, #0db8de);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
       }
 
-      .login-title {
-        margin-top: 15px;
-        text-align: center;
-        font-size: 30px;
-        letter-spacing: 2px;
-        font-weight: bold;
-        color: #ecf0f5;
-      }
-
-      .login-form {
-        margin-top: 25px;
-        text-align: left;
-      }
-
-      input[type="text"],
-      input[type="password"] {
-        background-color: #1a2226;
-        border: none;
-        border-bottom: 2px solid #0db8de;
-        border-radius: 0px;
-        font-weight: bold;
-        outline: 0;
-        margin-bottom: 20px;
-        padding-left: 0px;
-        color: #ecf0f5;
-        width: 100%;
-      }
-
-      .form-group {
-        margin-bottom: 40px;
-      }
-
-      .form-control:focus {
-        border-color: inherit;
-        box-shadow: none;
-        border-bottom: 2px solid #0db8de;
-        background-color: #1a2226;
-        color: #ecf0f5;
-      }
-
-      label {
-        margin-bottom: 0px;
-      }
-
-      .form-control-label {
-        font-size: 10px;
-        color: #6c6c6c;
-        font-weight: bold;
-        letter-spacing: 1px;
-      }
-
-      .btn-outline-primary {
-        border-color: #0db8de;
-        color: #0db8de;
-        border-radius: 0px;
-        font-weight: bold;
-        letter-spacing: 1px;
-      }
-
-      .btn-outline-primary:hover {
-        background-color: #0db8de;
-      }
-
-      .login-btm {
-        float: left;
-      }
-
-      .login-button {
-        text-align: right;
-        margin-bottom: 25px;
-      }
-
-      .login-text {
-        text-align: left;
-        padding-left: 0px;
-        color: #a2a4a4;
-      }
-
-      .loginbttm {
-        padding: 0px;
-      }
-
-      #userBar {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        background: white;
-        padding: 10px 15px;
-        border-radius: 10px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        font-size: 14px;
-        display: none;
-      }
-
-      .container-main {
-        background: linear-gradient(145deg, #ffffff, #e6e9f0);
-        padding: 30px;
-        border-radius: 20px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-        width: 100%;
-        max-width: 800px;
-        text-align: center;
-        margin-top: 40px;
-      }
-
       .employee-info-display {
-        background: linear-gradient(145deg, #f8f9fa, #e9ecef);
-        border-radius: 15px;
-        padding: 20px;
-        margin: 20px 0;
+        background: rgba(60, 145, 230, 0.1);
+        border: 2px solid #3c91e6;
+        border-radius: 20px;
+        padding: 25px;
+        margin: 25px 0;
         text-align: left;
-        border: 2px solid #0db8de;
       }
 
       .employee-info-display h4 {
-        color: #0db8de;
-        margin-bottom: 15px;
+        color: #3c91e6;
+        margin-bottom: 20px;
         text-align: center;
+        font-size: 1.5em;
       }
 
       .info-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 10px;
+        gap: 15px;
       }
 
       .info-item {
         display: flex;
         justify-content: space-between;
-        padding: 5px 0;
-        border-bottom: 1px solid #dee2e6;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       }
 
       .info-label {
-        font-weight: bold;
-        color: #495057;
+        font-weight: 600;
+        color: #aaaaaa;
       }
 
       .info-value {
-        color: #212529;
+        color: #fbfbfb;
+        font-weight: 500;
+      }
+
+      .attendance-summary {
+        background: rgba(39, 239, 159, 0.1);
+        border: 2px solid #27ef9f;
+        border-radius: 20px;
+        padding: 25px;
+        margin: 25px 0;
+      }
+
+      .attendance-summary h4 {
+        color: #27ef9f;
+        margin-bottom: 15px;
+        font-size: 1.3em;
+      }
+
+      .fingerprint-container {
+        margin-top: 30px;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .fingerprint-container canvas {
+        border-radius: 15px;
+        filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
       }
 
       table {
         width: 100%;
         border-collapse: collapse;
-        margin-top: 10px;
+        margin-top: 20px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        overflow: hidden;
       }
 
       th,
       td {
-        border: 1px solid #ccc;
-        padding: 10px;
-        font-size: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 15px;
+        text-align: left;
       }
 
       thead {
-        background-color: #2575fc;
+        background: linear-gradient(135deg, #3c91e6, #0db8de);
+      }
+
+      thead th {
         color: white;
+        font-weight: 600;
+        font-size: 14px;
+        letter-spacing: 0.5px;
       }
 
-      .attendance-summary {
-        background: linear-gradient(145deg, #e3f2fd, #bbdefb);
-        border-radius: 10px;
+      tbody tr {
+        transition: all 0.3s ease;
+      }
+
+      tbody tr:hover {
+        background: rgba(60, 145, 230, 0.1);
+      }
+
+      tbody tr:nth-child(even) {
+        background: rgba(255, 255, 255, 0.02);
+      }
+
+      .loading {
+        text-align: center;
+        color: #aaaaaa;
+        font-size: 1.2em;
+        margin: 50px 0;
+      }
+
+      .loading i {
+        font-size: 2em;
+        margin-bottom: 15px;
+        animation: spin 2s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .dropdown-container {
+        position: relative;
+        margin-bottom: 20px;
+      }
+
+      .dropdown-search {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid #3c91e6;
+        border-radius: 12px;
         padding: 15px;
-        margin: 15px 0;
-        border-left: 4px solid #2196f3;
+        color: #fbfbfb;
+        font-size: 16px;
+        transition: all 0.3s ease;
       }
 
-      .btn-primary,
-      .btn-success,
-      .btn-danger,
-      .btn-warning,
-      .btn-info,
-      .btn-secondary {
-        margin: 5px;
-        min-width: 120px;
+      .dropdown-search:focus {
+        outline: none;
+        background: rgba(255, 255, 255, 0.15);
+        border-color: #0db8de;
+        box-shadow: 0 0 20px rgba(60, 145, 230, 0.3);
+      }
+
+      .dropdown-list {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: rgba(26, 26, 46, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        max-height: 200px;
+        overflow-y: auto;
+        z-index: 1000;
+        display: none;
+      }
+
+      .dropdown-item {
+        padding: 12px 15px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .dropdown-item:hover {
+        background: rgba(60, 145, 230, 0.2);
+      }
+
+      .dropdown-item:last-child {
+        border-bottom: none;
+      }
+
+      .actions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin: 30px 0;
+      }
+
+      @media (max-width: 768px) {
+        .container-main {
+          padding: 20px;
+          margin: 20px auto;
+        }
+
+        .info-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .actions-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .btn {
+          width: 100%;
+          margin: 5px 0;
+        }
       }
     </style>
   </head>
   <body>
     <!-- Custom Login Page -->
-    <div class="container" id="loginPage">
-      <div class="row justify-content-center">
-        <div class="col-lg-6 col-md-8 login-box">
-          <div class="col-lg-12 login-key">
-            <i class="fa fa-key" aria-hidden="true"></i>
-          </div>
-          <div class="col-lg-12 login-title">BIOMETRIC ATTENDANCE</div>
-          <div class="col-lg-12 login-form">
-            <form onsubmit="login(event)">
-              <div class="form-group">
-                <label class="form-control-label">USERNAME</label>
-                <input type="text" id="staffId" class="form-control" />
-              </div>
-              <div class="form-group">
-                <label class="form-control-label">PASSWORD</label>
-                <input
-                  type="password"
-                  id="staffPassword"
-                  class="form-control"
-                />
-              </div>
-              <div class="col-lg-12 loginbttm">
-                <div class="col-lg-6 login-btm login-text" id="message"></div>
-                <div class="col-lg-6 login-btm login-button">
-                  <button type="submit" class="btn btn-outline-primary">
-                    LOGIN
-                  </button>
-                </div>
-              </div>
-            </form>
-          </div>
+    <div class="login-container" id="loginPage">
+      <div class="login-box">
+        <div class="login-key">
+          <i class="bx bx-fingerprint"></i>
         </div>
+        <div class="login-title">BIOMETRIC ATTENDANCE</div>
+        <form onsubmit="login(event)">
+          <div class="form-group">
+            <label>USERNAME</label>
+            <input type="text" id="staffId" required />
+          </div>
+          <div class="form-group">
+            <label>PASSWORD</label>
+            <input type="password" id="staffPassword" required />
+          </div>
+          <div
+            id="message"
+            style="color: #ff4757; margin-bottom: 20px; font-size: 14px"
+          ></div>
+          <button type="submit" class="btn">LOGIN</button>
+        </form>
       </div>
     </div>
 
@@ -254,37 +429,41 @@
       <span id="userNameDisplay"></span>
       <button
         onclick="signOut()"
-        style="margin-left: 10px; background-color: #e74c3c"
+        class="btn btn-danger"
+        style="margin-left: 15px; min-width: auto; padding: 8px 15px"
       >
-        Close
+        <i class="bx bx-power-off"></i> Close
       </button>
     </div>
 
     <!-- Main App -->
-    <div class="container container-main" id="mainApp" style="display: none">
-      <h1>Biometric Attendance System</h1>
+    <div class="container-main" id="mainApp" style="display: none">
+      <h1><i class="bx bx-fingerprint"></i> Biometric Attendance System</h1>
 
-      <!-- Employee ID Input -->
-      <div class="form-group">
-        <label for="employeeIdInput" style="color: #495057; font-weight: bold"
-          >Employee ID</label
+      <!-- Employee Selection Dropdown -->
+      <div class="dropdown-container">
+        <label
+          class="form-group-label"
+          style="
+            color: #aaaaaa;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            display: block;
+          "
+          >SELECT EMPLOYEE</label
         >
         <input
           type="text"
-          id="employeeIdInput"
-          placeholder="Enter Employee ID (Case Sensitive - e.g., EMP001)"
-          class="form-control"
-          style="
-            font-size: 16px;
-            padding: 12px;
-            border: 2px solid #0db8de;
-            border-radius: 8px;
-            background: white;
-            color: #333;
-            font-family: monospace;
-          "
-          onchange="fetchEmployeeData()"
+          id="employeeSearch"
+          class="dropdown-search"
+          placeholder="Search Employee by ID or Name..."
+          onkeyup="filterEmployees()"
+          onfocus="showDropdown()"
+          autocomplete="off"
         />
+        <div id="employeeDropdown" class="dropdown-list"></div>
       </div>
 
       <!-- Employee Information Display -->
@@ -292,48 +471,34 @@
 
       <!-- Attendance Action Buttons -->
       <div id="attendanceActions" style="display: none">
-        <button
-          id="markAttendanceBtn"
-          class="btn btn-success"
-          onclick="markAttendance()"
-        >
-          📍 Mark Attendance
-        </button>
-        <button
-          id="fetchFromAPI"
-          class="btn btn-secondary"
-          onclick="fetchAttendanceFromAPI()"
-        >
-          🔄 Fetch from API
-        </button>
-        <button
-          id="downloadExcel"
-          class="btn btn-primary"
-          onclick="downloadAttendanceExcel()"
-        >
-          📊 Download Excel
-        </button>
-        <button
-          id="showAllBtn"
-          class="btn btn-info"
-          onclick="showAllAttendance()"
-        >
-          📋 Show All Records
-        </button>
-        <button
-          id="clearDataBtn"
-          class="btn btn-danger"
-          onclick="clearAllData()"
-        >
-          🗑️ Clear All Data
-        </button>
+        <div class="actions-grid">
+          <button class="btn btn-success" onclick="markAttendance()">
+            <i class="bx bx-map-pin"></i> Mark Attendance
+          </button>
+          <button class="btn btn-secondary" onclick="fetchAttendanceFromAPI()">
+            <i class="bx bx-refresh"></i> Fetch from API
+          </button>
+          <button class="btn btn-info" onclick="downloadAttendanceExcel()">
+            <i class="bx bx-download"></i> Download Excel
+          </button>
+          <button class="btn btn-warning" onclick="showAllAttendance()">
+            <i class="bx bx-list-ul"></i> Show All Records
+          </button>
+          <button class="btn btn-danger" onclick="clearAllData()">
+            <i class="bx bx-trash"></i> Clear All Data
+          </button>
+        </div>
       </div>
 
       <!-- Attendance Details Display -->
       <div id="attendanceDetails" class="mt-4"></div>
 
       <!-- Fingerprint Display -->
-      <div id="fingerprintContainer" style="display: none; margin-top: 20px">
+      <div
+        id="fingerprintContainer"
+        class="fingerprint-container"
+        style="display: none"
+      >
         <canvas id="fingerprintCanvas" width="317" height="270"></canvas>
       </div>
     </div>
@@ -411,6 +576,7 @@
       let allAttendanceEntries = [];
       let employeesFromAPI = [];
       let currentEmployee = null;
+      let allEmployees = [];
 
       function login(e) {
         e.preventDefault();
@@ -421,10 +587,12 @@
         );
         if (found) {
           localStorage.setItem("loggedInUser", JSON.stringify(found));
-          showApp();
+          showMessage(`Welcome ${found.name}! Login successful.`, "success");
+          setTimeout(() => {
+            showApp();
+          }, 1000);
         } else {
-          document.getElementById("message").textContent =
-            "Invalid ID or Password.";
+          showMessage("Invalid ID or Password. Please try again.", "error");
         }
       }
 
@@ -436,73 +604,127 @@
           document.getElementById("userBar").style.display = "block";
           document.getElementById("userNameDisplay").textContent =
             `Welcome, ${user.name}`;
+
+          // Load employees for dropdown
+          loadEmployeesForDropdown();
+          showMessage(
+            `Biometric system initialized for ${user.name}`,
+            "success",
+          );
         }
       }
 
       function signOut() {
         localStorage.removeItem("loggedInUser");
         currentEmployee = null;
+        allEmployees = [];
+
+        showMessage("Signed out successfully!", "success");
 
         if (window.top && typeof window.top.hideIframe === "function") {
           window.top.hideIframe();
         }
 
-        document.getElementById("mainApp").style.display = "none";
-        document.getElementById("userBar").style.display = "none";
-        document.getElementById("loginPage").style.display = "block";
-        document.getElementById("employeeInfoDisplay").style.display = "none";
-        document.getElementById("attendanceActions").style.display = "none";
+        setTimeout(() => {
+          document.getElementById("mainApp").style.display = "none";
+          document.getElementById("userBar").style.display = "none";
+          document.getElementById("loginPage").style.display = "block";
+          document.getElementById("employeeInfoDisplay").style.display = "none";
+          document.getElementById("attendanceActions").style.display = "none";
+        }, 500);
       }
 
-      // Fetch employee data by ID (case-sensitive)
-      async function fetchEmployeeData() {
-        const empId = document.getElementById("employeeIdInput").value.trim(); // Keep original case
-        const infoDisplay = document.getElementById("employeeInfoDisplay");
-        const actionsDiv = document.getElementById("attendanceActions");
-
-        if (!empId) {
-          infoDisplay.style.display = "none";
-          actionsDiv.style.display = "none";
-          currentEmployee = null;
-          return;
-        }
-
+      // Load employees for dropdown
+      async function loadEmployeesForDropdown() {
         try {
-          // Fetch from Firebase with exact case match
-          const employeeRef = window.firebaseRef(
+          const employeesRef = window.firebaseRef(
             window.firebaseDatabase,
-            `employees/${empId}`,
-          ); // No case conversion
-          const snapshot = await window.firebaseGet(employeeRef);
+            "employees",
+          );
+          const snapshot = await window.firebaseGet(employeesRef);
 
           if (snapshot.exists()) {
-            currentEmployee = snapshot.val();
-            displayEmployeeInfo(currentEmployee);
-            actionsDiv.style.display = "block";
+            allEmployees = [];
+            snapshot.forEach((childSnapshot) => {
+              allEmployees.push({
+                ...childSnapshot.val(),
+              });
+            });
+
+            showMessage(
+              `Loaded ${allEmployees.length} employees for selection`,
+              "success",
+            );
+            populateDropdown(allEmployees);
           } else {
-            infoDisplay.innerHTML = `
-        <div class="alert alert-warning">
-          <h4>⚠️ Employee Not Found</h4>
-          <p>Employee ID "${empId}" not found in the database.</p>
-          <p>Please check the Employee ID or contact HR to add this employee.</p>
-        </div>
-      `;
-            infoDisplay.style.display = "block";
-            actionsDiv.style.display = "none";
-            currentEmployee = null;
+            showMessage("No employees found in database", "error");
+            allEmployees = [];
           }
         } catch (error) {
-          console.error("Error fetching employee:", error);
-          infoDisplay.innerHTML = `
-      <div class="alert alert-danger">
-        <h4>❌ Error</h4>
-        <p>Failed to fetch employee data: ${error.message}</p>
+          console.error("Error loading employees:", error);
+          showMessage(`Error loading employees: ${error.message}`, "error");
+        }
+      }
+
+      // Populate dropdown with employees
+      function populateDropdown(employees) {
+        const dropdown = document.getElementById("employeeDropdown");
+        dropdown.innerHTML = "";
+
+        employees.forEach((emp) => {
+          const item = document.createElement("div");
+          item.className = "dropdown-item";
+          item.innerHTML = `
+      <div style="display: flex; justify-content: space-between;">
+        <span><strong>${emp.empId}</strong> - ${emp.name}</span>
+        <span style="color: #AAAAAA; font-size: 12px;">${emp.contact || "No Contact"}</span>
       </div>
     `;
-          infoDisplay.style.display = "block";
-          actionsDiv.style.display = "none";
-          currentEmployee = null;
-        }
+          item.onclick = () => selectEmployee(emp);
+          dropdown.appendChild(item);
+        });
+      }
+
+      // Filter employees in dropdown
+      function filterEmployees() {
+        const searchValue = document
+          .getElementById("employeeSearch")
+          .value.toLowerCase();
+        const filteredEmployees = allEmployees.filter(
+          (emp) =>
+            emp.empId.toLowerCase().includes(searchValue) ||
+            emp.name.toLowerCase().includes(searchValue),
+        );
+        populateDropdown(filteredEmployees);
+        showDropdown();
+      }
+
+      // Show dropdown
+      function showDropdown() {
+        document.getElementById("employeeDropdown").style.display = "block";
+      }
+
+      // Hide dropdown
+      function hideDropdown() {
+        setTimeout(() => {
+          document.getElementById("employeeDropdown").style.display = "none";
+        }, 200);
+      }
+
+      // Select employee from dropdown
+      function selectEmployee(employee) {
+        currentEmployee = employee;
+        document.getElementById("employeeSearch").value =
+          `${employee.empId} - ${employee.name}`;
+        hideDropdown();
+
+        displayEmployeeInfo(employee);
+        document.getElementById("attendanceActions").style.display = "block";
+
+        showMessage(
+          `Selected employee: ${employee.name} (${employee.empId})`,
+          "success",
+        );
       }
 
       // Display employee information
@@ -511,7 +733,7 @@
 
         infoDisplay.innerHTML = `
     <div class="employee-info-display">
-      <h4>👤 Employee Information</h4>
+      <h4><i class='bx bx-user-check'></i> Employee Information</h4>
       <div class="info-grid">
         <div class="info-item">
           <span class="info-label">Employee ID:</span>
@@ -523,11 +745,11 @@
         </div>
         <div class="info-item">
           <span class="info-label">Contact:</span>
-          <span class="info-value">${employee.contact}</span>
+          <span class="info-value">${employee.contact || "N/A"}</span>
         </div>
         <div class="info-item">
           <span class="info-label">Email:</span>
-          <span class="info-value">${employee.email}</span>
+          <span class="info-value">${employee.email || "N/A"}</span>
         </div>
         <div class="info-item">
           <span class="info-label">Join Date:</span>
@@ -555,7 +777,7 @@
       // Mark attendance for current employee
       async function markAttendance() {
         if (!currentEmployee) {
-          alert("Please select an employee first.");
+          showMessage("Please select an employee first.", "error");
           return;
         }
 
@@ -611,9 +833,14 @@
             );
 
             console.log("Attendance saved to Firebase successfully");
+            showMessage(
+              `Attendance marked for ${attendanceEntry.name}`,
+              "success",
+            );
           }
         } catch (error) {
           console.error("Error saving to Firebase:", error);
+          showMessage(`Error saving attendance: ${error.message}`, "error");
         }
 
         // Also keep in local array for immediate display
@@ -621,12 +848,12 @@
 
         document.getElementById("attendanceDetails").innerHTML = `
     <div class="attendance-summary">
-      <h4>✅ Attendance Marked Successfully</h4>
+      <h4><i class='bx bx-check-circle'></i> Attendance Marked Successfully</h4>
       <p><strong>Employee:</strong> ${attendanceEntry.name} (${attendanceEntry.empId})</p>
       <p><strong>Date & Time:</strong> ${date}</p>
       <p><strong>Location:</strong> ${coords}</p>
       <p><strong>IP Address:</strong> ${ip}</p>
-      <p style="color: #00ff00;"><strong>✓ Saved to Firebase Database</strong></p>
+      <p style="color: #27EF9F;"><strong>✓ Saved to Firebase Database</strong></p>
     </div>
   `;
 
@@ -644,8 +871,11 @@
       async function fetchAttendanceFromAPI() {
         try {
           if (!window.firebaseDatabase) {
-            return alert("Firebase not initialized");
+            showMessage("Firebase not initialized", "error");
+            return;
           }
+
+          showMessage("Fetching data from Firebase...", "info");
 
           // Fetch attendance data
           const attendanceRef = window.firebaseRef(
@@ -661,7 +891,8 @@
           );
           const employeesSnapshot = await window.firebaseGet(employeesRef);
 
-          let message = "Data fetched from Firebase API:\n\n";
+          let attendanceCount = 0;
+          let employeeCount = 0;
 
           if (attendanceSnapshot.exists()) {
             const attendanceData = [];
@@ -672,9 +903,7 @@
               });
             });
             allAttendanceEntries = attendanceData;
-            message += `📊 Attendance Records: ${attendanceData.length}\n`;
-          } else {
-            message += "📊 Attendance Records: 0\n";
+            attendanceCount = attendanceData.length;
           }
 
           if (employeesSnapshot.exists()) {
@@ -684,12 +913,13 @@
                 ...childSnapshot.val(),
               });
             });
-            message += `👥 Employee Records: ${employeesFromAPI.length}\n`;
-          } else {
-            message += "👥 Employee Records: 0\n";
+            employeeCount = employeesFromAPI.length;
           }
 
-          alert(message + "\nData is now available for Excel export!");
+          showMessage(
+            `Data fetched successfully! ${attendanceCount} attendance records, ${employeeCount} employees`,
+            "success",
+          );
 
           // Log analytics
           window.firebaseLogEvent(
@@ -698,7 +928,7 @@
           );
         } catch (error) {
           console.error("Error fetching from Firebase:", error);
-          alert("Error fetching data from Firebase: " + error.message);
+          showMessage(`Error fetching data: ${error.message}`, "error");
         }
       }
 
@@ -800,9 +1030,11 @@
           }
 
           if (wb.SheetNames.length === 0) {
-            return alert(
-              "No data available. Use 'Fetch from API' to load data from Firebase first.",
+            showMessage(
+              "No data available. Use 'Fetch from API' to load data first.",
+              "error",
             );
+            return;
           }
 
           const filename = `biometric_attendance_${new Date().toISOString().split("T")[0]}.xlsx`;
@@ -814,41 +1046,49 @@
             employee_count: employeesFromAPI.length,
           });
 
-          alert(
-            `Excel file "${filename}" downloaded successfully!\n\nContains:\n- ${allAttendanceEntries.length} attendance records\n- ${employeesFromAPI.length} complete employee records`,
+          showMessage(
+            `Excel file "${filename}" downloaded successfully!`,
+            "success",
           );
         } catch (error) {
           console.error("Error creating Excel file:", error);
-          alert("Error creating Excel file: " + error.message);
+          showMessage(`Error creating Excel file: ${error.message}`, "error");
         }
       }
 
       // Show all attendance records
       function showAllAttendance() {
         if (allAttendanceEntries.length === 0) {
-          return alert(
-            "No attendance records. Use 'Fetch from API' to load data from Firebase.",
+          showMessage(
+            "No attendance records. Use 'Fetch from API' to load data first.",
+            "error",
           );
+          return;
         }
 
-        let html = `<h3>All Attendance Records (${allAttendanceEntries.length} entries)</h3><div style="overflow-x:auto;"><table><thead><tr>
+        let html = `<h3 style="color: #3C91E6; margin-bottom: 20px;"><i class='bx bx-list-ul'></i> All Attendance Records (${allAttendanceEntries.length} entries)</h3><div style="overflow-x:auto;"><table><thead><tr>
     <th>#</th><th>Employee ID</th><th>Name</th><th>Date & Time</th><th>IP</th><th>Location</th><th>Salary</th><th>Firebase ID</th>
   </tr></thead><tbody>`;
 
         allAttendanceEntries.forEach((e, i) => {
           html += `<tr>
       <td>${i + 1}</td>
-      <td>${e.empId || "N/A"}</td>
+      <td style="font-family: monospace; color: #3C91E6; font-weight: bold;">${e.empId || "N/A"}</td>
       <td>${e.name || "N/A"}</td>
       <td>${e.date || e.timestamp}</td>
       <td>${e.ip || "N/A"}</td>
       <td>${e.coords || "N/A"}</td>
-      <td>₹${(e.grossSalary || 0).toLocaleString()}</td>
-      <td>${e.id || "Local"}</td>
+      <td style="color: #27EF9F; font-weight: bold;">₹${(e.grossSalary || 0).toLocaleString()}</td>
+      <td style="font-family: monospace; font-size: 12px;">${e.id || "Local"}</td>
     </tr>`;
         });
         html += "</tbody></table></div>";
         document.getElementById("attendanceDetails").innerHTML = html;
+
+        showMessage(
+          `Displaying ${allAttendanceEntries.length} attendance records`,
+          "success",
+        );
       }
 
       // Clear all data
@@ -867,6 +1107,7 @@
               );
               await window.firebaseRemove(attendanceRef);
               console.log("Attendance data cleared from Firebase");
+              showMessage("Attendance data cleared from Firebase", "success");
             }
 
             // Clear local data
@@ -877,19 +1118,19 @@
             document.getElementById("attendanceDetails").innerHTML = "";
             document.getElementById("fingerprintContainer").style.display =
               "none";
-            document.getElementById("employeeIdInput").value = "";
+            document.getElementById("employeeSearch").value = "";
             document.getElementById("employeeInfoDisplay").style.display =
               "none";
             document.getElementById("attendanceActions").style.display = "none";
             currentEmployee = null;
 
-            alert("All attendance data cleared successfully!");
+            showMessage("All attendance data cleared successfully!", "success");
 
             // Log analytics
             window.firebaseLogEvent(window.firebaseAnalytics, "data_cleared");
           } catch (error) {
             console.error("Error clearing data:", error);
-            alert("Error clearing data: " + error.message);
+            showMessage(`Error clearing data: ${error.message}`, "error");
           }
         }
       }
@@ -910,6 +1151,64 @@
         }
       }
 
+      // Message system
+      function showMessage(message, type = "info") {
+        // Create message element if it doesn't exist
+        let messageEl = document.getElementById("globalMessage");
+        if (!messageEl) {
+          messageEl = document.createElement("div");
+          messageEl.id = "globalMessage";
+          messageEl.style.cssText = `
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      padding: 15px 20px;
+      border-radius: 12px;
+      font-weight: 600;
+      z-index: 9999;
+      max-width: 400px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.2);
+      transform: translateX(450px);
+      transition: all 0.3s ease;
+    `;
+          document.body.appendChild(messageEl);
+        }
+
+        // Set message content and style based on type
+        messageEl.textContent = message;
+
+        if (type === "success") {
+          messageEl.style.background = "rgba(39, 239, 159, 0.9)";
+          messageEl.style.color = "#FFFFFF";
+          messageEl.style.borderColor = "#27EF9F";
+        } else if (type === "error") {
+          messageEl.style.background = "rgba(255, 71, 87, 0.9)";
+          messageEl.style.color = "#FFFFFF";
+          messageEl.style.borderColor = "#FF4757";
+        } else {
+          messageEl.style.background = "rgba(60, 145, 230, 0.9)";
+          messageEl.style.color = "#FFFFFF";
+          messageEl.style.borderColor = "#3C91E6";
+        }
+
+        // Show message
+        messageEl.style.transform = "translateX(0)";
+
+        // Hide after 4 seconds
+        setTimeout(() => {
+          messageEl.style.transform = "translateX(450px)";
+        }, 4000);
+      }
+
+      // Close dropdown when clicking outside
+      document.addEventListener("click", function (e) {
+        if (!e.target.closest(".dropdown-container")) {
+          hideDropdown();
+        }
+      });
+
       window.onload = () => {
         const user = JSON.parse(localStorage.getItem("loggedInUser"));
         if (user) showApp();
@@ -917,12 +1216,16 @@
       };
 
       // Make functions globally available
-      window.fetchEmployeeData = fetchEmployeeData;
+      window.filterEmployees = filterEmployees;
+      window.showDropdown = showDropdown;
+      window.hideDropdown = hideDropdown;
+      window.selectEmployee = selectEmployee;
       window.markAttendance = markAttendance;
       window.fetchAttendanceFromAPI = fetchAttendanceFromAPI;
       window.downloadAttendanceExcel = downloadAttendanceExcel;
       window.showAllAttendance = showAllAttendance;
       window.clearAllData = clearAllData;
+      window.showMessage = showMessage;
 
       // Authentication check
       if (sessionStorage.getItem("isLoggedIn") !== "true") {
