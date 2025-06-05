@@ -530,13 +530,18 @@ body {
   top: 56px;
   right: 0;
   background: var(--light);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
   border-radius: 15px;
-  width: 250px;
-  max-height: 300px;
+  width: 280px;
+  max-height: 350px;
   overflow-y: auto;
   z-index: 9999;
   font-family: var(--lato);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
 }
 
 #content nav .notification-menu ul {
