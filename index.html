@@ -3,84 +3,578 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <!-- Boxicons -->
+    <title>AdminHub - Employee Management System</title>
     <link
       href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
       rel="stylesheet"
     />
 
-    <!-- My CSS -->
-    <link rel="stylesheet" href="style.css" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-    <title>AdminHub</title>
+      body {
+        font-family: "Times New Roman";
+        font-size: 16px;
+        font-weight: 400;
+        line-height: normal;
+        pointer-events: auto;
+        color: rgb(0, 0, 0);
+        background-color: rgb(238, 238, 238);
+        overflow-x: hidden;
+      }
+
+      /* Sidebar Styles */
+      .sidebar {
+        background-color: rgb(249, 249, 249);
+        font-family: Lato, sans-serif;
+        font-weight: 400;
+        height: 100%;
+        left: 0px;
+        overflow-x: hidden;
+        overflow-y: auto;
+        position: fixed;
+        scrollbar-width: none;
+        top: 0px;
+        transition-duration: 0.3s;
+        width: 220px;
+        z-index: 2000;
+        pointer-events: auto;
+      }
+
+      .sidebar::-webkit-scrollbar {
+        display: none;
+      }
+
+      .brand-link {
+        display: flex;
+        align-items: center;
+        background-color: rgb(249, 249, 249);
+        color: rgb(60, 145, 230);
+        font-size: 24px;
+        font-weight: 700;
+        height: 56px;
+        left: 0px;
+        padding-bottom: 20px;
+        position: sticky;
+        top: 0px;
+        z-index: 500;
+        pointer-events: auto;
+        text-decoration: none;
+        padding-left: 10px;
+      }
+
+      .brand-icon {
+        display: flex;
+        font-family: boxicons;
+        font-size: 48px;
+        font-weight: 400;
+        justify-content: center;
+        line-height: 48px;
+        min-width: 60px;
+        speak: none;
+        pointer-events: auto;
+      }
+
+      .brand-text {
+        display: block;
+        font-weight: 700;
+        pointer-events: auto;
+      }
+
+      .nav-menu {
+        font-weight: 400;
+        margin-top: 48px;
+        width: 100%;
+        pointer-events: auto;
+        list-style: none;
+        padding: 0;
+      }
+
+      .nav-item {
+        display: list-item;
+        border-bottom-left-radius: 48px;
+        border-radius: 48px 0px 0px 48px;
+        border-top-left-radius: 48px;
+        font-weight: 400;
+        height: 48px;
+        margin-left: 6px;
+        padding: 4px;
+        position: relative;
+        pointer-events: auto;
+        margin-bottom: 8px;
+      }
+
+      .nav-item.active {
+        background-color: rgb(238, 238, 238);
+      }
+
+      .nav-link {
+        display: flex;
+        align-items: center;
+        background-color: rgb(249, 249, 249);
+        border-radius: 48px;
+        color: rgb(52, 46, 55);
+        font-weight: 400;
+        height: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+        text-wrap: nowrap;
+        white-space: nowrap;
+        width: 100%;
+        pointer-events: auto;
+        text-decoration: none;
+        transition: all 0.3s ease;
+      }
+
+      .nav-item.active .nav-link {
+        color: rgb(60, 145, 230);
+      }
+
+      .nav-link:hover {
+        background-color: rgb(230, 240, 255);
+        transform: translateX(5px);
+      }
+
+      .nav-icon {
+        display: flex;
+        font-family: boxicons;
+        font-size: 24.8px;
+        font-weight: 400;
+        justify-content: center;
+        line-height: 24.8px;
+        min-width: 40px;
+        speak: none;
+        text-wrap: nowrap;
+        pointer-events: auto;
+      }
+
+      .nav-text {
+        display: block;
+        font-weight: 400;
+        text-wrap: nowrap;
+        pointer-events: auto;
+      }
+
+      .bottom-menu {
+        font-weight: 400;
+        margin-top: 48px;
+        width: 100%;
+        pointer-events: auto;
+        list-style: none;
+        padding: 0;
+        position: absolute;
+        bottom: 20px;
+        left: 0;
+        right: 0;
+      }
+
+      .bottom-item {
+        display: list-item;
+        border-bottom-left-radius: 48px;
+        border-radius: 48px 0px 0px 48px;
+        border-top-left-radius: 48px;
+        font-weight: 400;
+        height: 48px;
+        margin-left: 6px;
+        padding: 4px;
+        position: relative;
+        text-align: center;
+        pointer-events: auto;
+        margin-bottom: 8px;
+      }
+
+      .logout-link {
+        color: rgb(219, 80, 74) !important;
+      }
+
+      /* Main Content Area */
+      .main-content {
+        font-weight: 400;
+        left: 220px;
+        position: relative;
+        transition-duration: 0.3s;
+        width: calc(100% - 220px);
+        pointer-events: auto;
+        min-height: 100vh;
+      }
+
+      /* Navigation Bar */
+      .navbar {
+        display: flex;
+        align-items: center;
+        background-color: rgb(249, 249, 249);
+        font-family: Lato, sans-serif;
+        font-weight: 400;
+        gap: 24px;
+        height: 56px;
+        left: 0px;
+        padding-left: 24px;
+        padding-right: 24px;
+        position: sticky;
+        top: 0px;
+        z-index: 1000;
+        pointer-events: auto;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .menu-toggle {
+        color: rgb(52, 46, 55);
+        display: block;
+        font-family: boxicons;
+        font-size: 24.8px;
+        font-weight: 400;
+        line-height: 24.8px;
+        speak: none;
+        pointer-events: auto;
+        cursor: pointer;
+      }
+
+      .nav-breadcrumb {
+        display: block;
+        color: rgb(52, 46, 55);
+        font-weight: 400;
+        transition-duration: 0.3s;
+        pointer-events: auto;
+        text-decoration: none;
+      }
+
+      .fidget-container {
+        display: flex;
+        align-items: center;
+        font-weight: 400;
+        justify-content: center;
+        margin-left: 20px;
+        margin-right: auto;
+        pointer-events: auto;
+      }
+
+      .fidget-spinner {
+        font-weight: 400;
+        height: 60px;
+        position: relative;
+        transition-duration: 0.3s;
+        width: 60px;
+        pointer-events: auto;
+        cursor: pointer;
+      }
+
+      .fidget-dot {
+        background-color: rgb(60, 145, 230);
+        border-radius: 50%;
+        font-weight: 400;
+        height: 18px;
+        position: absolute;
+        width: 18px;
+        pointer-events: auto;
+        animation: pulse 2s infinite ease-in-out;
+      }
+
+      .fidget-dot:nth-child(1) {
+        left: 50%;
+        top: 0px;
+        transform: translateX(-50%);
+      }
+
+      .fidget-dot:nth-child(2) {
+        bottom: 0px;
+        left: 0px;
+        animation-delay: 0.5s;
+      }
+
+      .fidget-dot:nth-child(3) {
+        bottom: 0px;
+        right: 0px;
+        animation-delay: 1s;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(1.2);
+          opacity: 0.7;
+        }
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Content Sections */
+      .content-section {
+        padding: 30px;
+        display: none;
+      }
+
+      .content-section.active {
+        display: block;
+      }
+
+      .section-title {
+        font-size: 28px;
+        font-weight: 600;
+        color: rgb(52, 46, 55);
+        margin-bottom: 20px;
+      }
+
+      .dashboard-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .stat-card {
+        background: white;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        transition: transform 0.3s ease;
+      }
+
+      .stat-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .stat-icon {
+        font-size: 48px;
+        color: rgb(60, 145, 230);
+        margin-bottom: 15px;
+      }
+
+      .stat-number {
+        font-size: 32px;
+        font-weight: 700;
+        color: rgb(52, 46, 55);
+        margin-bottom: 10px;
+      }
+
+      .stat-label {
+        color: rgb(108, 117, 125);
+        font-weight: 500;
+      }
+
+      /* Forms */
+      .form-container {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+        margin-bottom: 30px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-label {
+        display: block;
+        margin-bottom: 8px;
+        color: rgb(52, 46, 55);
+        font-weight: 500;
+      }
+
+      .form-input {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid rgb(238, 238, 238);
+        border-radius: 8px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+      }
+
+      .form-input:focus {
+        outline: none;
+        border-color: rgb(60, 145, 230);
+        box-shadow: 0 0 0 3px rgba(60, 145, 230, 0.1);
+      }
+
+      .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+      }
+
+      .btn-primary {
+        background-color: rgb(60, 145, 230);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background-color: rgb(40, 125, 210);
+        transform: translateY(-2px);
+      }
+
+      .btn-danger {
+        background-color: rgb(219, 80, 74);
+        color: white;
+      }
+
+      .btn-danger:hover {
+        background-color: rgb(199, 60, 54);
+      }
+
+      /* Tables */
+      .table-container {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        margin-bottom: 30px;
+      }
+
+      .data-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .data-table th,
+      .data-table td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid rgb(238, 238, 238);
+      }
+
+      .data-table th {
+        background-color: rgb(249, 249, 249);
+        font-weight: 600;
+        color: rgb(52, 46, 55);
+      }
+
+      .data-table tr:hover {
+        background-color: rgb(249, 249, 249);
+      }
+
+      /* Messages */
+      .message {
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        display: none;
+      }
+
+      .message.success {
+        background-color: rgb(212, 237, 218);
+        color: rgb(21, 87, 36);
+        border: 1px solid rgb(186, 230, 198);
+      }
+
+      .message.error {
+        background-color: rgb(248, 215, 218);
+        color: rgb(114, 28, 36);
+        border: 1px solid rgb(245, 198, 203);
+      }
+
+      .message.show {
+        display: block;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .sidebar {
+          width: 0;
+          overflow: hidden;
+        }
+
+        .sidebar.show {
+          width: 220px;
+        }
+
+        .main-content {
+          left: 0;
+          width: 100%;
+        }
+
+        .dashboard-stats {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
   </head>
   <body>
-    <!-- SIDEBAR -->
-    <section id="sidebar">
-      <a href="#" class="brand">
-        <i class="bx bxs-smile bx-lg"></i>
-        <span class="text">AdminHub</span>
+    <!-- Sidebar -->
+    <section class="sidebar" id="sidebar">
+      <a href="#" class="brand-link" onclick="showSection('dashboard')">
+        <i class="brand-icon bx bxs-smile"></i>
+        <span class="brand-text">AdminHub</span>
       </a>
-      <ul class="side-menu top">
-        <li class="active">
-          <a href="#" onclick="scrollToTop()">
-            <i class="bx bxs-dashboard bx-sm"></i>
-            <span class="text">Dashboard</span>
-          </a>
-        </li>
 
-        <li>
-          <a href="#">
-            <i class="bx bxs-shopping-bag-alt bx-sm"></i>
-            <span class="text">My Store</span>
+      <ul class="nav-menu">
+        <li class="nav-item active" data-section="dashboard">
+          <a href="#" class="nav-link" onclick="showSection('dashboard')">
+            <i class="nav-icon bx bxs-dashboard"></i>
+            <span class="nav-text">Dashboard</span>
           </a>
         </li>
-        <li>
-          <a href="#" onclick="loadIframe('analytics.html')">
-            <i class="bx bxs-doughnut-chart bx-sm"></i>
-            <span class="text">Analytics</span>
+        <li class="nav-item" data-section="store">
+          <a href="#" class="nav-link" onclick="showSection('store')">
+            <i class="nav-icon bx bxs-store"></i>
+            <span class="nav-text">My Store</span>
           </a>
         </li>
-
-        <li>
-          <a href="#" onclick="loadIframe('biometric_app.html')">
-            <i class="bx bx-fingerprint bx-sm"></i>
-            <span class="text">Mark Attendance</span>
+        <li class="nav-item" data-section="analytics">
+          <a href="#" class="nav-link" onclick="showSection('analytics')">
+            <i class="nav-icon bx bxs-doughnut-chart"></i>
+            <span class="nav-text">Analytics</span>
           </a>
         </li>
-        <li>
-          <a href="#" onclick="loadIframe('employee_data.html')">
-            <i class="bx bxs-user-detail bx-sm"></i>
-            <span class="text">Team</span>
+        <li class="nav-item" data-section="attendance">
+          <a href="#" class="nav-link" onclick="showSection('attendance')">
+            <i class="nav-icon bx bx-fingerprint"></i>
+            <span class="nav-text">Mark Attendance</span>
+          </a>
+        </li>
+        <li class="nav-item" data-section="employees">
+          <a href="#" class="nav-link" onclick="showSection('employees')">
+            <i class="nav-icon bx bxs-user-detail"></i>
+            <span class="nav-text">Team</span>
           </a>
         </li>
       </ul>
-      <ul class="side-menu bottom">
-        <li>
-          <a href="settings.html">
-            <i class="bx bxs-cog bx-sm bx-spin-hover"></i>
-            <span class="text">Settings</span>
+
+      <ul class="bottom-menu">
+        <li class="bottom-item">
+          <a href="admin.html" class="nav-link">
+            <i class="nav-icon bx bxs-cog"></i>
+            <span class="nav-text">Settings</span>
           </a>
         </li>
-        <li>
-          <a href="login.html" class="logout">
-            <i class="bx bx-power-off bx-sm bx-burst-hover"></i>
-            <span class="text">Logout</span>
+        <li class="bottom-item">
+          <a href="login.html" class="nav-link logout-link">
+            <i class="nav-icon bx bx-power-off"></i>
+            <span class="nav-text">Logout</span>
           </a>
         </li>
       </ul>
     </section>
-    <!-- SIDEBAR -->
 
-    <!-- CONTENT -->
-    <section id="content">
-      <!-- NAVBAR -->
-      <nav>
-        <i class="bx bx-menu bx-sm"></i>
-        <a href="#" class="nav-link">Categories</a>
+    <!-- Main Content -->
+    <section class="main-content">
+      <!-- Navigation Bar -->
+      <nav class="navbar">
+        <i class="menu-toggle bx bx-menu" onclick="toggleSidebar()"></i>
+        <a href="#" class="nav-breadcrumb">Categories</a>
 
-        <!-- Fidget Spinner replacing search -->
         <div class="fidget-container">
           <div class="fidget-spinner" onclick="spinFidget()">
             <div class="fidget-dot"></div>
@@ -88,689 +582,487 @@
             <div class="fidget-dot"></div>
           </div>
         </div>
-
-        <input type="checkbox" class="checkbox" id="switch-mode" hidden />
-        <label class="swith-lm" for="switch-mode">
-          <i class="bx bxs-moon"></i>
-          <i class="bx bx-sun"></i>
-          <div class="ball"></div>
-        </label>
-        <a href="#" class="notification" id="notificationIcon">
-          <i class="bx bxs-bell bx-tada-hover"></i>
-          <span class="num" id="notificationCount">8</span>
-        </a>
-        <div class="notification-menu" id="notificationMenu">
-          <div class="notification-header">
-            <h4>Notifications</h4>
-            <button
-              class="clear-notifications"
-              onclick="clearAllNotifications()"
-            >
-              Clear All
-            </button>
-          </div>
-          <ul id="notificationList">
-            <li>Welcome to AdminHub!</li>
-            <li>System ready for use</li>
-          </ul>
-        </div>
-        <a href="#" class="profile" id="profileIcon">
-          <img
-            src="https://lh3.googleusercontent.com/a/AEdFTp6g51PKtZfMh13gW8LmVfZqDk3AecsJ7Po_jJv8=s96-c"
-            alt="Profile"
-          />
-        </a>
-        <div class="profile-menu" id="profileMenu">
-          <ul>
-            <li><a href="myprofile.html">My Profile</a></li>
-            <li><a href="settings.html">Settings</a></li>
-            <li><a href="login.html">Log Out</a></li>
-            <li><a href="clock.html">Check Out this Page</a></li>
-          </ul>
-        </div>
       </nav>
-      <!-- NAVBAR -->
 
-      <!-- MAIN -->
-      <main>
-        <div class="head-title">
-          <div class="left">
-            <h1>Dashboard</h1>
-            <ul class="breadcrumb">
-              <li><a href="#">Dashboard</a></li>
-              <li><i class="bx bx-chevron-right"></i></li>
-              <li><a class="active" href="#">Home</a></li>
-            </ul>
+      <!-- Dashboard Section -->
+      <div id="dashboard" class="content-section active">
+        <h1 class="section-title">Dashboard</h1>
+
+        <div class="dashboard-stats">
+          <div class="stat-card">
+            <i class="stat-icon bx bxs-group"></i>
+            <div class="stat-number" id="employeeCount">0</div>
+            <div class="stat-label">Total Employees</div>
           </div>
-          <a href="#" class="btn-download">
-            <i class="bx bxs-cloud-download bx-fade-down-hover"></i>
-            <span class="text">Get PDF</span>
-          </a>
-        </div>
-
-        <ul class="box-info">
-          <li>
-            <i class="bx bxs-calendar-check"></i>
-            <span class="text">
-              <h3>10</h3>
-              <p>New Bid(s)</p>
-            </span>
-          </li>
-          <li>
-            <i class="bx bxs-group"></i>
-            <span class="text">
-              <h3 id="employeeCount">0</h3>
-              <p>Employees</p>
-            </span>
-          </li>
-
-          <li>
-            <i class="bx bxs-dollar-circle"></i>
-            <span class="text">
-              <h3>$69.00</h3>
-              <p>Total Sales</p>
-            </span>
-          </li>
-        </ul>
-
-        <div class="table-data">
-          <div class="order">
-            <div class="head">
-              <h3>Employees</h3>
-              <i class="bx bx-search"></i>
-              <i class="bx bx-filter"></i>
-            </div>
-            <table>
-              <thead>
-                <tr>
-                  <th>Employee</th>
-                  <th>Date Joined</th>
-                  <th>Gross Salary</th>
-                </tr>
-              </thead>
-              <tbody id="employeeTableBody">
-                <tr>
-                  <td
-                    colspan="3"
-                    style="text-align: center; color: #aaa; padding: 20px"
-                  >
-                    Loading employees...
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="stat-card">
+            <i class="stat-icon bx bxs-calendar-check"></i>
+            <div class="stat-number" id="attendanceCount">0</div>
+            <div class="stat-label">Today's Attendance</div>
           </div>
-          <div class="todo">
-            <div class="head">
-              <h3>Tasks</h3>
-              <i class="bx bx-plus icon" onclick="showAddTaskModal()"></i>
-              <i class="bx bx-filter"></i>
-            </div>
-            <ul class="todo-list" id="todoList">
-              <li class="completed">
-                <div class="task-content">
-                  <input
-                    type="checkbox"
-                    checked
-                    onchange="toggleTask(this, 'task1')"
-                  />
-                  <p>Check Inventory</p>
-                </div>
-                <i
-                  class="bx bx-dots-vertical-rounded"
-                  onclick="deleteTask('task1')"
-                ></i>
-              </li>
-              <li class="completed">
-                <div class="task-content">
-                  <input
-                    type="checkbox"
-                    checked
-                    onchange="toggleTask(this, 'task2')"
-                  />
-                  <p>Manage Delivery Team</p>
-                </div>
-                <i
-                  class="bx bx-dots-vertical-rounded"
-                  onclick="deleteTask('task2')"
-                ></i>
-              </li>
-              <li class="not-completed">
-                <div class="task-content">
-                  <input type="checkbox" onchange="toggleTask(this, 'task3')" />
-                  <p>Contact Selma: Confirm Delivery</p>
-                </div>
-                <i
-                  class="bx bx-dots-vertical-rounded"
-                  onclick="deleteTask('task3')"
-                ></i>
-              </li>
-              <li class="completed">
-                <div class="task-content">
-                  <input
-                    type="checkbox"
-                    checked
-                    onchange="toggleTask(this, 'task4')"
-                  />
-                  <p>Update Shop Catalogue</p>
-                </div>
-                <i
-                  class="bx bx-dots-vertical-rounded"
-                  onclick="deleteTask('task4')"
-                ></i>
-              </li>
-              <li class="not-completed">
-                <div class="task-content">
-                  <input type="checkbox" onchange="toggleTask(this, 'task5')" />
-                  <p>Count Profit Analytics</p>
-                </div>
-                <i
-                  class="bx bx-dots-vertical-rounded"
-                  onclick="deleteTask('task5')"
-                ></i>
-              </li>
-            </ul>
+          <div class="stat-card">
+            <i class="stat-icon bx bxs-dollar-circle"></i>
+            <div class="stat-number">$2,450</div>
+            <div class="stat-label">Monthly Revenue</div>
           </div>
         </div>
 
-        <!-- Add Task Modal -->
-        <div id="addTaskModal" class="modal-overlay" style="display: none">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h3>Add New Task</h3>
-              <span class="modal-close" onclick="hideAddTaskModal()"
-                >&times;</span
+        <div class="table-container">
+          <h3 style="padding: 20px; margin: 0; color: rgb(52, 46, 55)">
+            Recent Employees
+          </h3>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Employee</th>
+                <th>Department</th>
+                <th>Status</th>
+                <th>Salary</th>
+              </tr>
+            </thead>
+            <tbody id="employeeTableBody">
+              <tr>
+                <td>Loading employees...</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Employees Section -->
+      <div id="employees" class="content-section">
+        <h1 class="section-title">Employee Management</h1>
+
+        <div class="message success" id="successMessage"></div>
+        <div class="message error" id="errorMessage"></div>
+
+        <div class="form-container">
+          <h3>Add New Employee</h3>
+          <form id="employeeForm" onsubmit="addEmployee(event)">
+            <div class="form-group">
+              <label class="form-label">Employee ID</label>
+              <input type="text" class="form-input" name="empId" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Full Name</label>
+              <input type="text" class="form-input" name="name" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-input" name="email" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone</label>
+              <input type="tel" class="form-input" name="phone" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Department</label>
+              <input
+                type="text"
+                class="form-input"
+                name="department"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Basic Salary</label>
+              <input type="number" class="form-input" name="salary" required />
+            </div>
+            <button type="submit" class="btn btn-primary">Add Employee</button>
+          </form>
+        </div>
+
+        <div class="table-container">
+          <h3 style="padding: 20px; margin: 0; color: rgb(52, 46, 55)">
+            All Employees
+          </h3>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Department</th>
+                <th>Salary</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="allEmployeesBody">
+              <tr>
+                <td colspan="6">No employees found</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Attendance Section -->
+      <div id="attendance" class="content-section">
+        <h1 class="section-title">Mark Attendance</h1>
+
+        <div class="form-container">
+          <h3>Mark Today's Attendance</h3>
+          <form id="attendanceForm" onsubmit="markAttendance(event)">
+            <div class="form-group">
+              <label class="form-label">Select Employee</label>
+              <select
+                class="form-input"
+                name="empId"
+                required
+                id="attendanceEmpSelect"
               >
+                <option value="">Select Employee</option>
+              </select>
             </div>
-            <form onsubmit="addNewTask(event)">
-              <div class="form-group">
-                <label>Task Description</label>
-                <input
-                  type="text"
-                  id="taskDescription"
-                  placeholder="Enter task description..."
-                  required
-                />
-              </div>
-              <div class="form-actions">
-                <button
-                  type="button"
-                  class="btn-cancel"
-                  onclick="hideAddTaskModal()"
-                >
-                  Cancel
-                </button>
-                <button type="submit" class="btn-submit">Add Task</button>
-              </div>
-            </form>
+            <div class="form-group">
+              <label class="form-label">Status</label>
+              <select class="form-input" name="status" required>
+                <option value="">Select Status</option>
+                <option value="present">Present</option>
+                <option value="absent">Absent</option>
+                <option value="late">Late</option>
+                <option value="halfday">Half Day</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">
+              Mark Attendance
+            </button>
+          </form>
+        </div>
+
+        <div class="table-container">
+          <h3 style="padding: 20px; margin: 0; color: rgb(52, 46, 55)">
+            Today's Attendance
+          </h3>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Employee ID</th>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Time</th>
+              </tr>
+            </thead>
+            <tbody id="attendanceTableBody">
+              <tr>
+                <td colspan="4">No attendance records for today</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Analytics Section -->
+      <div id="analytics" class="content-section">
+        <h1 class="section-title">Analytics</h1>
+
+        <div class="dashboard-stats">
+          <div class="stat-card">
+            <i class="stat-icon bx bxs-user-check"></i>
+            <div class="stat-number" id="presentCount">0</div>
+            <div class="stat-label">Present Today</div>
+          </div>
+          <div class="stat-card">
+            <i class="stat-icon bx bxs-user-x"></i>
+            <div class="stat-number" id="absentCount">0</div>
+            <div class="stat-label">Absent Today</div>
+          </div>
+          <div class="stat-card">
+            <i class="stat-icon bx bxs-time"></i>
+            <div class="stat-number" id="lateCount">0</div>
+            <div class="stat-label">Late Arrivals</div>
           </div>
         </div>
+      </div>
 
-        <!-- IFRAME CONTAINER FOR DYNAMIC CONTENT -->
-        <div
-          id="iframeContainer"
-          style="display: none; height: 100%; margin-top: 20px"
-        >
-          <iframe
-            id="iframeLoader"
-            src=""
-            width="100%"
-            height="600px"
-            style="border: none"
-          ></iframe>
-        </div>
-      </main>
-      <!-- MAIN -->
+      <!-- Store Section -->
+      <div id="store" class="content-section">
+        <h1 class="section-title">My Store</h1>
+        <p>Store management features coming soon...</p>
+      </div>
     </section>
-    <!-- CONTENT -->
-
-    <!-- Firebase SDK -->
-    <script type="module">
-      // Import the functions you need from the SDKs you need
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-      import {
-        getAnalytics,
-        logEvent,
-      } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
-      import {
-        getDatabase,
-        ref,
-        get,
-        onValue,
-      } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
-      // Your web app's Firebase configuration
-      const firebaseConfig = {
-        apiKey: "AIzaSyB1wIsDf1qSLaIGyQvbri26z9e4ypxF-lw",
-        authDomain: "apikawachi.firebaseapp.com",
-        databaseURL:
-          "https://apikawachi-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "apikawachi",
-        storageBucket: "apikawachi.appspot.com",
-        messagingSenderId: "7573902945",
-        appId: "1:7573902945:web:be2c051ef0d0ceed787c20",
-        measurementId: "G-GT0F7K4NLP",
-      };
-
-      // Initialize Firebase
-      const app = initializeApp(firebaseConfig);
-      const analytics = getAnalytics(app);
-      const database = getDatabase(app);
-
-      // Make Firebase available globally
-      window.firebaseApp = app;
-      window.firebaseDatabase = database;
-      window.firebaseAnalytics = analytics;
-
-      // Load and display employee data from Firebase in the dashboard
-      async function loadEmployeesFromFirebase() {
-        try {
-          const employeesRef = ref(database, "employees");
-          const snapshot = await get(employeesRef);
-
-          const tableBody = document.getElementById("employeeTableBody");
-          const workerCountEl = document.getElementById("employeeCount");
-
-          if (!tableBody || !workerCountEl) {
-            console.warn("Dashboard elements not found");
-            return;
-          }
-
-          tableBody.innerHTML = ""; // Clear existing rows
-
-          if (snapshot.exists()) {
-            const employees = [];
-            snapshot.forEach((childSnapshot) => {
-              employees.push({
-                ...childSnapshot.val(),
-              });
-            });
-
-            // Display employees in table
-            employees.forEach((emp) => {
-              const tr = document.createElement("tr");
-              tr.innerHTML = `
-							<td><img src="https://placehold.co/40x40" alt="user"><p>${emp.name} (${emp.empId})</p></td>
-							<td>${formatDate(emp.joinDate)}</td>
-							<td><span class="status completed">₹${emp.grossSalary?.toLocaleString() || emp.basicSalary?.toLocaleString() || "N/A"}</span></td>
-						`;
-              tableBody.appendChild(tr);
-            });
-
-            // Update worker count in dashboard
-            workerCountEl.textContent = employees.length;
-
-            // Log analytics
-            logEvent(analytics, "dashboard_loaded", {
-              employee_count: employees.length,
-            });
-
-            // Show notification
-            showNotification(
-              `Dashboard loaded with ${employees.length} employees`,
-              "success",
-            );
-          } else {
-            // No employees found
-            workerCountEl.textContent = "0";
-            tableBody.innerHTML =
-              '<tr><td colspan="3" style="text-align: center; color: #aaa;">No employees found. <a href="#" onclick="loadIframe(\'employee_data.html\')">Add employees</a></td></tr>';
-            showNotification("No employees found in database", "info");
-          }
-        } catch (error) {
-          console.error("Error loading employee data from Firebase:", error);
-          const tableBody = document.getElementById("employeeTableBody");
-          const workerCountEl = document.getElementById("employeeCount");
-
-          if (tableBody) {
-            tableBody.innerHTML =
-              '<tr><td colspan="3" style="text-align: center; color: #ff4757;">Error loading employee data</td></tr>';
-          }
-          if (workerCountEl) {
-            workerCountEl.textContent = "Error";
-          }
-          showNotification("Error loading employee data", "error");
-        }
-      }
-
-      // Set up real-time listener for employee data
-      function setupEmployeeListener() {
-        const employeesRef = ref(database, "employees");
-        onValue(employeesRef, (snapshot) => {
-          loadEmployeesFromFirebase();
-        });
-      }
-
-      // Utility function to format dates
-      function formatDate(dateString) {
-        try {
-          const date = new Date(dateString);
-          return date
-            .toLocaleDateString("en-GB", {
-              day: "2-digit",
-              month: "2-digit",
-              year: "numeric",
-            })
-            .replace(/\//g, "-");
-        } catch (error) {
-          return dateString || "N/A";
-        }
-      }
-
-      // Initialize when DOM is loaded
-      document.addEventListener("DOMContentLoaded", () => {
-        loadEmployeesFromFirebase();
-        setupEmployeeListener();
-      });
-
-      // Load immediately if DOM already loaded
-      if (document.readyState === "loading") {
-        // Wait for DOMContentLoaded
-      } else {
-        loadEmployeesFromFirebase();
-        setupEmployeeListener();
-      }
-
-      // Make functions globally available
-      window.loadEmployeesFromFirebase = loadEmployeesFromFirebase;
-      window.formatDate = formatDate;
-    </script>
 
     <script>
-      // Redirect unauthenticated users
-      if (sessionStorage.getItem("isLoggedIn") !== "true") {
-        sessionStorage.setItem("redirectAfterLogin", window.location.pathname);
-        window.location.href = "login.html";
+      // Employee Management System
+      let employees = JSON.parse(localStorage.getItem("employees") || "[]");
+      let attendance = JSON.parse(localStorage.getItem("attendance") || "[]");
+
+      // Navigation Functions
+      function showSection(sectionName) {
+        // Hide all sections
+        document.querySelectorAll(".content-section").forEach((section) => {
+          section.classList.remove("active");
+        });
+
+        // Remove active class from nav items
+        document.querySelectorAll(".nav-item").forEach((item) => {
+          item.classList.remove("active");
+        });
+
+        // Show selected section
+        document.getElementById(sectionName).classList.add("active");
+
+        // Add active class to nav item
+        document
+          .querySelector(`[data-section="${sectionName}"]`)
+          .classList.add("active");
+
+        // Update data when switching sections
+        if (sectionName === "dashboard") updateDashboard();
+        if (sectionName === "employees") updateEmployeeTable();
+        if (sectionName === "attendance") updateAttendanceDropdown();
+        if (sectionName === "analytics") updateAnalytics();
       }
 
-      // Load iframe into main content
-      function loadIframe(url) {
-        const container = document.getElementById("iframeContainer");
-        const iframe = document.getElementById("iframeLoader");
-        iframe.src = url;
-        container.style.display = "block";
-        container.scrollIntoView({ behavior: "smooth" });
-
-        // Show notification for page load
-        showNotification(
-          `Loading ${url.replace(".html", "")} module...`,
-          "info",
-        );
+      function toggleSidebar() {
+        document.getElementById("sidebar").classList.toggle("show");
       }
 
-      // Hide iframe and clear src
-      function hideIframe() {
-        const container = document.getElementById("iframeContainer");
-        const iframe = document.getElementById("iframeLoader");
-        iframe.src = "";
-        container.style.display = "none";
-      }
-
-      // Make hideIframe available to iframe content
-      window.hideIframe = hideIframe;
-
-      // Scroll to top function
-      function scrollToTop() {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-
-        // Hide iframe if it's open
-        if (typeof hideIframe === "function") {
-          hideIframe();
-        }
-      }
-
-      // Fidget spinner functionality
       function spinFidget() {
         const spinner = document.querySelector(".fidget-spinner");
         spinner.style.animation = "spin 2s ease-out";
-
         setTimeout(() => {
           spinner.style.animation = "";
         }, 2000);
 
-        // Add some fun notifications
-        const funMessages = [
-          "Fidget spin activated! 🌟",
-          "Stress relief mode on! 😌",
-          "Brain break complete! 🧠",
-          "Productivity boost incoming! ⚡",
-          "Focus restored! 🎯",
-        ];
-
-        const randomMessage =
-          funMessages[Math.floor(Math.random() * funMessages.length)];
-        showNotification(randomMessage, "info");
+        showMessage("Fidget spinner activated! 🌟", "success");
       }
 
-      // Notification system
-      let notificationCount = 0;
-      const notifications = [];
-
-      function showNotification(message, type = "info") {
-        const timestamp = new Date().toLocaleTimeString();
-        const notificationList = document.getElementById("notificationList");
-        const countElement = document.getElementById("notificationCount");
-
-        // Add to notifications array
-        notifications.unshift({
-          message,
-          type,
-          timestamp,
-          id: Date.now(),
-        });
-
-        // Keep only last 10 notifications
-        if (notifications.length > 10) {
-          notifications.pop();
-        }
-
-        // Update notification list
-        notificationList.innerHTML = "";
-
-        if (notifications.length === 0) {
-          notificationList.innerHTML =
-            '<li style="text-align: center; color: #aaa; font-style: italic;">No notifications</li>';
-        } else {
-          notifications.forEach((notif) => {
-            const li = document.createElement("li");
-            li.innerHTML = `
-						<div style="display: flex; justify-content: space-between; align-items: start; gap: 10px;">
-							<span style="flex: 1;">${notif.message}</span>
-							<small style="color: #aaa; font-size: 10px; white-space: nowrap;">${notif.timestamp}</small>
-						</div>
-					`;
-            if (notif.type === "error") {
-              li.style.borderLeft = "3px solid #ff4757";
-              li.style.background = "rgba(255, 71, 87, 0.1)";
-            } else if (notif.type === "success") {
-              li.style.borderLeft = "3px solid #27ae60";
-              li.style.background = "rgba(39, 174, 96, 0.1)";
-            } else {
-              li.style.borderLeft = "3px solid #3C91E6";
-              li.style.background = "rgba(60, 145, 230, 0.1)";
-            }
-            notificationList.appendChild(li);
-          });
-        }
-
-        // Update count
-        notificationCount = notifications.length;
-        countElement.textContent = notificationCount;
-
-        // Animate notification icon
-        const notificationIcon = document.getElementById("notificationIcon");
-        notificationIcon.style.animation = "bounce 0.5s ease";
-        setTimeout(() => {
-          notificationIcon.style.animation = "";
-        }, 500);
-      }
-
-      // Task Management
-      let taskCounter = 6; // Starting from 6 since we have 5 initial tasks
-
-      function showAddTaskModal() {
-        document.getElementById("addTaskModal").style.display = "flex";
-      }
-
-      function hideAddTaskModal() {
-        document.getElementById("addTaskModal").style.display = "none";
-        document.getElementById("taskDescription").value = "";
-      }
-
-      function addNewTask(event) {
+      // Employee Functions
+      function addEmployee(event) {
         event.preventDefault();
 
-        const description = document
-          .getElementById("taskDescription")
-          .value.trim();
-        if (!description) return;
+        const formData = new FormData(event.target);
+        const employee = {
+          empId: formData.get("empId"),
+          name: formData.get("name"),
+          email: formData.get("email"),
+          phone: formData.get("phone"),
+          department: formData.get("department"),
+          salary: parseFloat(formData.get("salary")),
+          joinDate: new Date().toISOString().split("T")[0],
+          status: "Active",
+        };
 
-        const taskId = `task${taskCounter++}`;
-        const todoList = document.getElementById("todoList");
+        // Check if employee ID already exists
+        if (employees.find((emp) => emp.empId === employee.empId)) {
+          showMessage("Employee ID already exists!", "error");
+          return;
+        }
 
-        const li = document.createElement("li");
-        li.className = "not-completed";
-        li.innerHTML = `
-				<div class="task-content">
-					<input type="checkbox" onchange="toggleTask(this, '${taskId}')">
-					<p>${description}</p>
-				</div>
-				<i class='bx bx-dots-vertical-rounded' onclick="deleteTask('${taskId}')"></i>
-			`;
+        employees.push(employee);
+        localStorage.setItem("employees", JSON.stringify(employees));
 
-        todoList.appendChild(li);
+        event.target.reset();
+        showMessage("Employee added successfully!", "success");
+        updateEmployeeTable();
+        updateDashboard();
+      }
 
-        hideAddTaskModal();
-        showNotification(
-          `Task "${description}" added successfully!`,
-          "success",
+      function deleteEmployee(empId) {
+        if (confirm("Are you sure you want to delete this employee?")) {
+          employees = employees.filter((emp) => emp.empId !== empId);
+          localStorage.setItem("employees", JSON.stringify(employees));
+          showMessage("Employee deleted successfully!", "success");
+          updateEmployeeTable();
+          updateDashboard();
+        }
+      }
+
+      function updateEmployeeTable() {
+        const tbody = document.getElementById("allEmployeesBody");
+        if (employees.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6">No employees found</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = employees
+          .map(
+            (emp) => `
+                <tr>
+                    <td>${emp.empId}</td>
+                    <td>${emp.name}</td>
+                    <td>${emp.email}</td>
+                    <td>${emp.department}</td>
+                    <td>$${emp.salary.toLocaleString()}</td>
+                    <td>
+                        <button class="btn btn-danger" onclick="deleteEmployee('${emp.empId}')">Delete</button>
+                    </td>
+                </tr>
+            `,
+          )
+          .join("");
+      }
+
+      // Attendance Functions
+      function markAttendance(event) {
+        event.preventDefault();
+
+        const formData = new FormData(event.target);
+        const today = new Date().toISOString().split("T")[0];
+        const empId = formData.get("empId");
+
+        // Check if attendance already marked for today
+        const existingAttendance = attendance.find(
+          (att) => att.empId === empId && att.date === today,
         );
+
+        if (existingAttendance) {
+          showMessage(
+            "Attendance already marked for this employee today!",
+            "error",
+          );
+          return;
+        }
+
+        const employee = employees.find((emp) => emp.empId === empId);
+        const attendanceRecord = {
+          empId: empId,
+          name: employee.name,
+          status: formData.get("status"),
+          date: today,
+          time: new Date().toLocaleTimeString(),
+        };
+
+        attendance.push(attendanceRecord);
+        localStorage.setItem("attendance", JSON.stringify(attendance));
+
+        event.target.reset();
+        showMessage("Attendance marked successfully!", "success");
+        updateAttendanceTable();
+        updateAnalytics();
       }
 
-      function toggleTask(checkbox, taskId) {
-        const li = checkbox.closest("li");
-        const taskText = li.querySelector("p").textContent;
+      function updateAttendanceDropdown() {
+        const select = document.getElementById("attendanceEmpSelect");
+        select.innerHTML =
+          '<option value="">Select Employee</option>' +
+          employees
+            .map(
+              (emp) =>
+                `<option value="${emp.empId}">${emp.empId} - ${emp.name}</option>`,
+            )
+            .join("");
+      }
 
-        if (checkbox.checked) {
-          li.className = "completed";
-          showNotification(`Task completed: ${taskText}`, "success");
-        } else {
-          li.className = "not-completed";
-          showNotification(`Task marked as pending: ${taskText}`, "info");
+      function updateAttendanceTable() {
+        const tbody = document.getElementById("attendanceTableBody");
+        const today = new Date().toISOString().split("T")[0];
+        const todayAttendance = attendance.filter((att) => att.date === today);
+
+        if (todayAttendance.length === 0) {
+          tbody.innerHTML =
+            '<tr><td colspan="4">No attendance records for today</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = todayAttendance
+          .map(
+            (att) => `
+                <tr>
+                    <td>${att.empId}</td>
+                    <td>${att.name}</td>
+                    <td><span style="color: ${getStatusColor(att.status)}">${att.status}</span></td>
+                    <td>${att.time}</td>
+                </tr>
+            `,
+          )
+          .join("");
+      }
+
+      function getStatusColor(status) {
+        switch (status) {
+          case "present":
+            return "green";
+          case "absent":
+            return "red";
+          case "late":
+            return "orange";
+          case "halfday":
+            return "blue";
+          default:
+            return "black";
         }
       }
 
-      function deleteTask(taskId) {
-        if (confirm("Are you sure you want to delete this task?")) {
-          const li = document
-            .querySelector(`input[onchange*="${taskId}"]`)
-            .closest("li");
-          const taskText = li.querySelector("p").textContent;
-          li.remove();
-          showNotification(`Task deleted: ${taskText}`, "info");
+      // Dashboard Functions
+      function updateDashboard() {
+        document.getElementById("employeeCount").textContent = employees.length;
+
+        const today = new Date().toISOString().split("T")[0];
+        const todayAttendance = attendance.filter((att) => att.date === today);
+        document.getElementById("attendanceCount").textContent =
+          todayAttendance.length;
+
+        // Update recent employees table
+        const tbody = document.getElementById("employeeTableBody");
+        if (employees.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="4">No employees found</td></tr>';
+          return;
         }
+
+        const recentEmployees = employees.slice(-5);
+        tbody.innerHTML = recentEmployees
+          .map(
+            (emp) => `
+                <tr>
+                    <td>${emp.name} (${emp.empId})</td>
+                    <td>${emp.department}</td>
+                    <td><span style="color: green">${emp.status}</span></td>
+                    <td>$${emp.salary.toLocaleString()}</td>
+                </tr>
+            `,
+          )
+          .join("");
       }
 
-      // Global function declarations
-      window.loadIframe = loadIframe;
-      window.hideIframe = hideIframe;
-      window.scrollToTop = scrollToTop;
-      window.spinFidget = spinFidget;
-      window.showNotification = showNotification;
-      window.showAddTaskModal = showAddTaskModal;
-      window.hideAddTaskModal = hideAddTaskModal;
-      window.addNewTask = addNewTask;
-      window.toggleTask = toggleTask;
-      window.deleteTask = deleteTask;
+      function updateAnalytics() {
+        const today = new Date().toISOString().split("T")[0];
+        const todayAttendance = attendance.filter((att) => att.date === today);
 
-      // Initialize notifications and menu functionality
-      document.addEventListener("DOMContentLoaded", () => {
-        // Initialize notification and profile menu toggles
-        initializeMenuToggles();
+        const present = todayAttendance.filter(
+          (att) => att.status === "present",
+        ).length;
+        const absent = todayAttendance.filter(
+          (att) => att.status === "absent",
+        ).length;
+        const late = todayAttendance.filter(
+          (att) => att.status === "late",
+        ).length;
 
-        showNotification("AdminHub dashboard loaded successfully!", "success");
-        showNotification("All systems operational", "info");
+        document.getElementById("presentCount").textContent = present;
+        document.getElementById("absentCount").textContent = absent;
+        document.getElementById("lateCount").textContent = late;
+      }
+
+      // Utility Functions
+      function showMessage(message, type) {
+        const messageEl = document.getElementById(
+          type === "error" ? "errorMessage" : "successMessage",
+        );
+        messageEl.textContent = message;
+        messageEl.classList.add("show");
+
+        setTimeout(() => {
+          messageEl.classList.remove("show");
+        }, 5000);
+      }
+
+      // Initialize
+      document.addEventListener("DOMContentLoaded", function () {
+        updateDashboard();
+        updateEmployeeTable();
+        updateAttendanceDropdown();
+        updateAttendanceTable();
+        updateAnalytics();
       });
 
-      // Initialize menu toggle functionality
-      function initializeMenuToggles() {
-        // Notification menu toggle
-        const notificationIcon = document.getElementById("notificationIcon");
-        const notificationMenu = document.getElementById("notificationMenu");
-        const profileIcon = document.getElementById("profileIcon");
-        const profileMenu = document.getElementById("profileMenu");
-
-        if (notificationIcon && notificationMenu) {
-          notificationIcon.addEventListener("click", function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-
-            // Toggle notification menu
-            notificationMenu.classList.toggle("show");
-
-            // Close profile menu if open
-            if (profileMenu) {
-              profileMenu.classList.remove("show");
-            }
-
-            console.log(
-              "Notification menu toggled:",
-              notificationMenu.classList.contains("show"),
-            );
-          });
-        }
-
-        // Profile menu toggle
-        if (profileIcon && profileMenu) {
-          profileIcon.addEventListener("click", function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-
-            // Toggle profile menu
-            profileMenu.classList.toggle("show");
-
-            // Close notification menu if open
-            if (notificationMenu) {
-              notificationMenu.classList.remove("show");
-            }
-
-            console.log(
-              "Profile menu toggled:",
-              profileMenu.classList.contains("show"),
-            );
-          });
-        }
-
-        // Close menus when clicking outside
-        document.addEventListener("click", function (e) {
-          if (
-            !e.target.closest(".notification") &&
-            !e.target.closest(".profile")
-          ) {
-            if (notificationMenu) notificationMenu.classList.remove("show");
-            if (profileMenu) profileMenu.classList.remove("show");
-          }
-        });
+      // Check authentication
+      if (!sessionStorage.getItem("isLoggedIn")) {
+        window.location.href = "login.html";
       }
-
-      // Clear all notifications
-      function clearAllNotifications() {
-        notifications.length = 0; // Clear array
-        const notificationList = document.getElementById("notificationList");
-        const countElement = document.getElementById("notificationCount");
-
-        notificationList.innerHTML =
-          '<li style="text-align: center; color: #aaa; font-style: italic;">No notifications</li>';
-        countElement.textContent = "0";
-
-        showNotification("All notifications cleared", "info");
-      }
-
-      // Make functions globally available
-      window.initializeMenuToggles = initializeMenuToggles;
-      window.clearAllNotifications = clearAllNotifications;
     </script>
-
-    <script src="script.js"></script>
   </body>
 </html>
