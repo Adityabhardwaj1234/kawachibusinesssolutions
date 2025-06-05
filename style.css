@@ -551,14 +551,24 @@ body {
 }
 
 #content nav .notification-menu li {
-  padding: 10px;
+  padding: 12px 15px;
   border-bottom: 1px solid var(--grey);
   color: var(--dark);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border-radius: 8px;
+  margin: 4px 8px;
+  border-bottom: none;
+}
+
+#content nav .notification-menu li:last-child {
+  border-bottom: none;
 }
 
 #content nav .notification-menu li:hover {
   background-color: var(--light-blue);
   color: var(--dark);
+  transform: translateX(5px);
 }
 #content nav .notification-menu li:hover a {
   background-color: var(--dark-grey);
