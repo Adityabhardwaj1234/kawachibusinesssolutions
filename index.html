@@ -566,21 +566,32 @@
 
         // Update notification list
         notificationList.innerHTML = "";
-        notifications.forEach((notif) => {
-          const li = document.createElement("li");
-          li.innerHTML = `
-					<div style="display: flex; justify-content: space-between; align-items: start;">
-						<span>${notif.message}</span>
-						<small style="color: #aaa; font-size: 10px;">${notif.timestamp}</small>
-					</div>
-				`;
-          if (notif.type === "error") {
-            li.style.color = "#ff4757";
-          } else if (notif.type === "success") {
-            li.style.color = "#27ae60";
-          }
-          notificationList.appendChild(li);
-        });
+
+        if (notifications.length === 0) {
+          notificationList.innerHTML =
+            '<li style="text-align: center; color: #aaa; font-style: italic;">No notifications</li>';
+        } else {
+          notifications.forEach((notif) => {
+            const li = document.createElement("li");
+            li.innerHTML = `
+						<div style="display: flex; justify-content: space-between; align-items: start; gap: 10px;">
+							<span style="flex: 1;">${notif.message}</span>
+							<small style="color: #aaa; font-size: 10px; white-space: nowrap;">${notif.timestamp}</small>
+						</div>
+					`;
+            if (notif.type === "error") {
+              li.style.borderLeft = "3px solid #ff4757";
+              li.style.background = "rgba(255, 71, 87, 0.1)";
+            } else if (notif.type === "success") {
+              li.style.borderLeft = "3px solid #27ae60";
+              li.style.background = "rgba(39, 174, 96, 0.1)";
+            } else {
+              li.style.borderLeft = "3px solid #3C91E6";
+              li.style.background = "rgba(60, 145, 230, 0.1)";
+            }
+            notificationList.appendChild(li);
+          });
+        }
 
         // Update count
         notificationCount = notifications.length;
