@@ -1,78 +1,500 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>AdminHub Login</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <style>
-    body {
-      background: #1A2226;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      color: #ECF0F5;
-    }
-    .login-box {
-      background: #222D32;
-      padding: 30px;
-      border-radius: 10px;
-      width: 100%;
-      max-width: 400px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.5);
-    }
-    .login-title {
-      font-size: 24px;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-  </style>
-</head>
-<body>
-  <div class="login-box">
-    <div class="login-title">AdminHub Login</div>
-    <form onsubmit="login(event)">
-      <div class="form-group">
-        <label>Username</label>
-        <input type="text" id="username" class="form-control" required>
-      </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input type="password" id="password" class="form-control" required>
-      </div>
-      <div id="loginMsg" class="text-danger mb-2"></div>
-      <button type="submit" class="btn btn-primary btn-block">Login</button>
-    </form>
-  </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AdminHub Login</title>
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
 
-  <script>
-    const users = [
-      { id: "170712@ab", password: "OWNER@00014243774", name: "Aditya Bhardwaj" },
-      { id: "310712@cb", password: "CO-OWNER@bhardwaj3107cb", name: "Chandan Bhardwaj" },
-      { id: "310712@db", password: "CO-OWNER@bhardwaj3107db", name: "Deepak Bhardwaj" }
-    ];
-
-    function login(e) {
-      e.preventDefault();
-      const id = document.getElementById("username").value.trim();
-      const pw = document.getElementById("password").value.trim();
-      const user = users.find(u => u.id === id && u.password === pw);
-
-      if (user) {
-        // Save login status
-        sessionStorage.setItem("isLoggedIn", "true");
-        sessionStorage.setItem("loggedInUser", JSON.stringify(user));
-
-        // Redirect to previously requested page or default to index.html
-        const targetPage = sessionStorage.getItem("redirectAfterLogin") || "index.html";
-        sessionStorage.removeItem("redirectAfterLogin"); // clean up
-        window.location.href = targetPage;
-      } else {
-        document.getElementById("loginMsg").textContent = "Invalid credentials.";
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
       }
-    }
-  </script>
-</body>
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
+          "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 24px;
+        color: rgb(236, 240, 245);
+        background-color: rgb(26, 34, 38);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      .login-container {
+        background-color: rgb(34, 45, 50);
+        border-radius: 10px;
+        box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 15px 0px;
+        max-width: 400px;
+        width: 100%;
+        padding: 30px;
+        position: relative;
+        animation: fadeInUp 0.6s ease-out;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .login-title {
+        font-size: 24px;
+        font-weight: 400;
+        line-height: 36px;
+        margin-bottom: 20px;
+        text-align: center;
+        color: rgb(236, 240, 245);
+      }
+
+      .form-group {
+        margin-bottom: 16px;
+      }
+
+      .form-label {
+        color: rgb(52, 58, 64);
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 21px;
+        display: block;
+        margin-bottom: 8px;
+      }
+
+      .form-input {
+        background-color: rgb(248, 249, 250);
+        border: 1px solid rgb(238, 238, 238);
+        border-radius: 10px;
+        color: rgb(52, 58, 64);
+        font-weight: 400;
+        height: 38px;
+        padding: 12px 16px;
+        transition: all 0.3s ease;
+        width: 100%;
+        font-size: 16px;
+      }
+
+      .form-input:focus {
+        outline: none;
+        border-color: rgb(0, 123, 255);
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        background-color: rgb(255, 255, 255);
+      }
+
+      .form-input:hover {
+        border-color: rgb(200, 200, 200);
+      }
+
+      .error-message {
+        color: rgb(220, 53, 69);
+        font-size: 14px;
+        margin-bottom: 8px;
+        display: none;
+        animation: fadeIn 0.3s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .error-message.show {
+        display: block;
+      }
+
+      .login-button {
+        background-color: rgb(0, 123, 255);
+        border: 0.8px solid rgb(0, 123, 255);
+        border-radius: 4px;
+        color: rgb(255, 255, 255);
+        font-weight: 400;
+        padding: 12px;
+        transition: all 0.15s ease-in-out;
+        user-select: none;
+        width: 100%;
+        font-size: 16px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .login-button:hover {
+        background-color: rgb(0, 86, 179);
+        border-color: rgb(0, 86, 179);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+      }
+
+      .login-button:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 6px rgba(0, 123, 255, 0.3);
+      }
+
+      .login-button:disabled {
+        background-color: rgb(108, 117, 125);
+        border-color: rgb(108, 117, 125);
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      .loading-spinner {
+        display: none;
+        width: 20px;
+        height: 20px;
+        border: 2px solid transparent;
+        border-top: 2px solid white;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-right: 8px;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .loading-spinner.show {
+        display: inline-block;
+      }
+
+      .button-content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .forgot-password {
+        text-align: center;
+        margin-top: 16px;
+      }
+
+      .forgot-password a {
+        color: rgb(0, 123, 255);
+        text-decoration: none;
+        font-size: 14px;
+        transition: color 0.3s ease;
+      }
+
+      .forgot-password a:hover {
+        color: rgb(0, 86, 179);
+        text-decoration: underline;
+      }
+
+      .login-header {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .login-logo {
+        font-size: 48px;
+        color: rgb(0, 123, 255);
+        margin-bottom: 10px;
+      }
+
+      .success-message {
+        color: rgb(40, 167, 69);
+        font-size: 14px;
+        margin-bottom: 8px;
+        display: none;
+        animation: fadeIn 0.3s ease;
+      }
+
+      .success-message.show {
+        display: block;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 480px) {
+        .login-container {
+          padding: 20px;
+          margin: 10px;
+        }
+
+        .login-title {
+          font-size: 20px;
+        }
+
+        .form-input {
+          font-size: 16px; /* Prevents zoom on iOS */
+        }
+      }
+
+      /* Additional styling for better UX */
+      .input-icon {
+        position: relative;
+      }
+
+      .input-icon i {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: rgb(108, 117, 125);
+        pointer-events: none;
+      }
+
+      .input-icon .form-input {
+        padding-left: 40px;
+      }
+
+      .password-toggle {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: rgb(108, 117, 125);
+        cursor: pointer;
+        transition: color 0.3s ease;
+      }
+
+      .password-toggle:hover {
+        color: rgb(0, 123, 255);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-container">
+      <div class="login-header">
+        <div class="login-logo">
+          <i class="bx bxs-shield-check"></i>
+        </div>
+        <div class="login-title">AdminHub Login</div>
+      </div>
+
+      <form id="loginForm" onsubmit="login(event)">
+        <div class="success-message" id="successMessage"></div>
+        <div class="error-message" id="errorMessage"></div>
+
+        <div class="form-group">
+          <label for="username" class="form-label">Username</label>
+          <div class="input-icon">
+            <i class="bx bx-user"></i>
+            <input
+              type="text"
+              id="username"
+              class="form-input"
+              required
+              autocomplete="username"
+              placeholder="Enter your username"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="password" class="form-label">Password</label>
+          <div class="input-icon">
+            <i class="bx bx-lock-alt"></i>
+            <input
+              type="password"
+              id="password"
+              class="form-input"
+              required
+              autocomplete="current-password"
+              placeholder="Enter your password"
+            />
+            <i
+              class="bx bx-hide password-toggle"
+              id="passwordToggle"
+              onclick="togglePassword()"
+            ></i>
+          </div>
+        </div>
+
+        <button type="submit" class="login-button" id="loginButton">
+          <div class="button-content">
+            <div class="loading-spinner" id="loadingSpinner"></div>
+            <span id="buttonText">Login</span>
+          </div>
+        </button>
+      </form>
+
+      <div class="forgot-password">
+        <a href="#" onclick="showForgotPassword()">Forgot your password?</a>
+      </div>
+    </div>
+
+    <script>
+      // Login credentials (in production, this should be more secure)
+      const validCredentials = [
+        { username: "admin", password: "admin123" },
+        { username: "user", password: "user123" },
+        { username: "kawachi", password: "kawachi2024" },
+      ];
+
+      async function login(event) {
+        event.preventDefault();
+
+        const username = document.getElementById("username").value.trim();
+        const password = document.getElementById("password").value;
+        const errorMessage = document.getElementById("errorMessage");
+        const successMessage = document.getElementById("successMessage");
+        const loginButton = document.getElementById("loginButton");
+        const loadingSpinner = document.getElementById("loadingSpinner");
+        const buttonText = document.getElementById("buttonText");
+
+        // Clear previous messages
+        hideMessage(errorMessage);
+        hideMessage(successMessage);
+
+        // Validate inputs
+        if (!username || !password) {
+          showMessage(errorMessage, "Please enter both username and password");
+          return;
+        }
+
+        // Show loading state
+        loginButton.disabled = true;
+        loadingSpinner.classList.add("show");
+        buttonText.textContent = "Signing in...";
+
+        try {
+          // Simulate API call delay
+          await new Promise((resolve) => setTimeout(resolve, 1500));
+
+          // Check credentials
+          const isValid = validCredentials.some(
+            (cred) => cred.username === username && cred.password === password,
+          );
+
+          if (isValid) {
+            // Success
+            showMessage(successMessage, "Login successful! Redirecting...");
+            buttonText.textContent = "Success!";
+
+            // Store login state
+            sessionStorage.setItem("isLoggedIn", "true");
+            sessionStorage.setItem("username", username);
+            sessionStorage.setItem("loginTime", new Date().toISOString());
+
+            // Redirect after a short delay
+            setTimeout(() => {
+              const redirectUrl =
+                sessionStorage.getItem("redirectAfterLogin") || "index.html";
+              sessionStorage.removeItem("redirectAfterLogin");
+              window.location.href = redirectUrl;
+            }, 1000);
+          } else {
+            // Error
+            showMessage(
+              errorMessage,
+              "Invalid username or password. Please try again.",
+            );
+            resetButton();
+
+            // Clear password field
+            document.getElementById("password").value = "";
+            document.getElementById("password").focus();
+          }
+        } catch (error) {
+          console.error("Login error:", error);
+          showMessage(errorMessage, "Login failed. Please try again.");
+          resetButton();
+        }
+      }
+
+      function showMessage(element, message) {
+        element.textContent = message;
+        element.classList.add("show");
+      }
+
+      function hideMessage(element) {
+        element.classList.remove("show");
+      }
+
+      function resetButton() {
+        const loginButton = document.getElementById("loginButton");
+        const loadingSpinner = document.getElementById("loadingSpinner");
+        const buttonText = document.getElementById("buttonText");
+
+        loginButton.disabled = false;
+        loadingSpinner.classList.remove("show");
+        buttonText.textContent = "Login";
+      }
+
+      function togglePassword() {
+        const passwordInput = document.getElementById("password");
+        const passwordToggle = document.getElementById("passwordToggle");
+
+        if (passwordInput.type === "password") {
+          passwordInput.type = "text";
+          passwordToggle.classList.remove("bx-hide");
+          passwordToggle.classList.add("bx-show");
+        } else {
+          passwordInput.type = "password";
+          passwordToggle.classList.remove("bx-show");
+          passwordToggle.classList.add("bx-hide");
+        }
+      }
+
+      function showForgotPassword() {
+        alert(
+          "Forgot password functionality would be implemented here.\n\nFor demo purposes, you can use:\n• admin / admin123\n• user / user123\n• kawachi / kawachi2024",
+        );
+      }
+
+      // Check if already logged in
+      if (sessionStorage.getItem("isLoggedIn") === "true") {
+        window.location.href = "index.html";
+      }
+
+      // Add enter key support for inputs
+      document
+        .getElementById("username")
+        .addEventListener("keypress", function (e) {
+          if (e.key === "Enter") {
+            document.getElementById("password").focus();
+          }
+        });
+
+      document
+        .getElementById("password")
+        .addEventListener("keypress", function (e) {
+          if (e.key === "Enter") {
+            login(e);
+          }
+        });
+
+      // Focus on username input when page loads
+      document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("username").focus();
+      });
+
+      // Add animation for input focus
+      document.querySelectorAll(".form-input").forEach((input) => {
+        input.addEventListener("focus", function () {
+          this.parentElement.style.transform = "scale(1.02)";
+          this.parentElement.style.transition = "transform 0.2s ease";
+        });
+
+        input.addEventListener("blur", function () {
+          this.parentElement.style.transform = "scale(1)";
+        });
+      });
+    </script>
+  </body>
 </html>
