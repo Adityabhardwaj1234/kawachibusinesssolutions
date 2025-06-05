@@ -620,9 +620,16 @@ body.dark #content nav .profile-menu li a {
   color: var(--dark);
 }
 /* Active State for Menus */
-#content nav .notification-menu.show,
+#content nav .notification-menu.show {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
 #content nav .profile-menu.show {
   display: block;
+  opacity: 1;
+  transform: translateY(0);
 }
 
 #content nav .switch-mode {
