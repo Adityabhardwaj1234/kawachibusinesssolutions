@@ -1,0 +1,1321 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Biometric Attendance</title>
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(
+          135deg,
+          #0c0c1e 0%,
+          #1a1a2e 50%,
+          #16213e 100%
+        );
+        color: #fbfbfb;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      .login-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .login-box {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 40px;
+        width: 100%;
+        max-width: 450px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        text-align: center;
+      }
+
+      .login-key {
+        font-size: 80px;
+        line-height: 100px;
+        background: linear-gradient(135deg, #3c91e6, #0db8de);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 20px;
+      }
+
+      .login-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: #fbfbfb;
+        margin-bottom: 30px;
+        letter-spacing: 1px;
+      }
+
+      .form-group {
+        margin-bottom: 25px;
+        text-align: left;
+      }
+
+      .form-group label {
+        display: block;
+        color: #aaaaaa;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+      }
+
+      .form-group input,
+      .form-group select {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        border-bottom: 2px solid #3c91e6;
+        border-radius: 8px;
+        padding: 15px;
+        color: #fbfbfb;
+        font-size: 16px;
+        transition: all 0.3s ease;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus {
+        outline: none;
+        background: rgba(255, 255, 255, 0.15);
+        border-bottom-color: #0db8de;
+        box-shadow: 0 0 20px rgba(60, 145, 230, 0.3);
+      }
+
+      .form-group select {
+        cursor: pointer;
+      }
+
+      .form-group select option {
+        background: #1a1a2e;
+        color: #fbfbfb;
+        padding: 10px;
+      }
+
+      .btn {
+        background: linear-gradient(135deg, #3c91e6, #0db8de);
+        border: none;
+        border-radius: 12px;
+        color: white;
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        padding: 15px 30px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        margin: 10px 5px;
+        min-width: 150px;
+      }
+
+      .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(60, 145, 230, 0.4);
+      }
+
+      .btn-success {
+        background: linear-gradient(135deg, #27ef9f, #0db8de);
+      }
+
+      .btn-secondary {
+        background: linear-gradient(135deg, #6c6c6c, #aaaaaa);
+      }
+
+      .btn-danger {
+        background: linear-gradient(135deg, #ff4757, #ff3838);
+      }
+
+      .btn-warning {
+        background: linear-gradient(135deg, #ffa726, #ff7043);
+      }
+
+      .btn-info {
+        background: linear-gradient(135deg, #42a5f5, #1e88e5);
+      }
+
+      #userBar {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 15px;
+        padding: 15px 20px;
+        color: #fbfbfb;
+        font-size: 14px;
+        display: none;
+        z-index: 1000;
+      }
+
+      .container-main {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 25px;
+        padding: 40px;
+        width: 95%;
+        max-width: 1000px;
+        margin: 40px auto;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        text-align: center;
+      }
+
+      .container-main h1 {
+        color: #fbfbfb;
+        font-size: 2.5em;
+        font-weight: 700;
+        margin-bottom: 30px;
+        background: linear-gradient(135deg, #3c91e6, #0db8de);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .employee-info-display {
+        background: rgba(60, 145, 230, 0.1);
+        border: 2px solid #3c91e6;
+        border-radius: 20px;
+        padding: 25px;
+        margin: 25px 0;
+        text-align: left;
+      }
+
+      .employee-info-display h4 {
+        color: #3c91e6;
+        margin-bottom: 20px;
+        text-align: center;
+        font-size: 1.5em;
+      }
+
+      .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+      }
+
+      .info-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .info-label {
+        font-weight: 600;
+        color: #aaaaaa;
+      }
+
+      .info-value {
+        color: #fbfbfb;
+        font-weight: 500;
+      }
+
+      .attendance-summary {
+        background: rgba(39, 239, 159, 0.1);
+        border: 2px solid #27ef9f;
+        border-radius: 20px;
+        padding: 25px;
+        margin: 25px 0;
+      }
+
+      .attendance-summary h4 {
+        color: #27ef9f;
+        margin-bottom: 15px;
+        font-size: 1.3em;
+      }
+
+      .fingerprint-container {
+        margin-top: 30px;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .fingerprint-container canvas {
+        border-radius: 15px;
+        filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        overflow: hidden;
+      }
+
+      th,
+      td {
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 15px;
+        text-align: left;
+      }
+
+      thead {
+        background: linear-gradient(135deg, #3c91e6, #0db8de);
+      }
+
+      thead th {
+        color: white;
+        font-weight: 600;
+        font-size: 14px;
+        letter-spacing: 0.5px;
+      }
+
+      tbody tr {
+        transition: all 0.3s ease;
+      }
+
+      tbody tr:hover {
+        background: rgba(60, 145, 230, 0.1);
+      }
+
+      tbody tr:nth-child(even) {
+        background: rgba(255, 255, 255, 0.02);
+      }
+
+      .loading {
+        text-align: center;
+        color: #aaaaaa;
+        font-size: 1.2em;
+        margin: 50px 0;
+      }
+
+      .loading i {
+        font-size: 2em;
+        margin-bottom: 15px;
+        animation: spin 2s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .dropdown-container {
+        position: relative;
+        margin-bottom: 20px;
+      }
+
+      .dropdown-search {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid #3c91e6;
+        border-radius: 12px;
+        padding: 15px;
+        color: #fbfbfb;
+        font-size: 16px;
+        transition: all 0.3s ease;
+      }
+
+      .dropdown-search:focus {
+        outline: none;
+        background: rgba(255, 255, 255, 0.15);
+        border-color: #0db8de;
+        box-shadow: 0 0 20px rgba(60, 145, 230, 0.3);
+      }
+
+      .dropdown-list {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: rgba(26, 26, 46, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        max-height: 200px;
+        overflow-y: auto;
+        z-index: 1000;
+        display: none;
+      }
+
+      .dropdown-item {
+        padding: 12px 15px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .dropdown-item:hover {
+        background: rgba(60, 145, 230, 0.2);
+      }
+
+      .dropdown-item:last-child {
+        border-bottom: none;
+      }
+
+      .actions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin: 30px 0;
+      }
+
+      @media (max-width: 768px) {
+        .container-main {
+          padding: 20px;
+          margin: 20px auto;
+        }
+
+        .info-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .actions-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .btn {
+          width: 100%;
+          margin: 5px 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Custom Login Page -->
+    <div class="login-container" id="loginPage">
+      <div class="login-box">
+        <div class="login-key">
+          <i class="bx bx-fingerprint"></i>
+        </div>
+        <div class="login-title">BIOMETRIC ATTENDANCE</div>
+        <form onsubmit="login(event)">
+          <div class="form-group">
+            <label>USERNAME</label>
+            <input type="text" id="staffId" required />
+          </div>
+          <div class="form-group">
+            <label>PASSWORD</label>
+            <input type="password" id="staffPassword" required />
+          </div>
+          <div
+            id="message"
+            style="color: #ff4757; margin-bottom: 20px; font-size: 14px"
+          ></div>
+          <button type="submit" class="btn">LOGIN</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Welcome User Bar -->
+    <div id="userBar">
+      <span id="userNameDisplay"></span>
+      <button
+        onclick="signOut()"
+        class="btn btn-danger"
+        style="margin-left: 15px; min-width: auto; padding: 8px 15px"
+      >
+        <i class="bx bx-power-off"></i> Close
+      </button>
+    </div>
+
+    <!-- Main App -->
+    <div class="container-main" id="mainApp" style="display: none">
+      <h1><i class="bx bx-fingerprint"></i> Biometric Attendance System</h1>
+
+      <!-- Employee Selection Dropdown -->
+      <div class="dropdown-container">
+        <label
+          class="form-group-label"
+          style="
+            color: #aaaaaa;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            display: block;
+          "
+          >SELECT EMPLOYEE</label
+        >
+        <input
+          type="text"
+          id="employeeSearch"
+          class="dropdown-search"
+          placeholder="Search Employee by ID or Name..."
+          onkeyup="filterEmployees()"
+          onfocus="showDropdown()"
+          autocomplete="off"
+        />
+        <div id="employeeDropdown" class="dropdown-list"></div>
+      </div>
+
+      <!-- Employee Information Display -->
+      <div id="employeeInfoDisplay" style="display: none"></div>
+
+      <!-- Attendance Action Buttons -->
+      <div id="attendanceActions" style="display: none">
+        <div class="actions-grid">
+          <button class="btn btn-success" onclick="markAttendance()">
+            <i class="bx bx-map-pin"></i> Mark Attendance
+          </button>
+          <button class="btn btn-secondary" onclick="fetchAttendanceFromAPI()">
+            <i class="bx bx-refresh"></i> Fetch from API
+          </button>
+          <button class="btn btn-info" onclick="downloadAttendanceExcel()">
+            <i class="bx bx-download"></i> Download Excel
+          </button>
+          <button class="btn btn-warning" onclick="showAllAttendance()">
+            <i class="bx bx-list-ul"></i> Show All Records
+          </button>
+          <button class="btn btn-danger" onclick="clearAllData()">
+            <i class="bx bx-trash"></i> Clear All Data
+          </button>
+        </div>
+      </div>
+
+      <!-- Attendance Details Display -->
+      <div id="attendanceDetails" class="mt-4"></div>
+
+      <!-- Fingerprint Display -->
+      <div
+        id="fingerprintContainer"
+        class="fingerprint-container"
+        style="display: none"
+      >
+        <canvas id="fingerprintCanvas" width="317" height="270"></canvas>
+      </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+      import {
+        getAnalytics,
+        logEvent,
+      } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+      import {
+        getDatabase,
+        ref,
+        push,
+        set,
+        get,
+        remove,
+      } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyB1wIsDf1qSLaIGyQvbri26z9e4ypxF-lw",
+        authDomain: "apikawachi.firebaseapp.com",
+        databaseURL:
+          "https://apikawachi-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "apikawachi",
+        storageBucket: "apikawachi.appspot.com",
+        messagingSenderId: "7573902945",
+        appId: "1:7573902945:web:be2c051ef0d0ceed787c20",
+        measurementId: "G-GT0F7K4NLP",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+      const database = getDatabase(app);
+
+      // Make Firebase available globally
+      window.firebaseApp = app;
+      window.firebaseDatabase = database;
+      window.firebaseAnalytics = analytics;
+      window.firebaseRef = ref;
+      window.firebasePush = push;
+      window.firebaseSet = set;
+      window.firebaseGet = get;
+      window.firebaseRemove = remove;
+      window.firebaseLogEvent = logEvent;
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script>
+      const staffMembers = [
+        {
+          id: "170712@ab",
+          password: "OWNER@00014243774",
+          position: "OWNER",
+          name: "Aditya Bhardwaj",
+        },
+        {
+          id: "310712@cb",
+          password: "CO-OWNER@bhardwaj3107cb",
+          position: "CO-OWNER",
+          name: "Chandan Bhardwaj",
+        },
+        {
+          id: "310712@db",
+          password: "CO-OWNER@bhardwaj3107db",
+          position: "CO-OWNER",
+          name: "Deepak Bhardwaj",
+        },
+      ];
+
+      let allAttendanceEntries = [];
+      let employeesFromAPI = [];
+      let currentEmployee = null;
+      let allEmployees = [];
+
+      function login(e) {
+        e.preventDefault();
+        const id = document.getElementById("staffId").value.trim();
+        const password = document.getElementById("staffPassword").value.trim();
+        const found = staffMembers.find(
+          (s) => s.id === id && s.password === password,
+        );
+        if (found) {
+          localStorage.setItem("loggedInUser", JSON.stringify(found));
+          showMessage(`Welcome ${found.name}! Login successful.`, "success");
+          setTimeout(() => {
+            showApp();
+          }, 1000);
+        } else {
+          showMessage("Invalid ID or Password. Please try again.", "error");
+        }
+      }
+
+      function showApp() {
+        const user = JSON.parse(localStorage.getItem("loggedInUser"));
+        if (user) {
+          document.getElementById("loginPage").style.display = "none";
+          document.getElementById("mainApp").style.display = "block";
+          document.getElementById("userBar").style.display = "block";
+          document.getElementById("userNameDisplay").textContent =
+            `Welcome, ${user.name}`;
+
+          // Load employees for dropdown
+          loadEmployeesForDropdown();
+          showMessage(
+            `Biometric system initialized for ${user.name}`,
+            "success",
+          );
+        }
+      }
+
+      function signOut() {
+        localStorage.removeItem("loggedInUser");
+        currentEmployee = null;
+        allEmployees = [];
+
+        showMessage("Signed out successfully!", "success");
+
+        if (window.top && typeof window.top.hideIframe === "function") {
+          window.top.hideIframe();
+        }
+
+        setTimeout(() => {
+          document.getElementById("mainApp").style.display = "none";
+          document.getElementById("userBar").style.display = "none";
+          document.getElementById("loginPage").style.display = "block";
+          document.getElementById("employeeInfoDisplay").style.display = "none";
+          document.getElementById("attendanceActions").style.display = "none";
+        }, 500);
+      }
+
+      // Load employees for dropdown
+      async function loadEmployeesForDropdown() {
+        try {
+          const employeesRef = window.firebaseRef(
+            window.firebaseDatabase,
+            "employees",
+          );
+          const snapshot = await window.firebaseGet(employeesRef);
+
+          if (snapshot.exists()) {
+            allEmployees = [];
+            snapshot.forEach((childSnapshot) => {
+              allEmployees.push({
+                ...childSnapshot.val(),
+              });
+            });
+
+            showMessage(
+              `Loaded ${allEmployees.length} employees for selection`,
+              "success",
+            );
+            populateDropdown(allEmployees);
+          } else {
+            showMessage("No employees found in database", "error");
+            allEmployees = [];
+          }
+        } catch (error) {
+          console.error("Error loading employees:", error);
+          showMessage(`Error loading employees: ${error.message}`, "error");
+        }
+      }
+
+      // Populate dropdown with employees
+      function populateDropdown(employees) {
+        const dropdown = document.getElementById("employeeDropdown");
+        dropdown.innerHTML = "";
+
+        employees.forEach((emp) => {
+          const item = document.createElement("div");
+          item.className = "dropdown-item";
+          item.innerHTML = `
+      <div style="display: flex; justify-content: space-between;">
+        <span><strong>${emp.empId}</strong> - ${emp.name}</span>
+        <span style="color: #AAAAAA; font-size: 12px;">${emp.contact || "No Contact"}</span>
+      </div>
+    `;
+          item.onclick = () => selectEmployee(emp);
+          dropdown.appendChild(item);
+        });
+      }
+
+      // Filter employees in dropdown
+      function filterEmployees() {
+        const searchValue = document
+          .getElementById("employeeSearch")
+          .value.toLowerCase();
+        const filteredEmployees = allEmployees.filter(
+          (emp) =>
+            emp.empId.toLowerCase().includes(searchValue) ||
+            emp.name.toLowerCase().includes(searchValue),
+        );
+        populateDropdown(filteredEmployees);
+        showDropdown();
+      }
+
+      // Show dropdown
+      function showDropdown() {
+        document.getElementById("employeeDropdown").style.display = "block";
+      }
+
+      // Hide dropdown
+      function hideDropdown() {
+        setTimeout(() => {
+          document.getElementById("employeeDropdown").style.display = "none";
+        }, 200);
+      }
+
+      // Select employee from dropdown
+      function selectEmployee(employee) {
+        currentEmployee = employee;
+        document.getElementById("employeeSearch").value =
+          `${employee.empId} - ${employee.name}`;
+        hideDropdown();
+
+        displayEmployeeInfo(employee);
+        document.getElementById("attendanceActions").style.display = "block";
+
+        showMessage(
+          `Selected employee: ${employee.name} (${employee.empId})`,
+          "success",
+        );
+      }
+
+      // Display employee information
+      function displayEmployeeInfo(employee) {
+        const infoDisplay = document.getElementById("employeeInfoDisplay");
+
+        infoDisplay.innerHTML = `
+    <div class="employee-info-display">
+      <h4><i class='bx bx-user-check'></i> Employee Information</h4>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">Employee ID:</span>
+          <span class="info-value">${employee.empId}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Name:</span>
+          <span class="info-value">${employee.name}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Contact:</span>
+          <span class="info-value">${employee.contact || "N/A"}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Email:</span>
+          <span class="info-value">${employee.email || "N/A"}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Join Date:</span>
+          <span class="info-value">${formatDate(employee.joinDate)}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Basic Salary:</span>
+          <span class="info-value">₹${employee.basicSalary?.toLocaleString()}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Gross Salary:</span>
+          <span class="info-value">₹${employee.grossSalary?.toLocaleString()}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Status:</span>
+          <span class="info-value">${employee.status || "Active"}</span>
+        </div>
+      </div>
+    </div>
+  `;
+
+        infoDisplay.style.display = "block";
+      }
+
+      // Mark attendance for current employee
+      async function markAttendance() {
+        if (!currentEmployee) {
+          showMessage("Please select an employee first.", "error");
+          return;
+        }
+
+        const date = new Date().toLocaleString();
+        let ip = "Unknown",
+          coords = "Unknown";
+
+        try {
+          const ipRes = await fetch("https://api.ipify.org?format=json");
+          const ipData = await ipRes.json();
+          ip = ipData.ip;
+          const locRes = await fetch(`https://ipapi.co/${ip}/json/`);
+          const locData = await locRes.json();
+          coords = `${locData.latitude}, ${locData.longitude}`;
+        } catch (error) {
+          console.log("Location services not available");
+        }
+
+        const attendanceEntry = {
+          empId: currentEmployee.empId,
+          name: currentEmployee.name,
+          contact: currentEmployee.contact,
+          email: currentEmployee.email,
+          basicSalary: currentEmployee.basicSalary,
+          grossSalary: currentEmployee.grossSalary,
+          date,
+          ip,
+          coords,
+          timestamp: new Date().toISOString(),
+        };
+
+        // Save to Firebase
+        try {
+          if (window.firebaseDatabase) {
+            const attendanceRef = window.firebaseRef(
+              window.firebaseDatabase,
+              "attendance",
+            );
+            const newAttendanceRef = window.firebasePush(attendanceRef);
+            await window.firebaseSet(newAttendanceRef, {
+              ...attendanceEntry,
+              id: newAttendanceRef.key,
+            });
+
+            // Log analytics
+            window.firebaseLogEvent(
+              window.firebaseAnalytics,
+              "attendance_recorded",
+              {
+                empId: attendanceEntry.empId,
+                employee_name: attendanceEntry.name,
+              },
+            );
+
+            console.log("Attendance saved to Firebase successfully");
+            showMessage(
+              `Attendance marked for ${attendanceEntry.name}`,
+              "success",
+            );
+          }
+        } catch (error) {
+          console.error("Error saving to Firebase:", error);
+          showMessage(`Error saving attendance: ${error.message}`, "error");
+        }
+
+        // Also keep in local array for immediate display
+        allAttendanceEntries.push(attendanceEntry);
+
+        document.getElementById("attendanceDetails").innerHTML = `
+    <div class="attendance-summary">
+      <h4><i class='bx bx-check-circle'></i> Attendance Marked Successfully</h4>
+      <p><strong>Employee:</strong> ${attendanceEntry.name} (${attendanceEntry.empId})</p>
+      <p><strong>Date & Time:</strong> ${date}</p>
+      <p><strong>Location:</strong> ${coords}</p>
+      <p><strong>IP Address:</strong> ${ip}</p>
+      <p style="color: #27EF9F;"><strong>✓ Saved to Firebase Database</strong></p>
+    </div>
+  `;
+
+        document.getElementById("fingerprintContainer").style.display = "block";
+        const canvas = document.getElementById("fingerprintCanvas");
+        const ctx = canvas.getContext("2d");
+        const img = new Image();
+        img.src =
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Fingerprint_icon.svg/1200px-Fingerprint_icon.svg.png";
+        img.onload = () =>
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      }
+
+      // Fetch attendance data from Firebase API
+      async function fetchAttendanceFromAPI() {
+        try {
+          if (!window.firebaseDatabase) {
+            showMessage("Firebase not initialized", "error");
+            return;
+          }
+
+          showMessage("Fetching data from Firebase...", "info");
+
+          // Fetch attendance data
+          const attendanceRef = window.firebaseRef(
+            window.firebaseDatabase,
+            "attendance",
+          );
+          const attendanceSnapshot = await window.firebaseGet(attendanceRef);
+
+          // Fetch employee data
+          const employeesRef = window.firebaseRef(
+            window.firebaseDatabase,
+            "employees",
+          );
+          const employeesSnapshot = await window.firebaseGet(employeesRef);
+
+          let attendanceCount = 0;
+          let employeeCount = 0;
+
+          if (attendanceSnapshot.exists()) {
+            const attendanceData = [];
+            attendanceSnapshot.forEach((childSnapshot) => {
+              attendanceData.push({
+                id: childSnapshot.key,
+                ...childSnapshot.val(),
+              });
+            });
+            allAttendanceEntries = attendanceData;
+            attendanceCount = attendanceData.length;
+          }
+
+          if (employeesSnapshot.exists()) {
+            employeesFromAPI = [];
+            employeesSnapshot.forEach((childSnapshot) => {
+              employeesFromAPI.push({
+                ...childSnapshot.val(),
+              });
+            });
+            employeeCount = employeesFromAPI.length;
+          }
+
+          showMessage(
+            `Data fetched successfully! ${attendanceCount} attendance records, ${employeeCount} employees`,
+            "success",
+          );
+
+          // Log analytics
+          window.firebaseLogEvent(
+            window.firebaseAnalytics,
+            "data_fetched_from_api",
+          );
+        } catch (error) {
+          console.error("Error fetching from Firebase:", error);
+          showMessage(`Error fetching data: ${error.message}`, "error");
+        }
+      }
+
+      // Download attendance Excel with comprehensive data
+      function downloadAttendanceExcel() {
+        try {
+          const wb = XLSX.utils.book_new();
+
+          // Attendance data sheet
+          if (allAttendanceEntries.length > 0) {
+            const attendanceData = [
+              [
+                "S.No",
+                "Emp_ID",
+                "Name",
+                "Contact Number",
+                "Email",
+                "Basic Salary",
+                "Gross Salary",
+                "Date & Time",
+                "IP Address",
+                "Coordinates",
+                "Firebase ID",
+              ],
+            ];
+            allAttendanceEntries.forEach((e, i) =>
+              attendanceData.push([
+                i + 1,
+                e.empId || "N/A",
+                e.name || "N/A",
+                e.contact || "N/A",
+                e.email || "N/A",
+                e.basicSalary || 0,
+                e.grossSalary || 0,
+                e.date || e.timestamp,
+                e.ip || "N/A",
+                e.coords || "N/A",
+                e.id || "Local",
+              ]),
+            );
+            const attendanceWs = XLSX.utils.aoa_to_sheet(attendanceData);
+            XLSX.utils.book_append_sheet(wb, attendanceWs, "Attendance");
+          }
+
+          // Employee data sheet (from API)
+          if (employeesFromAPI.length > 0) {
+            const employeeData = [
+              [
+                "Emp_ID",
+                "Name",
+                "Contact Number",
+                "Email",
+                "Marital Status",
+                "Emergency Contact",
+                "Address",
+                "PAN [10 Digits Alpha Numeric]",
+                "Aadhar [12 digit Number]",
+                "UAN [12 Digit Number]",
+                "Date of Joining",
+                "Date of Exit",
+                "Basic Salary",
+                "Dearness Allowance",
+                "Personal Allowance",
+                "Conveyance Allowance",
+                "Professional Allowance",
+                "Bonus",
+                "Gross Salary",
+              ],
+            ];
+            employeesFromAPI.forEach((e, i) =>
+              employeeData.push([
+                e.empId,
+                e.name,
+                e.contact,
+                e.email,
+                e.maritalStatus || "",
+                e.emergencyContact || "",
+                e.address || "",
+                e.pan || "",
+                e.aadhar || "",
+                e.uan || "",
+                e.joinDate,
+                e.exitDate || "",
+                e.basicSalary || 0,
+                e.dearnessAllowance || 0,
+                e.personalAllowance || 0,
+                e.conveyanceAllowance || 0,
+                e.professionalAllowance || 0,
+                e.bonus || 0,
+                e.grossSalary || 0,
+              ]),
+            );
+            const employeeWs = XLSX.utils.aoa_to_sheet(employeeData);
+            XLSX.utils.book_append_sheet(
+              wb,
+              employeeWs,
+              "Complete Employee Data",
+            );
+          }
+
+          if (wb.SheetNames.length === 0) {
+            showMessage(
+              "No data available. Use 'Fetch from API' to load data first.",
+              "error",
+            );
+            return;
+          }
+
+          const filename = `biometric_attendance_${new Date().toISOString().split("T")[0]}.xlsx`;
+          XLSX.writeFile(wb, filename);
+
+          // Log analytics
+          window.firebaseLogEvent(window.firebaseAnalytics, "excel_exported", {
+            attendance_count: allAttendanceEntries.length,
+            employee_count: employeesFromAPI.length,
+          });
+
+          showMessage(
+            `Excel file "${filename}" downloaded successfully!`,
+            "success",
+          );
+        } catch (error) {
+          console.error("Error creating Excel file:", error);
+          showMessage(`Error creating Excel file: ${error.message}`, "error");
+        }
+      }
+
+      // Show all attendance records
+      function showAllAttendance() {
+        if (allAttendanceEntries.length === 0) {
+          showMessage(
+            "No attendance records. Use 'Fetch from API' to load data first.",
+            "error",
+          );
+          return;
+        }
+
+        let html = `<h3 style="color: #3C91E6; margin-bottom: 20px;"><i class='bx bx-list-ul'></i> All Attendance Records (${allAttendanceEntries.length} entries)</h3><div style="overflow-x:auto;"><table><thead><tr>
+    <th>#</th><th>Employee ID</th><th>Name</th><th>Date & Time</th><th>IP</th><th>Location</th><th>Salary</th><th>Firebase ID</th>
+  </tr></thead><tbody>`;
+
+        allAttendanceEntries.forEach((e, i) => {
+          html += `<tr>
+      <td>${i + 1}</td>
+      <td style="font-family: monospace; color: #3C91E6; font-weight: bold;">${e.empId || "N/A"}</td>
+      <td>${e.name || "N/A"}</td>
+      <td>${e.date || e.timestamp}</td>
+      <td>${e.ip || "N/A"}</td>
+      <td>${e.coords || "N/A"}</td>
+      <td style="color: #27EF9F; font-weight: bold;">₹${(e.grossSalary || 0).toLocaleString()}</td>
+      <td style="font-family: monospace; font-size: 12px;">${e.id || "Local"}</td>
+    </tr>`;
+        });
+        html += "</tbody></table></div>";
+        document.getElementById("attendanceDetails").innerHTML = html;
+
+        showMessage(
+          `Displaying ${allAttendanceEntries.length} attendance records`,
+          "success",
+        );
+      }
+
+      // Clear all data
+      async function clearAllData() {
+        if (
+          confirm(
+            "Clear all attendance data? This will remove data from Firebase.",
+          )
+        ) {
+          try {
+            // Clear from Firebase
+            if (window.firebaseDatabase) {
+              const attendanceRef = window.firebaseRef(
+                window.firebaseDatabase,
+                "attendance",
+              );
+              await window.firebaseRemove(attendanceRef);
+              console.log("Attendance data cleared from Firebase");
+              showMessage("Attendance data cleared from Firebase", "success");
+            }
+
+            // Clear local data
+            allAttendanceEntries = [];
+            employeesFromAPI = [];
+
+            // Clear displays
+            document.getElementById("attendanceDetails").innerHTML = "";
+            document.getElementById("fingerprintContainer").style.display =
+              "none";
+            document.getElementById("employeeSearch").value = "";
+            document.getElementById("employeeInfoDisplay").style.display =
+              "none";
+            document.getElementById("attendanceActions").style.display = "none";
+            currentEmployee = null;
+
+            showMessage("All attendance data cleared successfully!", "success");
+
+            // Log analytics
+            window.firebaseLogEvent(window.firebaseAnalytics, "data_cleared");
+          } catch (error) {
+            console.error("Error clearing data:", error);
+            showMessage(`Error clearing data: ${error.message}`, "error");
+          }
+        }
+      }
+
+      // Utility function to format dates
+      function formatDate(dateString) {
+        try {
+          const date = new Date(dateString);
+          return date
+            .toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+            })
+            .replace(/\//g, "-");
+        } catch (error) {
+          return dateString;
+        }
+      }
+
+      // Message system
+      function showMessage(message, type = "info") {
+        // Create message element if it doesn't exist
+        let messageEl = document.getElementById("globalMessage");
+        if (!messageEl) {
+          messageEl = document.createElement("div");
+          messageEl.id = "globalMessage";
+          messageEl.style.cssText = `
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      padding: 15px 20px;
+      border-radius: 12px;
+      font-weight: 600;
+      z-index: 9999;
+      max-width: 400px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.2);
+      transform: translateX(450px);
+      transition: all 0.3s ease;
+    `;
+          document.body.appendChild(messageEl);
+        }
+
+        // Set message content and style based on type
+        messageEl.textContent = message;
+
+        if (type === "success") {
+          messageEl.style.background = "rgba(39, 239, 159, 0.9)";
+          messageEl.style.color = "#FFFFFF";
+          messageEl.style.borderColor = "#27EF9F";
+        } else if (type === "error") {
+          messageEl.style.background = "rgba(255, 71, 87, 0.9)";
+          messageEl.style.color = "#FFFFFF";
+          messageEl.style.borderColor = "#FF4757";
+        } else {
+          messageEl.style.background = "rgba(60, 145, 230, 0.9)";
+          messageEl.style.color = "#FFFFFF";
+          messageEl.style.borderColor = "#3C91E6";
+        }
+
+        // Show message
+        messageEl.style.transform = "translateX(0)";
+
+        // Hide after 4 seconds
+        setTimeout(() => {
+          messageEl.style.transform = "translateX(450px)";
+        }, 4000);
+      }
+
+      // Close dropdown when clicking outside
+      document.addEventListener("click", function (e) {
+        if (!e.target.closest(".dropdown-container")) {
+          hideDropdown();
+        }
+      });
+
+      window.onload = () => {
+        const user = JSON.parse(localStorage.getItem("loggedInUser"));
+        if (user) showApp();
+        else document.getElementById("loginPage").style.display = "block";
+      };
+
+      // Make functions globally available
+      window.filterEmployees = filterEmployees;
+      window.showDropdown = showDropdown;
+      window.hideDropdown = hideDropdown;
+      window.selectEmployee = selectEmployee;
+      window.markAttendance = markAttendance;
+      window.fetchAttendanceFromAPI = fetchAttendanceFromAPI;
+      window.downloadAttendanceExcel = downloadAttendanceExcel;
+      window.showAllAttendance = showAllAttendance;
+      window.clearAllData = clearAllData;
+      window.showMessage = showMessage;
+
+      // Authentication check
+      if (sessionStorage.getItem("isLoggedIn") !== "true") {
+        sessionStorage.setItem("redirectAfterLogin", window.location.pathname);
+        window.location.href = "login.html";
+      }
+    </script>
+  </body>
+</html>
+<script>
+                window.addEventListener('message', (event) => {
+                  const { data } = event;
+                  if (!data?.type) {
+                    return;
+                  }
+
+                  switch (data.type) {
+                    case 'builder.evaluate': {
+                      const text = data.data.text;
+                      const args = data.data.arguments || [];
+                      const id = data.data.id;
+                      // tslint:disable-next-line:no-function-constructor-with-string-args
+                      const fn = new Function(text);
+                      let result;
+                      let error = null;
+                      try {
+                        // eslint-disable-next-line prefer-spread
+                        result = fn.apply(null, args);
+                      } catch (err) {
+                        error = err;
+                      }
+
+                      if (error) {
+                        window.parent?.postMessage(
+                          {
+                            type: 'builder.evaluateError',
+                            data: { id, error: error.message },
+                          },
+                          '*'
+                        );
+                      } else {
+                        if (result && typeof result.then === 'function') {
+                          result
+                            .then((finalResult) => {
+                              window.parent?.postMessage(
+                                {
+                                  type: 'builder.evaluateResult',
+                                  data: { id, result: finalResult },
+                                },
+                                '*'
+                              );
+                            })
+                            .catch(console.error);
+                        } else {
+                          window.parent?.postMessage(
+                            {
+                              type: 'builder.evaluateResult',
+                              data: { result, id },
+                            },
+                            '*'
+                          );
+                        }
+                      }
+                      break;
+                    }
+                  }
+                });
+
+                window.addEventListener('error', (event) => {
+                  window.parent?.postMessage(
+                    {
+                      type: 'builder.interactiveFrameError',
+                      data: { message: event.error?.stack || event.error?.message || event.message },
+                    },
+                    '*'
+                  );
+                });
+                
+                setTimeout(() => {
+                  const viteError = document.querySelector('vite-error-overlay')?.shadowRoot?.textContent;
+                  if (typeof viteError === 'string') {
+                    window.parent?.postMessage(
+                      {
+                        type: 'builder.interactiveFrameError',
+                        data: { message: viteError },
+                      },
+                      '*'
+                    );
+                  }
+                }, 500);
+
+              </script>
